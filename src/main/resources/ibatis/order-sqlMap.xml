@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Order">
+	<resultMap id="orderResultMap" class="com.keiyin.ism.model.Order">
+		<result property="id" column="id" javaType="String"/>
+		<result property="date" column="date" javaType="Date"/>
+	</resultMap>
+
+	<select id="getOrderList" resultMap="orderResultMap" parameterClass="java.util.HashMap">
+		SELECT * FROM `order`
+		<dynamic prepend="WHERE">
+			<isNotNull property="searchParameter">
+				id LIKE '%$searchParameter$%' 
+			</isNotNull>
+		</dynamic>
+		<isNotNull property="orderClause">
+    		$orderClause$
+  		</isNotNull>
+		<isNotNull property="start_row">
+            <isNotNull property="limit_page">
+    			LIMIT #start_row#, #limit_page#
+   			</isNotNull>
+  		</isNotNull>
+	</select>
+	
+	<select id="getOrderListCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">
+		SELECT COUNT(*) FROM `order`
+		<dynamic prepend="WHERE">
+			<isNotNull property="searchParameter">
+				id LIKE '%$searchParameter$%' 
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	<select id="getLastOrderId" resultClass="String">
+		SELECT MAX(id) FROM `order` 
+	</select>
+	
+	<insert id="insertOrder" parameterClass="java.util.HashMap">
+		INSERT INTO `order` (`id`, `date`) VALUES ('$orderId$', '$orderDate$');
+	</insert>
+</sqlMap>

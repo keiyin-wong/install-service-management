@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+<bean id="springJdbcDataSources" class="org.springframework.jdbc.datasource.DriverManagerDataSource">    
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>    
+	<property name="url" value="${db.connection}"></property>    
+	<property name="username" value="${db.username}"></property>    
+	<property name="password" value="${db.password}"></property>    
+</bean>
+
+<!-- <bean id="dataSources" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	<property name="url" value="${db.connection}"/>
+	<property name="username" value="${db.username}"/>
+	<property name="password" value="${db.password}"/>
+	<property name="maxActive" value="50"/>
+	<property name="poolPreparedStatements" value="true"/>
+	<property name="testOnBorrow" value="true" />			
+	<property name="validationQuery" value="SELECT NOW();" />
+</bean> -->
+
+<bean id="orderSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	<property name="dataSource" ref="springJdbcDataSources"/>
+	<property name="configLocation" value="classpath:spring/sqlMap-config.xml"/>
+</bean>
+
+<bean id="orderDAO" class="com.keiyin.ism.dao.OrderDAO">
+	<property name="orderSqlMapClient" ref="orderSqlMapClient"/>
+</bean>
+
+</beans>
