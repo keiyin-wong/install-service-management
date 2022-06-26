@@ -2,12 +2,9 @@ package com.keiyin.ism.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspApplicationContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,8 +23,7 @@ import com.keiyin.ism.datatable.DatatableRequest;
 import com.keiyin.ism.datatable.JsonDatableQueryResponse;
 import com.keiyin.ism.datatable.PaginationCriteria;
 import com.keiyin.ism.model.Order;
-
-import sun.launcher.resources.launcher;
+import com.keiyin.ism.model.WriteResponse;
 
 @Controller
 @RequestMapping(value = "/order")
@@ -36,6 +32,9 @@ public class OrderController {
 	@Autowired
 	@Qualifier("orderDAO")
 	OrderDAO orderDAO;
+	
+	private static final String FAIL = "fail";
+	private static final String SUCCESS = "success";
 	
 	@RequestMapping(value = "/order.html", method = RequestMethod.GET)
 	public ModelAndView renderServicePage() {
@@ -80,18 +79,33 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value = "/createOrder", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> createOrder(@RequestParam String orderId, @RequestParam String orderDate) {
-		Map<String, Object> result = new HashMap<>();
+	public @ResponseBody ResponseEntity<WriteResponse> createOrder(@RequestParam String orderId, @RequestParam String orderDate) {
+		WriteResponse result = new WriteResponse();
 		
 		
 		try {
 			orderDAO.insertOrder(orderId, orderDate);
-			result.put("status", "success");
+			result.setStatus(SUCCESS);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			result.put("status", "failed");
+			result.setStatus(FAIL);
 		}
 		
-		return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<WriteResponse> deleteOrder(@RequestParam String orderId){
+		WriteResponse result = new WriteResponse();
+		
+		try {
+			orderDAO.deleteOrder(orderId);
+			result.setStatus(SUCCESS);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			result.setStatus(FAIL);
+		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }

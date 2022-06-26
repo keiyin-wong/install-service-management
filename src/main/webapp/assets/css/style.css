@@ -85,6 +85,18 @@
   background-size: 50px 50px
 }
 
+#pop-message {
+    position:fixed; 
+    top: 10px; 
+    left: 0px; 
+    width: 100%;
+    z-index:9999; 
+    border-radius:0px;
+}
+#pop-message .alert{
+	 width: 30%;
+	 margin: auto;
+}
 
 .icon-name {
   color: #000;

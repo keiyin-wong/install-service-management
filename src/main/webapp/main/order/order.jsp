@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 
-
 <script type="text/javascript">
 var loaderSpinner;
 var orderTable;
@@ -14,6 +13,7 @@ $(document).ready(function(){
 	
 	$('#addNewOrderModalSaveButton').click(function(){
 		if($('#addNewOrderModalForm').valid()){
+			$('#addNewOrderModal').modal('hide');
 			var parameter = $('#addNewOrderModal form').serialize();
 			loaderSpinner.show();
 			$.ajax({
@@ -26,13 +26,20 @@ $(document).ready(function(){
 					$('#orderTable').DataTable().ajax.reload();
 				},
 				error: function(data){
-					alert("failed succesfully");
+					alert("failed");
 					loaderSpinner.hide();
+					popMessage('danger', 'Failed to create order');
+					setTimeout(function() {
+				        $("#pop-message .alert").alert('close');
+				    }, 2000);
 				}
 			}).done(function(){
 				loaderSpinner.hide();
+				popMessage('success', 'Successfully create order');
+				setTimeout(function() {
+			        $("#pop-message .alert").alert('close');
+			    }, 2000);
 			});
-			$('#addNewOrderModal').modal('hide');
 		}
 	});
 
@@ -55,7 +62,7 @@ $(document).ready(function(){
 			loaderSpinner.hide();
 		});
 	});
-	
+
 	orderTable = $('#orderTable').DataTable( {
 		serverSide: true,
 		searching: true,
@@ -109,9 +116,8 @@ $(document).ready(function(){
 			{
 				targets: 3,
 				render: function (data, type, row) {
-					console.log(data);
                     return '<a href="orderDetail?id=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>'
-                    + '<a class="btn btn-sm btn-danger m-l-5">Delete</a>'
+                    + '<a onclick="showDeleteModal(' + data.id + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
                 },
 			}
 		],
@@ -120,6 +126,45 @@ $(document).ready(function(){
 	
 });
 
+
+// ---------------------------Delete function-----------------------------------------------
+
+function showDeleteModal(dataId){
+	$('#deleteOrderModal .modal-title').html('Delete order ' + dataId);
+	$('#deleteOrderModal').modal();
+	$('#deleteOrderModalButton').html(
+			'<button type="button" class="btn btn-primary" onClick="deleteOrder(\'' + dataId + '\')">Delete</button>'
+	);
+}
+
+function deleteOrder(dataId){
+	$('#deleteOrderModal').modal('hide');
+	loaderSpinner.show();
+	let parameter = 'orderId=' + dataId;
+	$.ajax({
+		type : "POST",
+		url : "deleteOrder",
+		data: parameter,
+		cache : false,
+		dataType : "json",
+		success : function(data){
+			$('#orderTable').DataTable().ajax.reload();
+		},
+		error: function(data){
+			loaderSpinner.hide();
+			popMessage('danger', 'Failed to delete order');
+			setTimeout(function() {
+		        $("#pop-message .alert").alert('close');
+		    }, 2000);
+		}
+	}).done(function(){
+		loaderSpinner.hide();
+		popMessage('success', 'Successfully deleted order');
+		setTimeout(function() {
+	        $("#pop-message .alert").alert('close');
+	    }, 2000);
+	});
+}
 </script>
 
 
@@ -147,7 +192,7 @@ $(document).ready(function(){
 							<div class='row'>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
-										<table id="orderTable" class="table table-striped table-bordered">
+										<table id="orderTable" class="table table-striped table-bordered hover">
 											<thead>
 												<tr>
 													<th>Order Id</th>
@@ -188,7 +233,7 @@ $(document).ready(function(){
 					<div class="form-group row">
 						<label for="recipient-name" class="col-sm-3 col-form-label">Id</label>
 						<div class="col-sm-9">
-							<input type="text" class="form-control" id="orderId" name="orderId">
+							<input type="text" class="form-control" id="orderId" name="orderId" required>
 						</div>
 					</div>
 					<div class="form-group row">
@@ -205,4 +250,32 @@ $(document).ready(function(){
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="modal fade" id="deleteOrderModal" tabindex="-1" role="dialog"
+	aria-labelledby="deleteOrderModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Delete order</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger">
+					Do you want to delete this order?
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<span id='deleteOrderModalButton'></span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="pop-message">
+	
 </div>

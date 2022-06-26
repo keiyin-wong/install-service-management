@@ -48,6 +48,7 @@
 	    <script src="${contextUrl}/assets/js/lib/jquery.nanoscroller.min.js"></script>
 	    <script src="${contextUrl}/assets/js/lib/jquery.nanoscroller.min.js"></script>
 	    <script src="${contextUrl}/assets/js/lib/data-table/jquery.dataTables.min.js"></script>
+	    <script src="${contextUrl}/assets/js/scripts.js"></script>
 	
 	</head>
 	<body>
@@ -65,7 +66,7 @@
 	    <!-- sidebar -->
 	
 	    <script src="${contextUrl}/assets/js/lib/bootstrap.min.js"></script>
-	    <script src="${contextUrl}/assets/js/scripts.js"></script>
+	    
 	    <!-- bootstrap -->
 	
 	    <script src="${contextUrl}/assets/js/lib/calendar-2/moment.latest.min.js"></script>

@@ -40,4 +40,12 @@
 	<insert id="insertOrder" parameterClass="java.util.HashMap">
 		INSERT INTO `order` (`id`, `date`) VALUES ('$orderId$', '$orderDate$');
 	</insert>
+	
+	<delete id="deleteOrder" parameterClass="java.util.HashMap">
+	DELETE FROM
+		`order`
+	WHERE
+		`id` = '$orderId$'
+</delete>
+	
 </sqlMap>
