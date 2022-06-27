@@ -7,10 +7,18 @@
 <script>
 var orderDetailTable;
 var rowNumber = 0;
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+var loaderSpinner;
+
 $(document).ready(function(){
+	document.title = urlParams.get('orderId');
+	getOrder();
+	loaderSpinner = $('#loader');
+	
 	orderDetailTable = $('#orderDetailTable').DataTable({
 		ajax: {
-			url: 'getOrderDetailList?orderId=12951',
+			url: 'getOrderDetailList?orderId=' + urlParams.get('orderId'),
 			type: 'GET',
 		},
 		processing: true,
@@ -53,10 +61,37 @@ $(document).ready(function(){
 		],
 	});
 
-	
-	
 });
+
+function getOrder(){
+	loaderSpinner = $('#loader');
+	loaderSpinner.show();
+	$.ajax({
+		type : "GET",
+		url : "getOrder?orderId="+ urlParams.get('orderId'),
+		dataType: 'json',
+		cache : false,
+		success : function(data){
+			var date = new Date(data.date);
+			const day = date.toLocaleString('default', { day: '2-digit' });
+		    const month = date.toLocaleString('default', { month: '2-digit' });
+		    const year = date.toLocaleString('default', { year: 'numeric' });
+			$('#orderId').val(data.id);
+			$('#orderDate').val(year + '-' + month + '-' + day);
+		},
+		error: function(data){
+			$('#orderId').val("");
+			$('#orderDate').val("");
+			loaderSpinner.hide();
+		}
+	}).done(function(){
+		loaderSpinner.hide();
+	});
+}
 </script>
+
+<div id="loader"></div>
+<div id="pop-message"></div>
 
 <div class="content-wrap">
 	<div class="main">
@@ -82,7 +117,7 @@ $(document).ready(function(){
 											<div class="form-group row">
 												<label for="recipient-name" class="col-sm-3 col-form-label">Id</label>
 												<div class="col-sm-9">
-													<input type="text" class="form-control" id="orderId" name="orderId" required>
+													<input type="text" class="form-control" id="orderId" name="orderId" readonly>
 												</div>
 											</div>
 											<div class="form-group row">

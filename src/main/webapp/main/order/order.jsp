@@ -26,7 +26,6 @@ $(document).ready(function(){
 					$('#orderTable').DataTable().ajax.reload();
 				},
 				error: function(data){
-					alert("failed");
 					loaderSpinner.hide();
 					popMessage('danger', 'Failed to create order');
 					setTimeout(function() {
@@ -54,7 +53,7 @@ $(document).ready(function(){
 				$('#orderDate').val("");
 			},
 			error: function(data){
-				$('#orderId').val(data);
+				$('#orderId').val("");
 				$('#orderDate').val("");
 				loaderSpinner.hide();
 			}
@@ -216,6 +215,7 @@ function deleteOrder(dataId){
 </div>
 
 <div id="loader"></div>
+<div id="pop-message"></div>
 
 <div class="modal fade" id="addNewOrderModal" tabindex="-1" role="dialog"
 	aria-labelledby="addNewOrderModal" aria-hidden="true">
@@ -276,6 +276,3 @@ function deleteOrder(dataId){
 	</div>
 </div>
 
-<div id="pop-message">
-	
-</div>

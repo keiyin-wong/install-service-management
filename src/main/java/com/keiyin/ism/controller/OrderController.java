@@ -64,6 +64,18 @@ public class OrderController {
 		return jsonResponse;
 	}
 	
+	@RequestMapping(value = "/getOrder", method = RequestMethod.GET)
+	public @ResponseBody Order getOrder(@RequestParam String orderId) {
+		Order order = null;
+		
+		try {
+			order = orderDAO.getOrder(orderId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return order;
+	}
+	
 	@RequestMapping(value = "/getLastOrderId", method = RequestMethod.GET)
 	public @ResponseBody String getLastOrderId(HttpServletRequest request) {
 		String lastOrderId = null;

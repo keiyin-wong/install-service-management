@@ -19,7 +19,7 @@
 		<result property="finalPrice" column="final_price" javaType="int"/>
 	</resultMap>
 
-	<select id="getOrderList" resultMap="orderResultMap"  >
+	<select id="getOrderList" resultMap="orderResultMap">
 		SELECT * FROM `order`
 		<dynamic prepend="WHERE">
 			<isNotNull property="searchParameter">
@@ -34,6 +34,15 @@
     			LIMIT #start_row#, #limit_page#
    			</isNotNull>
   		</isNotNull>
+	</select>
+	
+	<select id="getOrder" resultMap="orderResultMap" parameterClass="java.util.HashMap">
+		SELECT * FROM `order`
+		<dynamic prepend="WHERE">
+			<isNotNull property="orderId">
+				id = '$orderId$' 
+			</isNotNull>
+		</dynamic>
 	</select>
 	
 	<select id="getOrderListCount" resultClass="java.lang.Integer" parameterClass="java.util.HashMap">

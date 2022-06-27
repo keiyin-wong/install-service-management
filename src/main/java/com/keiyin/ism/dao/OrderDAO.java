@@ -9,6 +9,7 @@ import java.util.Map;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.keiyin.ism.model.Order;
 import com.keiyin.ism.model.OrderDetail;
+import com.sun.javafx.binding.StringFormatter;
 
 public class OrderDAO {
 	
@@ -34,6 +35,14 @@ public class OrderDAO {
 		ordersList = orderSqlMapClient.queryForList("Order.getOrderList", parameterMap);
 		
 		return ordersList;
+	}
+	
+	public Order getOrder(String orderId) throws SQLException {
+		Order order;
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		order = (Order) orderSqlMapClient.queryForObject("Order.getOrder", parameterMap);
+		return order;
 	}
 	
 	public int getOrderListCount(String searchParameter) throws SQLException {
