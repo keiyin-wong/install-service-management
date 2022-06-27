@@ -3,12 +3,14 @@ package com.keiyin.ism.model;
 
 public class OrderDetail {
 	String orderId;
-	int productLineNumber;
+	int lineNumber;
 	int serviceId;
+	String serviceName;
+	String description;
 	double width;
 	double height;
 	int quantity;
-	double finalPrice;
+	int finalPrice;
 	
 	
 	public String getOrderId() {
@@ -17,11 +19,11 @@ public class OrderDetail {
 	public void setOrderId(String orderId) {
 		this.orderId = orderId;
 	}
-	public int getProductLineNumber() {
-		return productLineNumber;
+	public int getLineNumber() {
+		return lineNumber;
 	}
-	public void setProductLineNumber(int productLineNumber) {
-		this.productLineNumber = productLineNumber;
+	public void setLineNumber(int productLineNumber) {
+		this.lineNumber = productLineNumber;
 	}
 	public int getServiceId() {
 		return serviceId;
@@ -47,10 +49,22 @@ public class OrderDetail {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	public double getFinalPrice() {
+	public int getFinalPrice() {
 		return finalPrice;
 	}
-	public void setFinalPrice(double finalPrice) {
+	public void setFinalPrice(int finalPrice) {
 		this.finalPrice = finalPrice;
+	}
+	public String getServiceName() {
+		return serviceName;
+	}
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

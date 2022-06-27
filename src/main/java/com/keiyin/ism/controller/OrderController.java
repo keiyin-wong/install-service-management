@@ -23,6 +23,7 @@ import com.keiyin.ism.datatable.DatatableRequest;
 import com.keiyin.ism.datatable.JsonDatableQueryResponse;
 import com.keiyin.ism.datatable.PaginationCriteria;
 import com.keiyin.ism.model.Order;
+import com.keiyin.ism.model.OrderDetail;
 import com.keiyin.ism.model.WriteResponse;
 
 @Controller
@@ -37,7 +38,7 @@ public class OrderController {
 	private static final String SUCCESS = "success";
 	
 	@RequestMapping(value = "/order.html", method = RequestMethod.GET)
-	public ModelAndView renderServicePage() {
+	public ModelAndView renderOrderPage() {
 		 return new ModelAndView(ViewConstants.ORDER_VIEW);
 	}
 	
@@ -108,4 +109,31 @@ public class OrderController {
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
+	
+	
+	// ==========================================Order detail page========================================
+	
+	@RequestMapping(value = "/order-detail.html", method = RequestMethod.GET)
+	public ModelAndView renderOrderDetailPage(@RequestParam String orderId) {
+		 return new ModelAndView(ViewConstants.ORDER_DETAIL_VIEW);
+	}
+	
+	@RequestMapping(value = "/getOrderDetailList", method = RequestMethod.GET)
+	public @ResponseBody JsonDatableQueryResponse queryOrderDetailList(String orderId) {
+		List<OrderDetail> orderDetailList = new ArrayList<>();
+		int totalCount = 0;
+		
+		
+		try {
+			orderDetailList = orderDAO.getOrderDetailList(orderId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		JsonDatableQueryResponse jsonResponse = new JsonDatableQueryResponse();
+		jsonResponse.setData(orderDetailList);
+		
+		return jsonResponse;
+	}
+	
 }

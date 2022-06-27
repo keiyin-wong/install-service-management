@@ -116,7 +116,7 @@ $(document).ready(function(){
 			{
 				targets: 3,
 				render: function (data, type, row) {
-                    return '<a href="orderDetail?id=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>'
+                    return '<a href="order-detail.html?orderId=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>'
                     + '<a onclick="showDeleteModal(' + data.id + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
                 },
 			}

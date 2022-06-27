@@ -1,8 +1,8 @@
 package com.keiyin.ism.constant;
 
 public class ViewConstants {
-	public final static String ORDER_VIEW = "order";
-	public final static String ORDER_DETAIL_VIEW = "orderDetail";
+	public static final String ORDER_VIEW = "order";
+	public static final String ORDER_DETAIL_VIEW = "order-detail";
 	
-	public final static String DASHBOARD_VIEW = "dashboard";
+	public static final String DASHBOARD_VIEW = "dashboard";
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.keiyin.ism.model.Order;
+import com.keiyin.ism.model.OrderDetail;
 
 public class OrderDAO {
 	
@@ -61,6 +62,14 @@ public class OrderDAO {
 		orderSqlMapClient.insert("Order.deleteOrder", parameterMap);
 	}
 	
+	
+	// ==============================Order detail========================================
+	@SuppressWarnings("unchecked")
+	public List<OrderDetail> getOrderDetailList(String orderId) throws SQLException{
+		List<OrderDetail> orderDetailList; 
+		orderDetailList = orderSqlMapClient.queryForList("Order.getOrderDetailList", orderId);
+		return orderDetailList;
+	}
 	
 
 	public SqlMapClient getOrderSqlMapClient() {

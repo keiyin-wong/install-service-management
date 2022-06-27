@@ -6,8 +6,20 @@
 		<result property="id" column="id" javaType="String"/>
 		<result property="date" column="date" javaType="Date"/>
 	</resultMap>
+	
+	<resultMap id="orderDetailResultMap" class="com.keiyin.ism.model.OrderDetail">
+		<result property="orderId" column="order_id" javaType="String"/>
+		<result property="lineNumber" column="line_number" javaType="int"/>
+		<result property="serviceId" column="service_id" javaType="int"/>
+		<result property="serviceName" column="service_name" javaType="String"/>
+		<result property="description" column="description" javaType="String"/>
+		<result property="width" column="width" javaType="double"/>
+		<result property="height" column="height" javaType="double"/>
+		<result property="quantity" column="quantity" javaType="int"/>
+		<result property="finalPrice" column="final_price" javaType="int"/>
+	</resultMap>
 
-	<select id="getOrderList" resultMap="orderResultMap" parameterClass="java.util.HashMap">
+	<select id="getOrderList" resultMap="orderResultMap"  >
 		SELECT * FROM `order`
 		<dynamic prepend="WHERE">
 			<isNotNull property="searchParameter">
@@ -42,10 +54,34 @@
 	</insert>
 	
 	<delete id="deleteOrder" parameterClass="java.util.HashMap">
-	DELETE FROM
-		`order`
-	WHERE
-		`id` = '$orderId$'
-</delete>
+		DELETE FROM
+			`order`
+		WHERE
+			`id` = '$orderId$'
+	</delete>
 	
+	<select id="getOrderDetailList" resultMap="orderDetailResultMap" parameterClass="String">
+		SELECT 
+		od.order_id AS order_id,
+		od.line_number AS line_number,
+		od.service_id AS service_id,
+		od.description AS `description`,
+		od.width AS width,
+		od.height AS height,
+		od.quantity AS quantity,
+		od.final_price AS final_price,
+		ROUND((od.width/304.8),2) AS ft,
+		CONCAT(IFNULL(s.description_english, ''),' (',IFNULL(s.description_chinese, ''), ')') AS `service_name`,
+		(
+		CASE
+			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
+			END
+		) AS total_price
+		FROM `order` o
+		JOIN order_detail od ON o.id = od.order_id
+		JOIN service s ON s.id = od.service_id
+		WHERE od.order_id = '$orderId$'
+		ORDER BY order_id, line_number ASC;
+	</select>
 </sqlMap>
