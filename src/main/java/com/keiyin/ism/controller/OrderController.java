@@ -2,7 +2,9 @@ package com.keiyin.ism.controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,11 +21,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.keiyin.ism.constant.ViewConstants;
 import com.keiyin.ism.dao.OrderDAO;
+import com.keiyin.ism.dao.ServiceDAO;
 import com.keiyin.ism.datatable.DatatableRequest;
 import com.keiyin.ism.datatable.JsonDatableQueryResponse;
 import com.keiyin.ism.datatable.PaginationCriteria;
 import com.keiyin.ism.model.Order;
 import com.keiyin.ism.model.OrderDetail;
+import com.keiyin.ism.model.Service;
 import com.keiyin.ism.model.WriteResponse;
 
 @Controller
@@ -33,6 +37,10 @@ public class OrderController {
 	@Autowired
 	@Qualifier("orderDAO")
 	OrderDAO orderDAO;
+	
+	@Autowired
+	@Qualifier("serviceDAO")
+	ServiceDAO serviceDAO;
 	
 	private static final String FAIL = "fail";
 	private static final String SUCCESS = "success";
@@ -50,7 +58,7 @@ public class OrderController {
 		int totalCount = 0;
 		
 		try {
-			orderList = orderDAO.getOrderList(requestPaginationCriteria.getRowStart(), requestPaginationCriteria.getPageSize(), datatableRequest.getSearch(), requestPaginationCriteria.getOrderByClause());
+			orderList = orderDAO.datatableOrderList(requestPaginationCriteria.getRowStart(), requestPaginationCriteria.getPageSize(), datatableRequest.getSearch(), requestPaginationCriteria.getOrderByClause());
 			totalCount = orderDAO.getOrderListCount(datatableRequest.getSearch());
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -95,10 +103,27 @@ public class OrderController {
 	public @ResponseBody ResponseEntity<WriteResponse> createOrder(@RequestParam String orderId, @RequestParam String orderDate) {
 		WriteResponse result = new WriteResponse();
 		
-		
 		try {
 			orderDAO.insertOrder(orderId, orderDate);
 			result.setStatus(SUCCESS);
+		} 
+		catch (SQLException e) {
+			e.printStackTrace();
+			result.setStatus(FAIL);
+			result.setData("Failed to create order");
+		} 
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "updateOrder", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<WriteResponse> updateOrder(@RequestParam String orderId,@RequestParam String orderDate){
+		WriteResponse result = new WriteResponse();
+		try {
+			if(orderDAO.updateOrder(orderId, orderDate))
+				result.setStatus(SUCCESS);
+			else
+				result.setStatus(FAIL);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			result.setStatus(FAIL);
@@ -127,14 +152,21 @@ public class OrderController {
 	
 	@RequestMapping(value = "/order-detail.html", method = RequestMethod.GET)
 	public ModelAndView renderOrderDetailPage(@RequestParam String orderId) {
-		 return new ModelAndView(ViewConstants.ORDER_DETAIL_VIEW);
+		Map<String,Object> parameterMap = new HashMap<String, Object>();
+		List<Service> serviceList = new ArrayList<>();
+		
+		try {
+			serviceList = serviceDAO.getServiceList();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		parameterMap.put("serviceList", serviceList);
+		return new ModelAndView(ViewConstants.ORDER_DETAIL_VIEW, parameterMap);
 	}
 	
 	@RequestMapping(value = "/getOrderDetailList", method = RequestMethod.GET)
 	public @ResponseBody JsonDatableQueryResponse queryOrderDetailList(String orderId) {
 		List<OrderDetail> orderDetailList = new ArrayList<>();
-		int totalCount = 0;
-		
 		
 		try {
 			orderDetailList = orderDAO.getOrderDetailList(orderId);

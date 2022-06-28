@@ -1,7 +1,6 @@
 package com.keiyin.ism.dao;
 
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,14 +8,13 @@ import java.util.Map;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.keiyin.ism.model.Order;
 import com.keiyin.ism.model.OrderDetail;
-import com.sun.javafx.binding.StringFormatter;
 
 public class OrderDAO {
 	
-	private SqlMapClient orderSqlMapClient;
+	private SqlMapClient sqlMapClient;
 	
 	@SuppressWarnings("unchecked")
-	public List<Order> getOrderList(int start, int limit, String searchParameter, String orderClause) throws SQLException {
+	public List<Order> datatableOrderList(int start, int limit, String searchParameter, String orderClause) throws SQLException {
 		if(searchParameter.isEmpty()) {
 			searchParameter = null;
 		}
@@ -32,7 +30,7 @@ public class OrderDAO {
 		parameterMap.put("searchParameter", searchParameter);
 		parameterMap.put("orderClause", orderClause);
 		
-		ordersList = orderSqlMapClient.queryForList("Order.getOrderList", parameterMap);
+		ordersList = sqlMapClient.queryForList("Order.datatableOrderList", parameterMap);
 		
 		return ordersList;
 	}
@@ -41,7 +39,7 @@ public class OrderDAO {
 		Order order;
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
-		order = (Order) orderSqlMapClient.queryForObject("Order.getOrder", parameterMap);
+		order = (Order) sqlMapClient.queryForObject("Order.getOrder", parameterMap);
 		return order;
 	}
 	
@@ -51,24 +49,32 @@ public class OrderDAO {
 		}
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("searchParameter", searchParameter);
-		return (int) orderSqlMapClient.queryForObject("Order.getOrderListCount", parameterMap);
+		return (int) sqlMapClient.queryForObject("Order.getOrderListCount", parameterMap);
 	}
 	
 	public String getLastOrderId() throws SQLException {
-		return (String) orderSqlMapClient.queryForObject("Order.getLastOrderId");
+		return (String) sqlMapClient.queryForObject("Order.getLastOrderId");
 	}
 	
 	public void insertOrder(String orderId, String orderDate) throws SQLException {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
 		parameterMap.put("orderDate", orderDate);
-		orderSqlMapClient.insert("Order.insertOrder", parameterMap);
+		sqlMapClient.insert("Order.insertOrder", parameterMap);
+	}
+	
+	public boolean updateOrder(String orderId, String orderDate) throws SQLException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		parameterMap.put("orderDate", orderDate);
+		
+		return (sqlMapClient.update("Order.updateOrder", parameterMap) > 0);
 	}
 	
 	public void deleteOrder(String orderId) throws SQLException {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
-		orderSqlMapClient.insert("Order.deleteOrder", parameterMap);
+		sqlMapClient.insert("Order.deleteOrder", parameterMap);
 	}
 	
 	
@@ -76,17 +82,18 @@ public class OrderDAO {
 	@SuppressWarnings("unchecked")
 	public List<OrderDetail> getOrderDetailList(String orderId) throws SQLException{
 		List<OrderDetail> orderDetailList; 
-		orderDetailList = orderSqlMapClient.queryForList("Order.getOrderDetailList", orderId);
+		orderDetailList = sqlMapClient.queryForList("Order.getOrderDetailList", orderId);
 		return orderDetailList;
 	}
+
+	public SqlMapClient getSqlMapClient() {
+		return sqlMapClient;
+	}
+
+	public void setSqlMapClient(SqlMapClient sqlMapClient) {
+		this.sqlMapClient = sqlMapClient;
+	}
 	
-
-	public SqlMapClient getOrderSqlMapClient() {
-		return orderSqlMapClient;
-	}
-
-	public void setOrderSqlMapClient(SqlMapClient orderSqlMapClient) {
-		this.orderSqlMapClient = orderSqlMapClient;
-	}
+	
 	
 }

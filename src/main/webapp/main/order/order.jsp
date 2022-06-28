@@ -23,6 +23,17 @@ $(document).ready(function(){
 				cache : false,
 				dataType : "json",
 				success : function(data){
+					if(data.status == "success"){
+						popMessage('success', 'Successfully create order');
+						setTimeout(function() {
+					        $("#pop-message .alert").alert('close');
+					    }, 2000);
+					}else if(data.status == "fail"){
+						popMessage('danger', 'Failed to create order');
+						setTimeout(function() {
+					        $("#pop-message .alert").alert('close');
+					    }, 2000);
+					}
 					$('#orderTable').DataTable().ajax.reload();
 				},
 				error: function(data){
@@ -34,10 +45,6 @@ $(document).ready(function(){
 				}
 			}).done(function(){
 				loaderSpinner.hide();
-				popMessage('success', 'Successfully create order');
-				setTimeout(function() {
-			        $("#pop-message .alert").alert('close');
-			    }, 2000);
 			});
 		}
 	});
@@ -66,6 +73,7 @@ $(document).ready(function(){
 		serverSide: true,
 		searching: true,
 		processing: true,
+		responsive: true,
 		search: {
 			return: true,
 		},

@@ -6,4 +6,5 @@
 <sqlMapConfig>	
 	<settings useStatementNamespaces="true" lazyLoadingEnabled="false" enhancementEnabled="false"/>
 	<sqlMap resource="ibatis/order-sqlMap.xml" />
+	<sqlMap resource="ibatis/service-sqlMap.xml" />
 </sqlMapConfig>

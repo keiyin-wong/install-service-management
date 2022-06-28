@@ -27,13 +27,17 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	<property name="validationQuery" value="SELECT NOW();" />
 </bean> -->
 
-<bean id="orderSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 	<property name="dataSource" ref="springJdbcDataSources"/>
 	<property name="configLocation" value="classpath:spring/sqlMap-config.xml"/>
 </bean>
 
 <bean id="orderDAO" class="com.keiyin.ism.dao.OrderDAO">
-	<property name="orderSqlMapClient" ref="orderSqlMapClient"/>
+	<property name="sqlMapClient" ref="sqlMapClient"/>
+</bean>
+
+<bean id="serviceDAO" class="com.keiyin.ism.dao.ServiceDAO">
+	<property name="sqlMapClient" ref="sqlMapClient"/>
 </bean>
 
 </beans>

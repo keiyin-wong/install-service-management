@@ -1942,7 +1942,7 @@ footer p {
   margin-bottom: 20px;
 }
 .form-control {
-  height: 42px;
+  /* height: 42px; */
   border-radius: 0px;
   box-shadow: none;
   border-color: #e7e7e7;

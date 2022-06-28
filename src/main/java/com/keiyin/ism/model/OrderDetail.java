@@ -11,6 +11,8 @@ public class OrderDetail {
 	double height;
 	int quantity;
 	int finalPrice;
+	int totalPrice;
+	boolean useQuantity;
 	
 	
 	public String getOrderId() {
@@ -66,5 +68,17 @@ public class OrderDetail {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public boolean isUseQuantity() {
+		return useQuantity;
+	}
+	public void setUseQuantity(boolean useQuantity) {
+		this.useQuantity = useQuantity;
+	}
+	public int getTotalPrice() {
+		return totalPrice;
+	}
+	public void setTotalPrice(int totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 }

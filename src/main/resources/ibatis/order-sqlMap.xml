@@ -17,9 +17,11 @@
 		<result property="height" column="height" javaType="double"/>
 		<result property="quantity" column="quantity" javaType="int"/>
 		<result property="finalPrice" column="final_price" javaType="int"/>
+		<result property="totalPrice" column="total_price" javaType="int"/>
+		<result property="useQuantity" column="use_quantity" javaType="boolean"/>
 	</resultMap>
 
-	<select id="getOrderList" resultMap="orderResultMap">
+	<select id="datatableOrderList" resultMap="orderResultMap">
 		SELECT * FROM `order`
 		<dynamic prepend="WHERE">
 			<isNotNull property="searchParameter">
@@ -62,6 +64,15 @@
 		INSERT INTO `order` (`id`, `date`) VALUES ('$orderId$', '$orderDate$');
 	</insert>
 	
+	<update id="updateOrder" parameterClass="java.util.HashMap">
+		UPDATE 
+			`order` 
+		SET 
+			`date` = '$orderDate$'
+		WHERE
+			`id` = '$orderId$'
+	</update>
+	
 	<delete id="deleteOrder" parameterClass="java.util.HashMap">
 		DELETE FROM
 			`order`
@@ -79,6 +90,7 @@
 		od.height AS height,
 		od.quantity AS quantity,
 		od.final_price AS final_price,
+		s.use_quantity AS use_quantity, 
 		ROUND((od.width/304.8),2) AS ft,
 		CONCAT(IFNULL(s.description_english, ''),' (',IFNULL(s.description_chinese, ''), ')') AS `service_name`,
 		(

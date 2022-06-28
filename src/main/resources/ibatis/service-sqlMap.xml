@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Service">
+	<resultMap id="serviceResultMap" class="com.keiyin.ism.model.Service">
+		<result property="id" column="id" javaType="int"/>
+		<result property="descriptionEnglish" column="description_english" javaType="String"/>
+		<result property="descriptionChinese" column="description_chinese" javaType="String"/>
+		<result property="differentPrice" column="is_different_price" javaType="boolean"/>
+		<result property="price" column="price" javaType="int"/>
+		<result property="useQuantity" column="use_quantity" javaType="boolean"/>
+	</resultMap>
+	
+	<select id="getServiceList" resultMap="serviceResultMap">
+		SELECT * FROM service
+	</select>
+</sqlMap>
