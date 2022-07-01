@@ -34,19 +34,41 @@ $(document).ready(function(){
 			},
 			{data: "serviceName", name:"id"},
 			{data: "description", name:"id"},
-			{data: "width", name:"id", className: "dt-body-right"},
-			{data: "height", name:"id", className: "dt-body-right"},
+			{
+				data: "width", 
+				name:"id",
+				render: function (data, type, row) {
+					if(!row.useQuantity){
+						return data;
+					}else{
+						return "N/A";
+					}
+                },
+				className: "dt-body-right"
+			},
+			{
+				data: "height", 
+				name:"id", 
+				render: function (data, type, row) {
+					if(!row.useQuantity){
+						return data;
+					}else{
+						return "N/A";
+					}
+                },
+				className: "dt-body-right"
+			},
 			{data: null, name:"id", className: "dt-body-right"},
 			{
 				data: "quantity", 
 				name:"id",
-				render: function(data, type){
-					if(data.useQuantity){
+				render: function (data, type, row) {
+					if(row.useQuantity){
 						return data;
 					}else{
-						return "N/A"
+						return "N/A";
 					}
-				},
+                },
 				className: "dt-body-right"
 			},
 			{
@@ -65,7 +87,7 @@ $(document).ready(function(){
 				name:"totalPrice", 
 				render: function (data, type){
 					if ( type === 'display' || type === 'filter' ) {
-						return 'RM ' + (data/100).toFixed(2);
+						return (data/100).toFixed(2);
 					}
 					return data;
 				},
@@ -103,6 +125,7 @@ $(document).ready(function(){
 		}
 	});
 
+	// Order date data on change and update order
 	$('#orderDate').on('change', function(){
 		loaderSpinner.show();
 		$.ajax({
@@ -112,9 +135,15 @@ $(document).ready(function(){
 			success: function(data){
 				if(data.status == "success"){
 					popMessage('success', 'Successfully update order date');
+					setTimeout(function() {
+				        $("#pop-message .alert").alert('close');
+				    }, 3000);
 					getOrder();
 				}else if(data.status == "fail"){
 					popMessage('danger', 'Failed to order update date');
+					setTimeout(function() {
+				        $("#pop-message .alert").alert('close');
+				    }, 3000);
 				}
 			},
 			error: function(){
@@ -125,6 +154,70 @@ $(document).ready(function(){
 			loaderSpinner.hide();
 		});
 	});
+	
+	// Add new order detail drop -> drop down on change
+	$('#createService').on('change', function(e){
+		let selectedOption = $(this).find(':selected');
+		if(selectedOption.attr('use-quantity') == "true"){
+			$("#createWidthDiv").hide();
+			$("#createWidth").attr("disabled", true);
+			$("#createHeightDiv").hide();
+			$("#createHeight").attr("disabled", true);
+			$("#createQuantityDiv").show();
+			$("#createQuantity").attr("disabled", false);
+		}else{
+			$("#createWidthDiv").show();
+			$("#createWidth").attr("disabled", false);
+			$("#createHeightDiv").show();
+			$("#createHeight").attr("disabled", false);
+			$("#createQuantityDiv").hide();
+			$("#createQuantity").attr("disabled", true);
+		}
+		$("#createPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
+	});
+	
+	// ==========================Create order detail===================================
+	
+	// Open create modal
+	$('#addNewOrderDetailModalButton').click(function(){
+		clearCreateOrderDetailForm();
+		$('#addNewOrderDetailModal').modal("show");
+	})
+	
+	// Create modal save button
+	$("#addNewOrderDetailModalSaveButton").click(function(){
+		createOrderDetail();
+	});
+	
+	$("#addNewOrderDetailModalForm").validate({
+		rules : {
+			createWidth: {
+				required: function(){
+					if($('#createService').find('option:selected').attr('use-quantity') == "true"){
+						return false;
+					}else
+						return true;
+				}
+			},
+			createHeight: {
+				required: function(){
+					if($('#createService').find('option:selected').attr('use-quantity') == "true"){
+						return false;
+					}else
+						return true;
+				}
+			},
+			createQuantity: {
+				required: function(){
+					if($('#createService').find('option:selected').attr('use-quantity') == "true"){
+						return true;
+					}else
+						return false;
+				}
+			}
+		}
+	});
+	
 
 });
 
@@ -152,6 +245,56 @@ function getOrder(){
 		loaderSpinner.hide();
 	});
 }
+
+function createOrderDetail(){
+	if($('#addNewOrderDetailModalForm').valid()){
+		var parameter = $("#addNewOrderDetailModalForm").serialize();
+		parameter += "&createPriceSen=" + ($("#createPrice").val() * 100);
+		parameter += "&orderId=" + ($("#orderId").val());
+		$.ajax({
+			type : "POST",
+			url : "createOrderDetail",
+			data: parameter,
+			dataType: 'json',
+			cache : false,
+			success : function(data){
+				if(data.status == "success"){
+					popMessage('success', 'Successfully create order');
+					setTimeout(function() {
+				        $("#pop-message .alert").alert('close');
+				    }, 3000);
+				}else if(data.status == "fail"){
+					popMessage('danger', 'Failed to create order detail');
+					setTimeout(function() {
+				        $("#pop-message .alert").alert('close');
+				    }, 3000);
+				}
+				rowNumber = 0;
+				$('#orderDetailTable').DataTable().ajax.reload();
+			},
+			error: function(data){
+				loaderSpinner.hide();
+				popMessage('danger', 'Failed to create order detail');
+				setTimeout(function() {
+			        $("#pop-message .alert").alert('close');
+			    }, 3000);
+			}
+		}).done(function(){
+			loaderSpinner.hide();
+			$('#addNewOrderDetailModal').modal("hide");
+		});
+	}
+}
+
+function clearCreateOrderDetailForm(){
+	$("#createService").val("");
+	$("#createDescription").val("");
+	$("#createWidth").val("");
+	$("#createHeight").val("");
+	$("#createQuantity").val("");
+	$("#createPrice").val("");
+	
+}
 </script>
 
 <div id="loader"></div>
@@ -161,11 +304,14 @@ function getOrder(){
 	<div class="main">
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-lg-8 p-r-0 title-margin-right">
-					<div class="page-header">
+				<div class="col-lg-8">
+					<div class="page-header pull-left">
 						<div class="page-title">
-							<h1>Order details</h1>
-						</div>
+        					<ol class="breadcrumb">
+            					<li class="breadcrumb-item"><a href="${contextUrl}/install-service-management/order/order.html">Orders</a></li>
+            					<li class="breadcrumb-item active">Orders details</li>
+        					</ol>
+					    </div>
 					</div>
 				</div>
 			</div>
@@ -197,7 +343,7 @@ function getOrder(){
 								 	<div class="col-md-12">
 								 		<div class='row'>
 											<div class="col-lg-12">
-												<button class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#addNewOrderDetailModal" onClick="test()"><i class="ti-plus m-r-5"></i>Add new order detail</button>
+												<button id="addNewOrderDetailModalButton" class="btn btn-sm btn-primary float-right" data-toggle="modal"><i class="ti-plus m-r-5"></i>Add new order detail</button>
 											</div>
 										</div>
 										<div class='row'>
@@ -253,13 +399,13 @@ function getOrder(){
 				</button>
 			</div>
 			<div class="modal-body">
-				<form id="addNewOrderModalForm" class="form-horizontal">
+				<form id="addNewOrderDetailModalForm" class="form-horizontal">
 					<div class="form-group row">
 						<label for="recipient-name" class="col-sm-3 col-form-label">Service</label>
 						<div class="col-sm-9">
 							<select class="form-control" id="createService" name="createService" required>
 								<c:forEach var="item" items="${serviceList}">
-								    <option value="${item.id}" is-direct-price="${item.differentPrice}">${item.descriptionEnglish}
+								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" use-quantity="${item.useQuantity}">${item.descriptionEnglish}
 								    	<c:if test="${not empty item.descriptionChinese}">
 											 (${item.descriptionChinese})
 										</c:if>
@@ -277,13 +423,13 @@ function getOrder(){
 					<div class="form-group row" id="createWidthDiv">
 						<label class="col-sm-3 col-form-label" for="createWidth">Width (宽度)</label>
 						<div class="col-sm-9">
-							<input type="number" class="form-control" id="createWidth" name="createWidth" value="" min="0" step="0.01">
+							<input type="number" class="form-control" id="createWidth" name="createWidth" value="" min="0">
 						</div>
 					</div>
 					<div class="form-group row" id="createHeightDiv">
 						<label class="col-sm-3 col-form-label" for="createHeight">Height (高度)</label>
 						<div class="col-sm-9">
-							<input type="number" class="form-control" id="createHeight" name="createHeight" value="" min="0" step="0.01">
+							<input type="number" class="form-control" id="createHeight" name="createHeight" value="" min="0">
 						</div>
 					</div>
 					<div class="form-group row" id="createQuantityDiv">
@@ -302,7 +448,7 @@ function getOrder(){
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-				<button type="button" class="btn btn-primary" id="addNewOrderModalSaveButton">Save</button>
+				<button type="button" class="btn btn-primary" id="addNewOrderDetailModalSaveButton">Save</button>
 			</div>
 		</div>
 	</div>

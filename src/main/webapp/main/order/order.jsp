@@ -27,12 +27,12 @@ $(document).ready(function(){
 						popMessage('success', 'Successfully create order');
 						setTimeout(function() {
 					        $("#pop-message .alert").alert('close');
-					    }, 2000);
+					    }, 3000);
 					}else if(data.status == "fail"){
 						popMessage('danger', 'Failed to create order');
 						setTimeout(function() {
 					        $("#pop-message .alert").alert('close');
-					    }, 2000);
+					    }, 3000);
 					}
 					$('#orderTable').DataTable().ajax.reload();
 				},
@@ -41,7 +41,7 @@ $(document).ready(function(){
 					popMessage('danger', 'Failed to create order');
 					setTimeout(function() {
 				        $("#pop-message .alert").alert('close');
-				    }, 2000);
+				    }, 3000);
 				}
 			}).done(function(){
 				loaderSpinner.hide();
@@ -136,6 +136,7 @@ $(document).ready(function(){
 
 // ---------------------------Delete function-----------------------------------------------
 
+// Add delete button when show
 function showDeleteModal(dataId){
 	$('#deleteOrderModal .modal-title').html('Delete order ' + dataId);
 	$('#deleteOrderModal').modal();
@@ -144,6 +145,7 @@ function showDeleteModal(dataId){
 	);
 }
 
+// delete button onclick function
 function deleteOrder(dataId){
 	$('#deleteOrderModal').modal('hide');
 	loaderSpinner.show();
@@ -162,14 +164,14 @@ function deleteOrder(dataId){
 			popMessage('danger', 'Failed to delete order');
 			setTimeout(function() {
 		        $("#pop-message .alert").alert('close');
-		    }, 2000);
+		    }, 3000);
 		}
 	}).done(function(){
 		loaderSpinner.hide();
 		popMessage('success', 'Successfully deleted order');
 		setTimeout(function() {
 	        $("#pop-message .alert").alert('close');
-	    }, 2000);
+	    }, 3000);
 	});
 }
 </script>

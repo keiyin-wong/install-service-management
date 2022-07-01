@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.keiyin.ism.model.Order;
 import com.keiyin.ism.model.OrderDetail;
@@ -85,6 +87,27 @@ public class OrderDAO {
 		orderDetailList = sqlMapClient.queryForList("Order.getOrderDetailList", orderId);
 		return orderDetailList;
 	}
+	
+	public void insertOrderDetail(@RequestParam String orderId,
+			@RequestParam String createService,
+			@RequestParam String createDescription,
+			@RequestParam(required = false) String createWidth,
+			@RequestParam(required = false) String createHeight,
+			@RequestParam(required = false) String createQuantity,
+			@RequestParam String createPriceSen) throws SQLException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		
+		parameterMap.put("orderId", orderId);
+		parameterMap.put("createService", createService);
+		parameterMap.put("createDescription", createDescription);
+		parameterMap.put("createWidth", createWidth);
+		parameterMap.put("createHeight", createHeight);
+		parameterMap.put("createQuantity", createQuantity);
+		parameterMap.put("createPriceSen", createPriceSen);
+		
+		sqlMapClient.insert("Order.insertOrderDetail", parameterMap);
+	}
+	
 
 	public SqlMapClient getSqlMapClient() {
 		return sqlMapClient;

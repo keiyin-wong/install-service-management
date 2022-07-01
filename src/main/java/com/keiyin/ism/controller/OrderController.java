@@ -180,4 +180,28 @@ public class OrderController {
 		return jsonResponse;
 	}
 	
+	@RequestMapping(value = "/createOrderDetail", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse createOrderDetail(@RequestParam String orderId,
+			@RequestParam String createService,
+			@RequestParam String createDescription,
+			@RequestParam(required = false) String createWidth,
+			@RequestParam(required = false) String createHeight,
+			@RequestParam(required = false) String createQuantity,
+			@RequestParam String createPriceSen) {
+		
+		WriteResponse result = new WriteResponse();
+		
+		try {
+			orderDAO.insertOrderDetail(orderId, createService, createDescription, createWidth, createHeight, createQuantity, createPriceSen);
+			result.setStatus(SUCCESS);
+		} 
+		catch (SQLException e) {
+			e.printStackTrace();
+			result.setStatus(FAIL);
+			result.setData("Failed to create order detail");
+		} 
+		
+		return result;
+	}
+	
 }
