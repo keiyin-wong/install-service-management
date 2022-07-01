@@ -164,7 +164,7 @@ public class OrderController {
 		return new ModelAndView(ViewConstants.ORDER_DETAIL_VIEW, parameterMap);
 	}
 	
-	@RequestMapping(value = "/getOrderDetailList", method = RequestMethod.GET)
+	@RequestMapping(value = "/getOrderDetailDataTable", method = RequestMethod.POST)
 	public @ResponseBody JsonDatableQueryResponse queryOrderDetailList(String orderId) {
 		List<OrderDetail> orderDetailList = new ArrayList<>();
 		

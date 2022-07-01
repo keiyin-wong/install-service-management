@@ -18,8 +18,8 @@ $(document).ready(function(){
 	
 	orderDetailTable = $('#orderDetailTable').DataTable({
 		ajax: {
-			url: 'getOrderDetailList?orderId=' + urlParams.get('orderId'),
-			type: 'GET',
+			url: 'getOrderDetailDataTable?orderId=' + urlParams.get('orderId'),
+			type: 'POST',
 		},
 		processing: true,
 		paging: false,
