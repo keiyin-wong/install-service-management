@@ -58,7 +58,7 @@ $(document).ready(function(){
                 },
 				className: "dt-body-right"
 			},
-			{data: null, name:"id", className: "dt-body-right"},
+			{data: null, name:"ft", className: "dt-body-right"},
 			{
 				data: "quantity", 
 				name:"id",
@@ -93,7 +93,7 @@ $(document).ready(function(){
 				},
 				className: "dt-body-right"
 			},
-			{data: null, name:"id",defaultContent: "", orderable: false, searchable: false},
+			{data: null, name:"action",defaultContent: "", orderable: false, searchable: false},
 		],
 		columnDefs: [
 			{
@@ -106,6 +106,13 @@ $(document).ready(function(){
                     return ft;
                 },
 			},
+			{
+				targets: 9,
+				render: function(data, type, row){
+					return '<a class="btn btn-sm btn-primary m-l-5">Edit</a>'
+					+ '<a onclick="showDeleteOrderDetailModal(' + data.lineNumber + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
+				}
+			}
 		],
 		footerCallback: function (row, data, start, end, display) {
 			var api = this.api();
@@ -248,6 +255,8 @@ function getOrder(){
 
 function createOrderDetail(){
 	if($('#addNewOrderDetailModalForm').valid()){
+		loaderSpinner.show();
+		$('#addNewOrderDetailModal').modal("hide");
 		var parameter = $("#addNewOrderDetailModalForm").serialize();
 		parameter += "&createPriceSen=" + ($("#createPrice").val() * 100);
 		parameter += "&orderId=" + ($("#orderId").val());
@@ -259,6 +268,7 @@ function createOrderDetail(){
 			cache : false,
 			success : function(data){
 				if(data.status == "success"){
+					loaderSpinner.hide();
 					popMessage('success', 'Successfully create order');
 					setTimeout(function() {
 				        $("#pop-message .alert").alert('close');
@@ -280,8 +290,7 @@ function createOrderDetail(){
 			    }, 3000);
 			}
 		}).done(function(){
-			loaderSpinner.hide();
-			$('#addNewOrderDetailModal').modal("hide");
+			
 		});
 	}
 }
@@ -295,6 +304,62 @@ function clearCreateOrderDetailForm(){
 	$("#createPrice").val("");
 	
 }
+
+// --------------------------------------------------------------------------
+// Delete order detail
+// --------------------------------------------------------------------------
+function showDeleteOrderDetailModal(lineNumber){
+	$('#deleteOrderDetailModal .modal-title').html('Delete order detail');
+	$('#deleteOrderDetailModal').modal();
+	$('#deleteOrderDetailModalButton').html(
+			'<button type="button" class="btn btn-primary" onClick="deleteOrderDetail(\'' + lineNumber + '\')">Delete</button>'
+	);
+}
+
+function deleteOrderDetail(lineNumber) {
+	$('#deleteOrderDetailModal').modal("hide");
+	loaderSpinner.show();
+	let parameter = 'orderId=' + $("#orderId").val();
+	parameter += "&lineNumber=" + lineNumber;
+	$.ajax({
+		type: "POST",
+		url: "deleteOrderDetail",
+		data: parameter,
+		cache : false,
+		dataType: "json",
+		success : function(data){
+			if(data.status == "success"){
+				loaderSpinner.hide();
+				popMessage('success', 'Successfully deleted order detail');
+				setTimeout(function() {
+			        $("#pop-message .alert").alert('close');
+			    }, 3000);
+			}else if(data.status == "fail"){
+				popMessage('danger', 'Failed to delete order detail');
+				setTimeout(function() {
+			        $("#pop-message .alert").alert('close');
+			    }, 3000);
+			}
+		},
+		error: function (data){
+			loaderSpinner.hide();
+			popMessage('danger', 'Failed to delete order detail');
+			setTimeout(function() {
+		        $("#pop-message .alert").alert('close');
+		    }, 3000);
+		}
+	}).done(function(){
+		rowNumber = 0;
+		$('#orderDetailTable').DataTable().ajax.reload();
+		popMessage('success', 'Successfully deleted order detail');
+		setTimeout(function() {
+	        $("#pop-message .alert").alert('close');
+	    }, 3000);
+		
+	});
+	
+}
+
 </script>
 
 <div id="loader"></div>
@@ -309,7 +374,7 @@ function clearCreateOrderDetailForm(){
 						<div class="page-title">
         					<ol class="breadcrumb">
             					<li class="breadcrumb-item"><a href="${contextUrl}/install-service-management/order/order.html">Orders</a></li>
-            					<li class="breadcrumb-item active">Orders details</li>
+            					<li class="breadcrumb-item"><a href="javascript:window.location.reload(true)">Orders details</a></li>
         					</ol>
 					    </div>
 					</div>
@@ -449,6 +514,31 @@ function clearCreateOrderDetailForm(){
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 				<button type="button" class="btn btn-primary" id="addNewOrderDetailModalSaveButton">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="deleteOrderDetailModal" tabindex="-1" role="dialog"
+	aria-labelledby="deleteOrderModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Delete order</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="alert alert-danger">
+					Do you want to delete this?
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<span id='deleteOrderDetailModalButton'></span>
 			</div>
 		</div>
 	</div>

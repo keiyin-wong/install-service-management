@@ -109,8 +109,14 @@ $(document).ready(function(){
 			},
 			{
 				data: "total", 
-				name:"total", 
-				orderable: false,
+				name:"total_price", 
+				render: function (data, type){
+					if ( type === 'display' || type === 'filter' ) {
+						return 'RM ' + (data/100).toFixed(2);
+					}
+					return data;
+				},
+				className: "dt-body-right"
 			},
 			{
 				data: null, 
@@ -182,10 +188,12 @@ function deleteOrder(dataId){
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-8 p-r-0 title-margin-right">
-					<div class="page-header">
+					<div class="page-header pull-left">
 						<div class="page-title">
-							<h1>Hello, <span>Welcome Here</span></h1>
-						</div>
+        					<ol class="breadcrumb">
+            					<li class="breadcrumb-item"><a href="${contextUrl}/install-service-management/order/order.html">Orders</a></li>
+        					</ol>
+					    </div>
 					</div>
 				</div>
 			</div>

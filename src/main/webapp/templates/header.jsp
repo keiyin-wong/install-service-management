@@ -24,7 +24,7 @@
 									<ul>
 										<li><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/3.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>
@@ -35,7 +35,7 @@
 										</a></li>
 										<li><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/3.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>
@@ -45,7 +45,7 @@
 										</a></li>
 										<li><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/3.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>
@@ -56,7 +56,7 @@
 										</a></li>
 										<li><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/3.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>
@@ -85,7 +85,7 @@
 									<ul>
 										<li class="notification-unread"><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/1.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>
@@ -96,7 +96,7 @@
 										</a></li>
 										<li class="notification-unread"><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/2.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>
@@ -107,7 +107,7 @@
 										</a></li>
 										<li><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/3.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>
@@ -118,7 +118,7 @@
 										</a></li>
 										<li><a href="#"> <img
 												class="pull-left m-r-10 avatar-img"
-												src="images/avatar/2.jpg" alt="" />
+												src="" alt="" />
 												<div class="notification-content">
 													<small class="notification-timestamp pull-right">02:34
 														PM</small>

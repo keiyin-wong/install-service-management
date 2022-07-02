@@ -1,6 +1,7 @@
 package com.keiyin.ism.controller;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -42,8 +45,11 @@ public class OrderController {
 	@Qualifier("serviceDAO")
 	ServiceDAO serviceDAO;
 	
+	private Logger log = LoggerFactory.getLogger(this.getClass());
+	
 	private static final String FAIL = "fail";
 	private static final String SUCCESS = "success";
+	
 	
 	@RequestMapping(value = "/order.html", method = RequestMethod.GET)
 	public ModelAndView renderOrderPage() {
@@ -60,8 +66,9 @@ public class OrderController {
 		try {
 			orderList = orderDAO.datatableOrderList(requestPaginationCriteria.getRowStart(), requestPaginationCriteria.getPageSize(), datatableRequest.getSearch(), requestPaginationCriteria.getOrderByClause());
 			totalCount = orderDAO.getOrderListCount(datatableRequest.getSearch());
+			log.info("Successfully query order list datatable");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Failed query order list datatable", e);
 		}
 		
 		JsonDatableQueryResponse jsonResponse = new JsonDatableQueryResponse();
@@ -78,8 +85,9 @@ public class OrderController {
 		
 		try {
 			order = orderDAO.getOrder(orderId);
+			log.info("Successfully retrieved order {}", order);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Failed to retrieve order {}", order, e);
 		}
 		return order;
 	}
@@ -91,7 +99,7 @@ public class OrderController {
 		try {
 			lastOrderId = orderDAO.getLastOrderId();
 			lastOrderId = String.valueOf(Integer.parseInt(lastOrderId) + 1);
-			System.out.println("Retrieved last order id " + lastOrderId);
+			log.info("Successfully retrieved last order id {}", lastOrderId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -106,11 +114,12 @@ public class OrderController {
 		try {
 			orderDAO.insertOrder(orderId, orderDate);
 			result.setStatus(SUCCESS);
+			log.info("Successfully inserted order {}", orderId);
 		} 
 		catch (SQLException e) {
-			e.printStackTrace();
 			result.setStatus(FAIL);
 			result.setData("Failed to create order");
+			log.info("Failed insert order {}", orderId, e);
 		} 
 		
 		return new ResponseEntity<>(result, HttpStatus.OK);
@@ -120,12 +129,16 @@ public class OrderController {
 	public @ResponseBody ResponseEntity<WriteResponse> updateOrder(@RequestParam String orderId,@RequestParam String orderDate){
 		WriteResponse result = new WriteResponse();
 		try {
-			if(orderDAO.updateOrder(orderId, orderDate))
+			if(orderDAO.updateOrder(orderId, orderDate)) {
 				result.setStatus(SUCCESS);
-			else
+				log.info("Successfully updated order {}", orderId);
+			}
+			else {
 				result.setStatus(FAIL);
+				log.info("Failed to update order {}", orderId);
+			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.info("Failed to update order {}", orderId, e);
 			result.setStatus(FAIL);
 		}
 		
@@ -138,9 +151,10 @@ public class OrderController {
 		
 		try {
 			orderDAO.deleteOrder(orderId);
+			log.info("Successfully deleted order {}", orderId);
 			result.setStatus(SUCCESS);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.info("Failed to delete order {}", orderId, e);
 			result.setStatus(FAIL);
 		}
 		
@@ -170,8 +184,9 @@ public class OrderController {
 		
 		try {
 			orderDetailList = orderDAO.getOrderDetailList(orderId);
+			log.info("Successfully query order detail list datatable for order {}", orderId);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.info("Failed query order detail list datatable for order {}", orderId, e);
 		}
 		
 		JsonDatableQueryResponse jsonResponse = new JsonDatableQueryResponse();
@@ -193,13 +208,30 @@ public class OrderController {
 		
 		try {
 			orderDAO.insertOrderDetail(orderId, createService, createDescription, createWidth, createHeight, createQuantity, createPriceSen);
+			log.info("Successfully insert order detail for {}", orderId);
 			result.setStatus(SUCCESS);
-		} 
+		}
 		catch (SQLException e) {
-			e.printStackTrace();
 			result.setStatus(FAIL);
-			result.setData("Failed to create order detail");
+			log.info("Failed insert order detail for {}", orderId, e);
 		} 
+		
+		return result;
+	}
+	
+	@RequestMapping(value = "/deleteOrderDetail", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse deleteOrderDetail(@RequestParam String orderId, @RequestParam String lineNumber) {
+		
+		WriteResponse result = new WriteResponse();
+		
+		try {
+			orderDAO.deleteOrderDetail(orderId, lineNumber);
+			log.info("Successfully deleted order detail for {}", orderId);
+			result.setStatus(SUCCESS);
+		} catch (SQLException e) {
+			log.info("Failed to delete order detail for {}", orderId, e);
+			result.setStatus(FAIL);
+		}
 		
 		return result;
 	}

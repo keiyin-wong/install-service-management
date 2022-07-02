@@ -926,7 +926,7 @@ a.dt-button.active:not(.disabled) {
 .main .page-header .breadcrumb li a {
   font-size: 14px;
   font-family: 'Roboto', sans-serif;
-  display: block;
+  /* display: block; */
 }
 .dropdown-task .progress {
   height: 5px;

@@ -1,6 +1,7 @@
 package com.keiyin.ism.dao;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,15 +89,14 @@ public class OrderDAO {
 		return orderDetailList;
 	}
 	
-	public void insertOrderDetail(@RequestParam String orderId,
-			@RequestParam String createService,
-			@RequestParam String createDescription,
-			@RequestParam(required = false) String createWidth,
-			@RequestParam(required = false) String createHeight,
-			@RequestParam(required = false) String createQuantity,
-			@RequestParam String createPriceSen) throws SQLException {
+	public void insertOrderDetail(String orderId,
+			String createService,
+			String createDescription,
+			String createWidth,
+			String createHeight,
+			String createQuantity,
+			String createPriceSen) throws SQLException {
 		Map<String, Object> parameterMap = new HashMap<>();
-		
 		parameterMap.put("orderId", orderId);
 		parameterMap.put("createService", createService);
 		parameterMap.put("createDescription", createDescription);
@@ -117,6 +117,11 @@ public class OrderDAO {
 		this.sqlMapClient = sqlMapClient;
 	}
 	
-	
+	public void deleteOrderDetail(String orderId, String lineNumber) throws SQLException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		parameterMap.put("lineNumber", lineNumber);
+		sqlMapClient.insert("Order.deleteOrderDetail", parameterMap);
+	}
 	
 }

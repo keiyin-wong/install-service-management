@@ -3,12 +3,14 @@ package com.keiyin.ism.model;
 import java.util.Date;
 import java.util.List;
 
+import org.omg.CosNaming._BindingIteratorImplBase;
+
 
 
 public class Order {
 	String id;
 	Date date;
-	double total;
+	Integer total;
 	List<OrderDetail> orderDetailList;
 	
 	public String getId() {
@@ -23,10 +25,10 @@ public class Order {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	public double getTotal() {
+	public Integer getTotal() {
 		return total;
 	}
-	public void setTotal(double total) {
+	public void setTotal(Integer total) {
 		this.total = total;
 	}
 	public List<OrderDetail> getOrderDetailList() {
@@ -36,5 +38,9 @@ public class Order {
 		this.orderDetailList = orderDetailList;
 	}
 	
+	@Override
+	public String toString() {
+		return "[orderId=" + id + ", date=" + date.toLocaleString() + ", total=" + total + "]";
+	}
 	
 }

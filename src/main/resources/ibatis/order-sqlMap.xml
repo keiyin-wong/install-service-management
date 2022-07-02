@@ -7,6 +7,12 @@
 		<result property="date" column="date" javaType="Date"/>
 	</resultMap>
 	
+	<resultMap id="orderAndTotalResultMap" class="com.keiyin.ism.model.Order">
+		<result property="id" column="id" javaType="String"/>
+		<result property="date" column="date" javaType="Date"/>
+		<result property="total" column="total_price" javaType="Integer"/>
+	</resultMap>
+	
 	<resultMap id="orderDetailResultMap" class="com.keiyin.ism.model.OrderDetail">
 		<result property="orderId" column="order_id" javaType="String"/>
 		<result property="lineNumber" column="line_number" javaType="int"/>
@@ -21,8 +27,24 @@
 		<result property="useQuantity" column="use_quantity" javaType="boolean"/>
 	</resultMap>
 
-	<select id="datatableOrderList" resultMap="orderResultMap">
-		SELECT * FROM `order`
+	<select id="datatableOrderList" resultMap="orderAndTotalResultMap">
+		SELECT * 
+		FROM
+		(
+		SELECT
+		o.id AS id,
+		o.date AS `date`,
+		COALESCE(SUM(
+			CASE
+			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
+			END
+		),0) AS total_price
+		FROM `order` o
+		LEFT JOIN `order_detail` od ON o.id = od.order_id
+		LEFT JOIN `service` s ON s.id = od.service_id
+		GROUP BY o.id
+		) a
 		<dynamic prepend="WHERE">
 			<isNotNull property="searchParameter">
 				id LIKE '%$searchParameter$%' 
@@ -149,4 +171,10 @@
 		WHERE order_id = '$orderId$'; 
 	</insert>
 	
+	<delete id="deleteOrderDetail" parameterClass="java.util.HashMap">
+		DELETE FROM
+			`order_detail`
+		WHERE
+			`order_id` = '$orderId$' AND `line_number` = $lineNumber$
+	</delete>
 </sqlMap>
