@@ -162,7 +162,9 @@ public class OrderController {
 	}
 	
 	
-	// ==========================================Order detail page========================================
+	// -------------------------------------------------------------------------
+	// Order detail page
+	// -------------------------------------------------------------------------
 	
 	@RequestMapping(value = "/order-detail.html", method = RequestMethod.GET)
 	public ModelAndView renderOrderDetailPage(@RequestParam String orderId) {
@@ -193,6 +195,19 @@ public class OrderController {
 		jsonResponse.setData(orderDetailList);
 		
 		return jsonResponse;
+	}
+	
+	@RequestMapping(value = "/getOrderDetail", method = RequestMethod.GET)
+	public @ResponseBody OrderDetail getOrderDetail(@RequestParam String orderId, @RequestParam int lineNumber) {
+		OrderDetail orderDetail = null;
+		
+		try {
+			orderDetail = orderDAO.getOrderDetail(orderId, lineNumber);
+			log.info("Successfully retrieved order {}", orderDetail);
+		} catch (SQLException e) {
+			log.error("Failed to retrieve order {}", orderDetail, e);
+		}
+		return orderDetail;
 	}
 	
 	@RequestMapping(value = "/createOrderDetail", method = RequestMethod.POST)

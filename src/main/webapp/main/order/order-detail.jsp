@@ -109,7 +109,7 @@ $(document).ready(function(){
 			{
 				targets: 9,
 				render: function(data, type, row){
-					return '<a class="btn btn-sm btn-primary m-l-5">Edit</a>'
+					return "<a onclick='showEditOrderDetailModal("+ data.lineNumber + ")' class='btn btn-sm btn-primary m-l-5'>Edit</a>"
 					+ '<a onclick="showDeleteOrderDetailModal(' + data.lineNumber + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
 				}
 			}
@@ -162,6 +162,9 @@ $(document).ready(function(){
 		});
 	});
 	
+	
+	// ==========================Create order detail===================================
+		
 	// Add new order detail drop -> drop down on change
 	$('#createService').on('change', function(e){
 		let selectedOption = $(this).find(':selected');
@@ -182,8 +185,6 @@ $(document).ready(function(){
 		}
 		$("#createPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
 	});
-	
-	// ==========================Create order detail===================================
 	
 	// Open create modal
 	$('#addNewOrderDetailModalButton').click(function(){
@@ -225,8 +226,64 @@ $(document).ready(function(){
 		}
 	});
 	
+	// -----------------------------------------------------------------------------------------------
+	// Update order detail
+	// -----------------------------------------------------------------------------------------------
+	
+	$("#editOrderDetailModalForm").validate({
+		rules : {
+			createWidth: {
+				required: function(){
+					if($('#editService').find('option:selected').attr('use-quantity') == "true"){
+						return false;
+					}else
+						return true;
+				}
+			},
+			createHeight: {
+				required: function(){
+					if($('#editService').find('option:selected').attr('use-quantity') == "true"){
+						return false;
+					}else
+						return true;
+				}
+			},
+			createQuantity: {
+				required: function(){
+					if($('#editService').find('option:selected').attr('use-quantity') == "true"){
+						return true;
+					}else
+						return false;
+				}
+			}
+		}
+	});
+	
+	$('#editService').on('change', function(e){
+		let selectedOption = $(this).find(':selected');
+		if(selectedOption.attr('use-quantity') == "true"){
+			$("#editWidthDiv").hide();
+			$("#editWidth").attr("disabled", true);
+			$("#editHeightDiv").hide();
+			$("#editHeight").attr("disabled", true);
+			$("#editQuantityDiv").show();
+			$("#editQuantity").attr("disabled", false);
+		}else{
+			$("#editWidthDiv").show();
+			$("#editWidth").attr("disabled", false);
+			$("#editHeightDiv").show();
+			$("#editHeight").attr("disabled", false);
+			$("#editQuantityDiv").hide();
+			$("#editQuantity").attr("disabled", true);
+		}
+		$("#editPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
+	});
+	
+	
 
 });
+
+
 
 function getOrder(){
 	loaderSpinner.show();
@@ -251,6 +308,19 @@ function getOrder(){
 	}).done(function(){
 		loaderSpinner.hide();
 	});
+}
+
+// --------------------------------------------------------------------------------------------
+// Create order detail functions
+// --------------------------------------------------------------------------------------------
+
+function clearCreateOrderDetailForm(){
+	$("#createService").val("");
+	$("#createDescription").val("");
+	$("#createWidth").val("");
+	$("#createHeight").val("");
+	$("#createQuantity").val("");
+	$("#createPrice").val("");
 }
 
 function createOrderDetail(){
@@ -295,18 +365,8 @@ function createOrderDetail(){
 	}
 }
 
-function clearCreateOrderDetailForm(){
-	$("#createService").val("");
-	$("#createDescription").val("");
-	$("#createWidth").val("");
-	$("#createHeight").val("");
-	$("#createQuantity").val("");
-	$("#createPrice").val("");
-	
-}
-
 // --------------------------------------------------------------------------
-// Delete order detail
+// Delete order detail functions
 // --------------------------------------------------------------------------
 function showDeleteOrderDetailModal(lineNumber){
 	$('#deleteOrderDetailModal .modal-title').html('Delete order detail');
@@ -340,6 +400,8 @@ function deleteOrderDetail(lineNumber) {
 			        $("#pop-message .alert").alert('close');
 			    }, 3000);
 			}
+			rowNumber = 0;
+			$('#orderDetailTable').DataTable().ajax.reload();
 		},
 		error: function (data){
 			loaderSpinner.hide();
@@ -348,16 +410,70 @@ function deleteOrderDetail(lineNumber) {
 		        $("#pop-message .alert").alert('close');
 		    }, 3000);
 		}
-	}).done(function(){
-		rowNumber = 0;
-		$('#orderDetailTable').DataTable().ajax.reload();
-		popMessage('success', 'Successfully deleted order detail');
-		setTimeout(function() {
-	        $("#pop-message .alert").alert('close');
-	    }, 3000);
-		
 	});
-	
+}
+
+//-----------------------------------------------------------------------------------------------
+// Update order detail functions
+// -----------------------------------------------------------------------------------------------
+
+function showEditOrderDetailModal(lineNumber){
+	clearEditOrderDetailForm();
+	$("#editOrderDetailModal").modal("show");
+	getEditOrderDetail(lineNumber);
+}
+
+function getEditOrderDetail(lineNumber){
+	let parameter = ("orderId=" + urlParams.get('orderId'));
+	parameter += "&lineNumber=" + lineNumber; 
+	loaderSpinner.show();
+	$.ajax({
+		type: "GET",
+		url: "getOrderDetail",
+		data: parameter,
+		cache : false,
+		dataType: "json",
+		success : function(data){
+			$("#editService").val(data.serviceId);
+			$("#editDescription").val(data.description);
+			$("#editWidth").val(data.width);
+			$("#editHeight").val(data.height);
+			$("#editQuantity").val(data.quantity);
+			$("#editPrice").val((data.finalPrice/100).toFixed(2));
+			if(data.useQuantity){
+				$("#editWidthDiv").hide();
+				$("#editWidth").attr("disabled", true);
+				$("#editHeightDiv").hide();
+				$("#editHeight").attr("disabled", true);
+				$("#editQuantityDiv").show();
+				$("#editQuantity").attr("disabled", false);
+			}else{
+				$("#editWidthDiv").show();
+				$("#editWidth").attr("disabled", false);
+				$("#editHeightDiv").show();
+				$("#editHeight").attr("disabled", false);
+				$("#editQuantityDiv").hide();
+				$("#editQuantity").attr("disabled", true);
+			}
+			loaderSpinner.hide();
+		},
+		error: function (data){
+			loaderSpinner.hide();
+		}
+	});
+}
+
+function updateOrderDetail(){
+
+}
+
+function clearEditOrderDetailForm(){
+	$("#editService").val("");
+	$("#editDescription").val("");
+	$("#editWidth").val("");
+	$("#editHeight").val("");
+	$("#editQuantity").val("");
+	$("#editPrice").val("");
 }
 
 </script>
@@ -424,7 +540,7 @@ function deleteOrderDetail(lineNumber) {
 																<th>Height</th>
 																<th>Ft</th>
 																<th>Quantity</th>
-																<th>Price</th>
+																<th>Unit Price</th>
 																<th>Total Price</th>
 																<th>Action</th>
 															</tr>
@@ -457,7 +573,7 @@ function deleteOrderDetail(lineNumber) {
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel">Add new order</h5>
+				<h5 class="modal-title" id="exampleModalLabel">Add new order detail</h5>
 				<button type="button" class="close" data-dismiss="modal"
 					aria-label="Close">
 					<span aria-hidden="true">&times;</span>
@@ -504,7 +620,7 @@ function deleteOrderDetail(lineNumber) {
 						</div>
 					</div>
 					<div class="form-group row">
-							<label class="col-sm-3 col-form-label" for="createPrice">Price per service</label>
+							<label class="col-sm-3 col-form-label" for="createPrice">Unit Price</label>
 							<div class="col-sm-9">
 								<input type="number" class="form-control" id="createPrice" name="createPrice" value="" min="0" step="0.01" required>
 							</div>
@@ -519,6 +635,72 @@ function deleteOrderDetail(lineNumber) {
 	</div>
 </div>
 
+<div class="modal fade" id="editOrderDetailModal" tabindex="-1" role="dialog"
+	aria-labelledby="editOrderDetailModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Edit order detail</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="editOrderDetailModalForm" class="form-horizontal">
+					<div class="form-group row">
+						<label for="recipient-name" class="col-sm-3 col-form-label">Service</label>
+						<div class="col-sm-9">
+							<select class="form-control" id="editService" name="editService" required>
+								<c:forEach var="item" items="${serviceList}">
+								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" use-quantity="${item.useQuantity}">${item.descriptionEnglish}
+								    	<c:if test="${not empty item.descriptionChinese}">
+											 (${item.descriptionChinese})
+										</c:if>
+								    </option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label for="recipient-name" class="col-sm-3 col-form-label">Description</label>
+						<div class="col-sm-9">
+							<textarea rows="3" class="form-control" id="editDescription" name="editDescription"></textarea>
+						</div>
+					</div>
+					<div class="form-group row" id="editWidthDiv">
+						<label class="col-sm-3 col-form-label" for="editWidth">Width (宽度)</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control" id="editWidth" name="editWidth" value="" min="0">
+						</div>
+					</div>
+					<div class="form-group row" id="editHeightDiv">
+						<label class="col-sm-3 col-form-label" for="editHeight">Height (高度)</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control" id="editHeight" name="editHeight" value="" min="0">
+						</div>
+					</div>
+					<div class="form-group row" id="editQuantityDiv">
+						<label class="col-sm-3 col-form-label" for="editQuantity">Quantity</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control" id="editQuantity" name="editQuantity" value="" min="1" step="1">
+						</div>
+					</div>
+					<div class="form-group row">
+							<label class="col-sm-3 col-form-label" for="editPrice">Unit Price</label>
+							<div class="col-sm-9">
+								<input type="number" class="form-control" id="editPrice" name="editPrice" value="" min="0" step="0.01" required>
+							</div>
+						</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="editOrderDetailModalSaveButton">Save</button>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="modal fade" id="deleteOrderDetailModal" tabindex="-1" role="dialog"
 	aria-labelledby="deleteOrderModal" aria-hidden="true">

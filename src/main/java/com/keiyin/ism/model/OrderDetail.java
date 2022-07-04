@@ -81,4 +81,20 @@ public class OrderDetail {
 	public void setTotalPrice(int totalPrice) {
 		this.totalPrice = totalPrice;
 	}
+	
+	@Override
+	public String toString() {
+		return "["
+				+ "orderId=" + orderId + ", "
+				+ "lineNumber=" + lineNumber + ", "
+				+ "serviceName=" + serviceName + ", "
+				+ "description=" + description + ", "
+				+ "width=" + width + ", "
+				+ "height=" + height + ", "
+				+ "quantity=" + quantity + ", "
+				+ "finalPrice=" + finalPrice + ", "
+				+ "totalPrice=" + totalPrice + ", "
+				+ "useQuantity=" + useQuantity
+				+ "]";
+	}
 }

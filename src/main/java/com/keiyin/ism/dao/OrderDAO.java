@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.keiyin.ism.model.Order;
 import com.keiyin.ism.model.OrderDetail;
+import com.mysql.cj.x.protobuf.MysqlxCrud.Update;
 
 public class OrderDAO {
 	
@@ -81,12 +82,23 @@ public class OrderDAO {
 	}
 	
 	
-	// ==============================Order detail========================================
+	// ---------------------------------------------------------------------------
+	// Order detail
+	// ---------------------------------------------------------------------------
 	@SuppressWarnings("unchecked")
 	public List<OrderDetail> getOrderDetailList(String orderId) throws SQLException{
 		List<OrderDetail> orderDetailList; 
 		orderDetailList = sqlMapClient.queryForList("Order.getOrderDetailList", orderId);
 		return orderDetailList;
+	}
+	
+	public OrderDetail getOrderDetail(String orderId, int lineNumber) throws SQLException {
+		OrderDetail orderDetail = null;
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		parameterMap.put("lineNumber", lineNumber);
+		orderDetail = (OrderDetail) sqlMapClient.queryForObject("Order.getOrderDetail", parameterMap);
+		return orderDetail;
 	}
 	
 	public void insertOrderDetail(String orderId,
@@ -108,7 +120,16 @@ public class OrderDAO {
 		sqlMapClient.insert("Order.insertOrderDetail", parameterMap);
 	}
 	
+	public void deleteOrderDetail(String orderId, String lineNumber) throws SQLException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		parameterMap.put("lineNumber", lineNumber);
+		sqlMapClient.insert("Order.deleteOrderDetail", parameterMap);
+	}
 
+	
+	
+	
 	public SqlMapClient getSqlMapClient() {
 		return sqlMapClient;
 	}
@@ -117,11 +138,6 @@ public class OrderDAO {
 		this.sqlMapClient = sqlMapClient;
 	}
 	
-	public void deleteOrderDetail(String orderId, String lineNumber) throws SQLException {
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("orderId", orderId);
-		parameterMap.put("lineNumber", lineNumber);
-		sqlMapClient.insert("Order.deleteOrderDetail", parameterMap);
-	}
+	
 	
 }

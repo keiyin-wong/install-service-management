@@ -78,8 +78,8 @@ $(document).ready(function(){
 			return: true,
 		},
 		lengthMenu: [
-			[1, 5, 10, 20,],
-			[1, 5, 10, 20,],
+			[1, 5, 10, 20,100], //value
+			[1, 5, 10, 20,100], // name
 		],
 		ordering: true,
 		lengthChange: true,

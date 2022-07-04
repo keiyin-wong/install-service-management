@@ -139,6 +139,43 @@
 		ORDER BY order_id, line_number ASC;
 	</select>
 	
+	<select id="getOrderDetail" resultMap="orderDetailResultMap" parameterClass="java.util.HashMap">
+		SELECT 
+		od.order_id AS order_id,
+		od.line_number AS line_number,
+		od.service_id AS service_id,
+		od.description AS `description`,
+		od.width AS width,
+		od.height AS height,
+		od.quantity AS quantity,
+		od.final_price AS final_price,
+		s.use_quantity AS use_quantity, 
+		ROUND((od.width/304.8),2) AS ft,
+		(
+		CASE
+			WHEN (s.description_english IS NOT NULL AND s.description_english !="") AND (s.description_chinese IS NOT NULL AND s.description_chinese != "")
+				THEN CONCAT(s.description_english, " (" ,s.description_chinese, ")")
+			WHEN (s.description_english IS NOT NULL AND s.description_english !="") AND (s.description_chinese IS NULL OR s.description_chinese = "")
+				THEN CONCAT(s.description_english)
+			WHEN (s.description_english IS NULL OR s.description_english ="") AND (s.description_chinese IS NOT NULL AND s.description_chinese != "")
+				THEN CONCAT(s.description_chinese)
+			
+			ELSE ""
+			END
+		) AS service_name,
+		(
+		CASE
+			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
+			END
+		) AS total_price
+		FROM `order` o
+		JOIN order_detail od ON o.id = od.order_id
+		JOIN service s ON s.id = od.service_id
+		WHERE od.order_id = '$orderId$' AND od.line_number=#lineNumber#
+		ORDER BY order_id, line_number ASC;
+	</select>
+	
 	<insert id="insertOrderDetail" parameterClass="java.util.HashMap">
 		INSERT INTO 
 		order_detail (order_id, line_number, service_id, `description`, 
