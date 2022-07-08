@@ -131,7 +131,7 @@ $(document).ready(function(){
 				render: function (data, type, row) {
                     return '<a href="order-detail.html?orderId=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>'
                     + '<a onclick="showDeleteModal(' + data.id + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
-                    + '<a target="_blank" href="orderReport.do?inline=1&orderId='+data.id+'" class="btn btn-sm btn-info m-l-5">Invoice</a>'
+                    + '<a target="_blank" href="orderReport.do?inline=0&orderId='+data.id+'" class="btn btn-sm btn-info m-l-5">Invoice</a>'
                 },
 			}
 		],

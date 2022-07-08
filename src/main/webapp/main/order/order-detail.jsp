@@ -131,6 +131,10 @@ $(document).ready(function(){
             $(api.column(8).footer()).html('RM ' + (total/100).toFixed(2));
 		}
 	});
+	
+	$("#printInvoiceButton").click(function(){
+		window.open("orderReport.do?inline=1&orderId=" + urlParams.get("orderId"), '_blank');
+	})
 
 	// Order date data on change and update order
 	$('#orderDate').on('change', function(){
@@ -554,7 +558,7 @@ function clearEditOrderDetailForm(){
 						<div class="card">
 							<div class="card-body">
 								<div class="row">
-									<div class="col-lg-5">
+									<div class="col-sm-5">
 								 		<form id="orderForm" class="form-horizontal">
 											<div class="form-group row">
 												<label for="recipient-name" class="col-sm-3 col-form-label">Id</label>
@@ -569,6 +573,15 @@ function clearEditOrderDetailForm(){
 												</div>
 											</div>
 										</form>
+								 	</div>
+								 	<div class="col-sm-2">
+								 	</div>
+								 	<div class="col-sm-5">
+								 		<div class="row">
+								 			<div class="col-sm-12">
+								 				<button id="printInvoiceButton" class="btn btn-sm btn-primary float-right">Print Invoice</button>
+								 			</div>
+								 		</div>
 								 	</div>
 								</div>
 								 <div class="row">
