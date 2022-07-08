@@ -1,5 +1,7 @@
 package com.keiyin.ism.controller;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +37,13 @@ import com.keiyin.ism.model.OrderDetail;
 import com.keiyin.ism.model.Service;
 import com.keiyin.ism.model.WriteResponse;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+
 @Controller
 @RequestMapping(value = "/order")
 public class OrderController {
@@ -44,6 +55,10 @@ public class OrderController {
 	@Autowired
 	@Qualifier("serviceDAO")
 	ServiceDAO serviceDAO;
+	
+	@Autowired
+	@Qualifier("springJdbcDataSources")
+	DriverManagerDataSource springJdbcDataSources;
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -278,6 +293,43 @@ public class OrderController {
 			
 		return result;
 		
+	}
+	
+	//--------------------------------------------------------------------------------
+	// Order report
+	//--------------------------------------------------------------------------------
+	@RequestMapping(value="/orderReport.do")
+	public void generateProductDetailReport(
+			@RequestParam String orderId, 
+			@RequestParam(required=false, defaultValue = "1")int inline, 
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		Map<String, Object> parameterMap = new HashMap<String, Object>();
+		String filename = orderId + ".pdf";
+		
+		parameterMap.put("orderId", orderId);
+		try {
+			InputStream inputStream = this.getClass().getResourceAsStream("/report/Invoice.jrxml");
+			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
+			response.setContentType("application/pdf");
+			 if(inline == 1) {
+				 response.addHeader("Content-disposition", "inline; filename=" +filename);
+			 }else {
+				 response.addHeader("Content-disposition", "attachment; filename=" +filename);
+			 }
+	         OutputStream outputStream = response.getOutputStream();
+	         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

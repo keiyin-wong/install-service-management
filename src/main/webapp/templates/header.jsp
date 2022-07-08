@@ -12,7 +12,7 @@
 							class="line"></span>
 					</div>
 				</div>
-				<div class="float-right">
+				<div class="float-right" style="display:none">
 					<div class="dropdown dib">
 						<div class="header-icon" data-toggle="dropdown">
 							<i class="ti-bell"></i>

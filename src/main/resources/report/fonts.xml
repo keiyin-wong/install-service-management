@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+<!-- 	<fontFamily name="WenDingPLJianBaoSong">
+	<normal>fonts/gbsn00lp-2.ttf</normal>
+	<pdfEnconding>Identity-H</pdfEnconding>
+	<pdfEmbeded>true</pdfEmbeded>
+	</fontFamily> -->
+	<fontFamily name="FZHTJW">
+	<normal>report/FZHTJW.TTF</normal>
+	<pdfEnconding>Identity-H</pdfEnconding>
+	<pdfEmbeded>true</pdfEmbeded>
+	</fontFamily>
+</fontFamilies>
