@@ -79,7 +79,7 @@
 	</select>
 	
 	<select id="getLastOrderId" resultClass="String">
-		SELECT MAX(id) FROM `order` 
+		SELECT CAST(MAX(id)+1 AS INT) FROM `order` 
 	</select>
 	
 	<insert id="insertOrder" parameterClass="java.util.HashMap">

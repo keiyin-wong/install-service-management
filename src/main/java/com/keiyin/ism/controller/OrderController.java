@@ -1,13 +1,22 @@
 package com.keiyin.ism.controller;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,11 +47,13 @@ import com.keiyin.ism.model.Service;
 import com.keiyin.ism.model.WriteResponse;
 
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 
 @Controller
 @RequestMapping(value = "/order")
@@ -113,7 +124,6 @@ public class OrderController {
 		
 		try {
 			lastOrderId = orderDAO.getLastOrderId();
-			lastOrderId = String.valueOf(Integer.parseInt(lastOrderId) + 1);
 			log.info("Successfully retrieved last order id {}", lastOrderId);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -330,6 +340,80 @@ public class OrderController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@RequestMapping(value="/orderReportTest.do")
+	public void testReport(HttpServletRequest request, 
+			HttpServletResponse response) {
+		
+		List<OutputStream> oss = new ArrayList<OutputStream>();
+		try {
+			OutputStream os = getReport("12951");
+			OutputStream os1 = getReport("12952");
+			oss.add(os);
+			oss.add(os1);
+		} catch (Exception e) {
+			 log.error("report生成出现错误", e);
+		}finally{
+		    try {
+		        for (int i = 0; i < oss.size(); i++) oss.get(i).flush();
+		    } catch (Exception e) {}
+		}
+		OutputStream os = null;
+        CheckedOutputStream cos = null;
+        ZipOutputStream zipOut = null;
+        
+        try {
+        	os = response.getOutputStream();
+        	response.setContentType("application/octet-stream;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=reportTesting.zip");
+            // 对输出文件做CRC32校验
+            cos = new CheckedOutputStream(os, new CRC32());
+            zipOut = new ZipOutputStream(cos);
+            // 将单个文件的流添加到压缩文件中
+            for (int i = 0; i < oss.size(); i++) {
+                compressFile(oss.get(i), zipOut, "1295"+ i + ".pdf");
+            }
+            zipOut.flush();zipOut.close();
+            os.flush();
+        	
+        }catch (Exception e) {
+            log.error("报表打包出现错误", e);
+        }
+		
+	}
+	
+	public void compressFile(OutputStream os, ZipOutputStream out, String fileName) throws IOException {
+        int buffer = 1024 * 2;
+        // 输出流转换为输入流
+        ByteArrayOutputStream bos = (ByteArrayOutputStream) os;
+        InputStream is = new ByteArrayInputStream(bos.toByteArray());
+        BufferedInputStream bis = new BufferedInputStream(is);
+        ZipEntry entry = new ZipEntry(fileName);
+        out.putNextEntry(entry);
+        int count;
+        byte data[] = new byte[buffer];
+        while ((count = bis.read(data, 0, buffer)) != -1) {
+            out.write(data, 0, count);
+        }
+        bis.close();
+    }
+	
+	public OutputStream getReport(String orderId) throws JRException, ClassNotFoundException, SQLException, IOException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		PrintWriter writer = new PrintWriter(os);
+		JRPdfExporter exporter = new JRPdfExporter();
+		JasperPrint jasperPrint = null;
+		
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		String filename = orderId + ".pdf";
+		InputStream inputStream = this.getClass().getResourceAsStream("/report/Invoice.jrxml");
+		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+		jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
+		JasperExportManager.exportReportToPdfStream(jasperPrint, os);
+		
+		return os;
 	}
 	
 }

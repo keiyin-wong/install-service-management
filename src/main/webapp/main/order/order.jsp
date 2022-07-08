@@ -130,7 +130,7 @@ $(document).ready(function(){
 				targets: 3,
 				render: function (data, type, row) {
                     return '<a href="order-detail.html?orderId=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>'
-                    + '<a onclick="showDeleteModal(' + data.id + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
+                    + '<a onclick="showDeleteModal(\'' + data.id + '\')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
                     + '<a target="_blank" href="orderReport.do?inline=0&orderId='+data.id+'" class="btn btn-sm btn-info m-l-5">Invoice</a>'
                 },
 			}
@@ -252,7 +252,7 @@ function deleteOrder(dataId){
 					<div class="form-group row">
 						<label for="recipient-name" class="col-sm-3 col-form-label">Id</label>
 						<div class="col-sm-9">
-							<input type="text" class="form-control" id="orderId" name="orderId" required>
+							<input type="number" class="form-control" id="orderId" name="orderId"  min="0" step="1" required>
 						</div>
 					</div>
 					<div class="form-group row">
