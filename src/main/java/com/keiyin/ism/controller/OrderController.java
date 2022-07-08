@@ -347,11 +347,19 @@ public class OrderController {
 			HttpServletResponse response) {
 		
 		List<OutputStream> oss = new ArrayList<OutputStream>();
+		List<Order> orderList =  new ArrayList<>();
 		try {
-			OutputStream os = getReport("12951");
-			OutputStream os1 = getReport("12952");
-			oss.add(os);
-			oss.add(os1);
+			orderList = orderDAO.datatableOrderList(-1, -1,null,null);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			log.error("qwe",e);
+		}
+		
+		try {
+			for (Order i : orderList) {
+				OutputStream os = getReport(i.getId());
+				oss.add(os);
+			}
 		} catch (Exception e) {
 			 log.error("report生成出现错误", e);
 		}finally{
@@ -372,7 +380,7 @@ public class OrderController {
             zipOut = new ZipOutputStream(cos);
             // 将单个文件的流添加到压缩文件中
             for (int i = 0; i < oss.size(); i++) {
-                compressFile(oss.get(i), zipOut, "1295"+ i + ".pdf");
+                compressFile(oss.get(i), zipOut, orderList.get(i).getId() + ".pdf");
             }
             zipOut.flush();zipOut.close();
             os.flush();
@@ -399,15 +407,12 @@ public class OrderController {
         bis.close();
     }
 	
-	public OutputStream getReport(String orderId) throws JRException, ClassNotFoundException, SQLException, IOException {
+	public OutputStream getReport(String orderId) throws JRException, SQLException, IOException {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PrintWriter writer = new PrintWriter(os);
-		JRPdfExporter exporter = new JRPdfExporter();
 		JasperPrint jasperPrint = null;
 		
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
-		String filename = orderId + ".pdf";
 		InputStream inputStream = this.getClass().getResourceAsStream("/report/Invoice.jrxml");
 		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
 		jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());

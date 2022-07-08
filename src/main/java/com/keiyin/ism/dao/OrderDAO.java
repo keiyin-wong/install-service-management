@@ -19,10 +19,10 @@ public class OrderDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<Order> datatableOrderList(int start, int limit, String searchParameter, String orderClause) throws SQLException {
-		if(searchParameter.isEmpty()) {
+		if(searchParameter== null || searchParameter.isEmpty()) {
 			searchParameter = null;
 		}
-		if(orderClause.isEmpty()) {
+		if(orderClause== null || orderClause.isEmpty()) {
 			orderClause = null;
 		}
 		List<Order> ordersList; 
