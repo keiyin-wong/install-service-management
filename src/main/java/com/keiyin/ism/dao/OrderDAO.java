@@ -127,7 +127,28 @@ public class OrderDAO {
 		sqlMapClient.insert("Order.deleteOrderDetail", parameterMap);
 	}
 
-	
+	public boolean updateOrderDetail(
+			String orderId,
+			String editLineNumber,
+			String editService,
+			String editDescription,
+			String editWidth,
+			String editHeight,
+			String editQuantity,
+			String editPriceSen) throws SQLException {
+		
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		parameterMap.put("editLineNumber", editLineNumber);
+		parameterMap.put("editService", editService);
+		parameterMap.put("editDescription", editDescription);
+		parameterMap.put("editWidth", editWidth);
+		parameterMap.put("editHeight", editHeight);
+		parameterMap.put("editQuantity", editQuantity);
+		parameterMap.put("editPriceSen", editPriceSen);
+		
+		return (sqlMapClient.update("Order.updateOrderDetail", parameterMap) > 0);
+	}
 	
 	
 	public SqlMapClient getSqlMapClient() {

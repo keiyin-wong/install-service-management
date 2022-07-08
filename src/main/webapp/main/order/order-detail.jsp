@@ -279,7 +279,9 @@ $(document).ready(function(){
 		$("#editPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
 	});
 	
-	
+	$("#editOrderDetailModalSaveButton").click(function(){
+		updateOrderDetail();
+	})
 
 });
 
@@ -339,7 +341,7 @@ function createOrderDetail(){
 			success : function(data){
 				if(data.status == "success"){
 					loaderSpinner.hide();
-					popMessage('success', 'Successfully create order');
+					popMessage('success', 'Successfully create order detail');
 					setTimeout(function() {
 				        $("#pop-message .alert").alert('close');
 				    }, 3000);
@@ -409,6 +411,8 @@ function deleteOrderDetail(lineNumber) {
 			setTimeout(function() {
 		        $("#pop-message .alert").alert('close');
 		    }, 3000);
+			rowNumber = 0;
+			$('#orderDetailTable').DataTable().ajax.reload();
 		}
 	});
 }
@@ -434,6 +438,7 @@ function getEditOrderDetail(lineNumber){
 		cache : false,
 		dataType: "json",
 		success : function(data){
+			$("#editLineNumber").val(data.lineNumber);
 			$("#editService").val(data.serviceId);
 			$("#editDescription").val(data.description);
 			$("#editWidth").val(data.width);
@@ -442,29 +447,75 @@ function getEditOrderDetail(lineNumber){
 			$("#editPrice").val((data.finalPrice/100).toFixed(2));
 			if(data.useQuantity){
 				$("#editWidthDiv").hide();
-				$("#editWidth").attr("disabled", true);
 				$("#editHeightDiv").hide();
-				$("#editHeight").attr("disabled", true);
 				$("#editQuantityDiv").show();
+				
+				$("#editWidth").attr("disabled", true);
+				$("#editHeight").attr("disabled", true);
 				$("#editQuantity").attr("disabled", false);
+				
+				
 			}else{
 				$("#editWidthDiv").show();
-				$("#editWidth").attr("disabled", false);
 				$("#editHeightDiv").show();
-				$("#editHeight").attr("disabled", false);
 				$("#editQuantityDiv").hide();
+				$("#editWidth").attr("disabled", false);
+				$("#editHeight").attr("disabled", false);
 				$("#editQuantity").attr("disabled", true);
 			}
 			loaderSpinner.hide();
 		},
 		error: function (data){
 			loaderSpinner.hide();
+			popMessage('danger', 'Failed to retrieve order detail');
+			setTimeout(function() {
+		        $("#pop-message .alert").alert('close');
+		    }, 3000);
 		}
 	});
 }
 
 function updateOrderDetail(){
-
+	if($('#editOrderDetailModalForm').valid()){
+		$('#editOrderDetailModal').modal("hide");
+		loaderSpinner.show();
+		var parameter = $("#editOrderDetailModalForm").serialize();
+		parameter += "&editPriceSen=" + ($("#editPrice").val() * 100);
+		parameter += "&orderId=" + ($("#orderId").val());
+		$.ajax({
+			type: "POST",
+			url: "updateOrderDetail",
+			data: parameter,
+			cache : false,
+			dataType: "json",
+			success : function(data){
+				if(data.status == "success"){
+					loaderSpinner.hide();
+					popMessage('success', 'Successfully update order detail');
+					setTimeout(function() {
+				        $("#pop-message .alert").alert('close');
+				    }, 3000);
+				}else if(data.status == "fail"){
+					popMessage('danger', 'Failed to update order detail');
+					setTimeout(function() {
+				        $("#pop-message .alert").alert('close');
+				    }, 3000);
+				}
+				rowNumber = 0;
+				$('#orderDetailTable').DataTable().ajax.reload();
+			},
+			error: function (data){
+				loaderSpinner.hide();
+				popMessage('danger', 'Failed to delete order detail');
+				setTimeout(function() {
+			        $("#pop-message .alert").alert('close');
+			    }, 3000);
+				rowNumber = 0;
+				$('#orderDetailTable').DataTable().ajax.reload();
+			}
+		});
+	}
+	
 }
 
 function clearEditOrderDetailForm(){
@@ -687,11 +738,14 @@ function clearEditOrderDetailForm(){
 						</div>
 					</div>
 					<div class="form-group row">
-							<label class="col-sm-3 col-form-label" for="editPrice">Unit Price</label>
-							<div class="col-sm-9">
-								<input type="number" class="form-control" id="editPrice" name="editPrice" value="" min="0" step="0.01" required>
-							</div>
+						<label class="col-sm-3 col-form-label" for="editPrice">Unit Price</label>
+						<div class="col-sm-9">
+							<input type="number" class="form-control" id="editPrice" name="editPrice" value="" min="0" step="0.01" required>
 						</div>
+					</div>
+					<div>
+						<input type="hidden" id="editLineNumber" name="editLineNumber" />
+					</div>
 				</form>
 			</div>
 			<div class="modal-footer">

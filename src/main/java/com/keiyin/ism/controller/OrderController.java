@@ -217,7 +217,7 @@ public class OrderController {
 			@RequestParam(required = false) String createWidth,
 			@RequestParam(required = false) String createHeight,
 			@RequestParam(required = false) String createQuantity,
-			@RequestParam String createPriceSen) {
+			@RequestParam(value = "createPriceSen") String createPriceSen) {
 		
 		WriteResponse result = new WriteResponse();
 		
@@ -249,6 +249,35 @@ public class OrderController {
 		}
 		
 		return result;
+	}
+	
+	@RequestMapping(value = "/updateOrderDetail", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse deleteOrderDetail(@RequestParam String orderId,
+			@RequestParam String editLineNumber,
+			@RequestParam String editService,
+			@RequestParam String editDescription,
+			@RequestParam(required = false) String editWidth,
+			@RequestParam(required = false) String editHeight,
+			@RequestParam(required = false) String editQuantity,
+			@RequestParam String editPriceSen) {
+		
+		WriteResponse result = new WriteResponse();
+		try {
+			if(orderDAO.updateOrderDetail(orderId, editLineNumber, editService, editDescription, editWidth, editHeight, editQuantity, editPriceSen)) {
+				result.setStatus(SUCCESS);
+				log.info("Successfully updated orderDetail {}", orderId);
+			}
+			else {
+				result.setStatus(FAIL);
+				log.info("Failed to update orderDetail {}", orderId);
+			}
+		} catch (SQLException e) {
+			log.info("Failed to update orderDetail {}", orderId, e);
+			result.setStatus(FAIL);
+		}
+			
+		return result;
+		
 	}
 	
 }

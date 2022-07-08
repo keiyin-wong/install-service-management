@@ -208,6 +208,26 @@
 		WHERE order_id = '$orderId$'; 
 	</insert>
 	
+	<update id="updateOrderDetail" parameterClass="java.util.HashMap">
+		UPDATE `order_detail`
+		SET
+		service_id = $editService$,
+		`description` = '$editDescription$',
+		<isNotNull property="editWidth">
+			width = $editWidth$,
+		</isNotNull>
+		<isNotNull property="editHeight">
+			height = $editHeight$,
+		</isNotNull>
+		<isNotNull property="editQuantity">
+			quantity = $editQuantity$,
+		</isNotNull>
+		final_price = $editPriceSen$
+		WHERE
+		order_id = '$orderId$'
+		AND line_number = $editLineNumber$;
+	</update>
+	
 	<delete id="deleteOrderDetail" parameterClass="java.util.HashMap">
 		DELETE FROM
 			`order_detail`
