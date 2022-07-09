@@ -2,6 +2,16 @@
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<style>
+#orderTable tbody tr{
+cursor: pointer;
+}
+
+.datatable-checkbox{
+
+}
+</style>
+
 
 <script type="text/javascript">
 var loaderSpinner;
@@ -10,6 +20,7 @@ var orderTable;
 $(document).ready(function(){
 	loaderSpinner = $('#loader');
 
+	$(".checkbox-options").hide();
 	
 	$('#addNewOrderModalSaveButton').click(function(){
 		if($('#addNewOrderModalForm').valid()){
@@ -57,7 +68,11 @@ $(document).ready(function(){
 			cache : false,
 			success : function(data){
 				$('#orderId').val(data);
-				$('#orderDate').val("");
+				var date = new Date();
+				const day = date.toLocaleString('default', { day: '2-digit' });
+			    const month = date.toLocaleString('default', { month: '2-digit' });
+			    const year = date.toLocaleString('default', { year: 'numeric' });
+				$('#orderDate').val(year + '-' + month + '-' + day);
 			},
 			error: function(data){
 				$('#orderId').val("");
@@ -92,7 +107,34 @@ $(document).ready(function(){
 			}
 		},
 		columns:[
-			{data: "id", name:"id"},
+			{
+				data: null, 
+				orderable: false,
+				defaultContent: "",
+				render: function (data, type, row) {
+					return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '"/>';
+				},
+				createdCell: cell => $(cell).addClass("datatable-skip-click").click(function(event){
+					var $target = $(event.target);
+					if(!$target.is('input:checkbox')){
+						if($(this).find('input').is(':checked')){
+							$(this).find('input').prop("checked",false);
+						}else
+							$(this).find('input').prop("checked",true);
+					}
+					if($("input[type=checkbox][name=selectedOrderIds]:checked").length == 0){
+						$(".checkbox-options").hide();
+					}else{
+						$(".checkbox-options").show();
+					}
+					//console.log($("input[type=checkbox][name=selectedOrderIds]:checked").length);
+				})
+			},
+			{
+				data: "id", 
+				name:"id",
+				createdCell: cell => $(cell).addClass("text-primary")
+			},
 			{
 				data: "date", 
 				name:"date",
@@ -105,7 +147,7 @@ $(document).ready(function(){
 					    return day + '-' + month + '-' + year;
 					}
 					return data;
-				}
+				},
 			},
 			{
 				data: "total", 
@@ -118,30 +160,57 @@ $(document).ready(function(){
 				},
 				className: "dt-body-right"
 			},
-			{
+/* 			{
 				data: null, 
 				orderable: false,
 				defaultContent: "",
-			}
+				className: "datatable-skip-click"
+			} */
 		],
-		order: [[0, 'desc']],
-		columnDefs: [
+		order: [[1, 'desc']],
+		/* columnDefs: [
 			{
-				targets: 3,
+				targets: 4,
 				render: function (data, type, row) {
-                    return '<a href="order-detail.html?orderId=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>'
+                    return ""
+                    + '<a href="order-detail.html?orderId=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>' 
                     + '<a onclick="showDeleteModal(\'' + data.id + '\')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
                     + '<a target="_blank" href="orderReport.do?inline=0&orderId='+data.id+'" class="btn btn-sm btn-info m-l-5">Invoice</a>'
                 },
 			}
-		],
+		], */
 	} );
+	
+	$('#orderTable').on('click', 'tbody td:not(".datatable-skip-click")', function() {
+		let data =  orderTable.row(this).data();
+	  	//console.log('API row values : ', orderTable.row(this).data());
+	  	window.open("order-detail.html?orderId=" + data.id, "_self");
+	});
+	
+	orderTable.on( 'draw', function () {
+		if($("input[type=checkbox][name=selectedOrderIds]:checked").length == 0){
+			$(".checkbox-options").hide();
+		}else{
+			$(".checkbox-options").show();
+		}
+	});
+	
+	// --------------------------------------------------------------------------
+	// Delete parts
+	// --------------------------------------------------------------------------
+	$("#showDeleteMultipleOrderModalButton").click(function() {
+		showDeleteModalForMultipleOrder();
+	});
+	
 
 	
 });
 
 
-// ---------------------------Delete function-----------------------------------------------
+// --------------------------------------------------------------------------
+// Delete functions
+// --------------------------------------------------------------------------
+
 
 // Add delete button when show
 function showDeleteModal(dataId){
@@ -149,6 +218,14 @@ function showDeleteModal(dataId){
 	$('#deleteOrderModal').modal();
 	$('#deleteOrderModalButton').html(
 			'<button type="button" class="btn btn-primary" onClick="deleteOrder(\'' + dataId + '\')">Delete</button>'
+	);
+}
+
+function showDeleteModalForMultipleOrder(){
+	$('#deleteOrderModal .modal-title').html('Delete selected orders');
+	$('#deleteOrderModal').modal();
+	$('#deleteOrderModalButton').html(
+			'<button type="button" class="btn btn-primary" onClick="javascript:deleteMultipleOrders()">Delete</button>'
 	);
 }
 
@@ -181,6 +258,36 @@ function deleteOrder(dataId){
 	    }, 3000);
 	});
 }
+
+function deleteMultipleOrders(){
+	$('#deleteOrderModal').modal('hide');
+	//alert($("input[type=checkbox][name=selectedOrderIds]:checked").serialize());
+	$.ajax({
+		type : "POST",
+		url : "deleteOrders",
+		data: $("input[type=checkbox][name=selectedOrderIds]:checked").serialize(),
+		cache : false,
+		dataType : "json",
+		success : function(data){
+			$('#orderTable').DataTable().ajax.reload();
+		},
+		error: function(data){
+			loaderSpinner.hide();
+			popMessage('danger', 'Failed to delete orders');
+			setTimeout(function() {
+		        $("#pop-message .alert").alert('close');
+		    }, 3000);
+			$('#orderTable').DataTable().ajax.reload();
+			
+		}
+	}).done(function(){
+		loaderSpinner.hide();
+		popMessage('success', 'Successfully deleted orders');
+		setTimeout(function() {
+	        $("#pop-message .alert").alert('close');
+	    }, 3000);
+	});
+}
 </script>
 
 
@@ -208,15 +315,20 @@ function deleteOrder(dataId){
 								</div>
 							</div>
 							<div class='row'>
+								<div class="col-lg-12 checkbox-options">
+									<button id="showDeleteMultipleOrderModalButton" class="btn"><span class="ti-trash"></span></button>
+									<button  class="btn btn-sm btn-primary m-l-5">Print</button>
+								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
-										<table id="orderTable" class="table table-striped table-bordered hover">
+										<table id="orderTable" class="table hover"> <!-- table-striped -->
 											<thead>
 												<tr>
+													<th></th>
 													<th>Order Id</th>
 													<th>Order Date</th>
 													<th>Total</th>
-													<th>Action</th>
+													<!-- <th>Action</th> -->
 												</tr>
 											</thead>
 											<tbody>

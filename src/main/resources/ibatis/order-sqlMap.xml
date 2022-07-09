@@ -102,6 +102,16 @@
 			`id` = '$orderId$'
 	</delete>
 	
+	<delete id="deleteMultipleOrder" parameterClass="java.util.HashMap">
+		DELETE FROM
+			`order`
+		WHERE
+			`id` IN 
+			<iterate open="(" close=")" conjunction="," property="selectedOrderIds">
+				#selectedOrderIds[]#
+			</iterate>
+	</delete>
+	
 	<select id="getOrderDetailList" resultMap="orderDetailResultMap" parameterClass="String">
 		SELECT 
 		od.order_id AS order_id,

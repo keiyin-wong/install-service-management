@@ -78,7 +78,13 @@ public class OrderDAO {
 	public void deleteOrder(String orderId) throws SQLException {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
-		sqlMapClient.insert("Order.deleteOrder", parameterMap);
+		sqlMapClient.delete("Order.deleteOrder", parameterMap);
+	}
+	
+	public void deleteMultipleOrder(String[] selectedOrderIds) throws SQLException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("selectedOrderIds", selectedOrderIds);
+		sqlMapClient.delete("Order.deleteMultipleOrder", parameterMap);
 	}
 	
 	

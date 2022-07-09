@@ -10,11 +10,27 @@ var rowNumber = 0;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var loaderSpinner = $('#loader');
+var differentPriceList = null;
 
 $(document).ready(function(){
 	document.title = urlParams.get('orderId');
 	getOrder();
 	loaderSpinner = $('#loader');
+	
+	// Get different price list
+	$.ajax({
+		type: "GET",
+		url: "getAllServiceDiffPrices",
+		cache : false,
+		dataType: "json",
+		success : function(data){
+			differentPriceList = data;
+		},
+		error: function (data){
+			differentPriceList = [];
+		}
+	});
+	
 	
 	orderDetailTable = $('#orderDetailTable').DataTable({
 		ajax: {
@@ -165,10 +181,12 @@ $(document).ready(function(){
 			loaderSpinner.hide();
 		});
 	});
-	
-	
-	// ==========================Create order detail===================================
 		
+	// ---------------------------------------------------------------------------------
+	// Create order detail part
+	// ---------------------------------------------------------------------------------
+
+	
 	// Add new order detail drop -> drop down on change
 	$('#createService').on('change', function(e){
 		let selectedOption = $(this).find(':selected');
@@ -187,7 +205,11 @@ $(document).ready(function(){
 			$("#createQuantityDiv").hide();
 			$("#createQuantity").attr("disabled", true);
 		}
-		$("#createPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
+		changeCreatePriveValueBasedOnHeight();
+	});
+	
+	$("#createHeight").on('change', function(e){
+		changeCreatePriveValueBasedOnHeight();
 	});
 	
 	// Open create modal
@@ -280,12 +302,16 @@ $(document).ready(function(){
 			$("#editQuantityDiv").hide();
 			$("#editQuantity").attr("disabled", true);
 		}
-		$("#editPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
+		changeEditPriveValueBasedOnHeight();
+	});
+	
+	$("#editHeight").on("change", function(){
+		changeEditPriveValueBasedOnHeight();
 	});
 	
 	$("#editOrderDetailModalSaveButton").click(function(){
 		updateOrderDetail();
-	})
+	});
 
 });
 
@@ -531,6 +557,45 @@ function clearEditOrderDetailForm(){
 	$("#editPrice").val("");
 }
 
+function getDiffPriceValue(arr, value){
+	var result = null;;
+	arr.reverse();
+	$.each(arr, function(index, item){
+		if(value >= item.height){
+			result = item.price;
+			return false;
+		}
+		if(index == arr.length - 1){
+			result = arr[arr.length - 1].price;
+		}
+	});
+	
+	return result;
+}
+
+function changeCreatePriveValueBasedOnHeight(){
+	let selectedOption = $("#createService").find(':selected');
+	if(selectedOption.attr("diff-price") == "true"){
+		let list = $.grep(differentPriceList, function (n, i) {
+			   return (n.serviceId == selectedOption.attr('value'));
+		});
+		$("#createPrice").val((getDiffPriceValue(list,$("#createHeight").val())/100).toFixed(2));
+	}else
+		$("#createPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
+}
+
+function changeEditPriveValueBasedOnHeight(){
+	let selectedOption = $("#editService").find(':selected');
+	if(selectedOption.attr("diff-price") == "true"){
+		let list = $.grep(differentPriceList, function (n, i) {
+			   return (n.serviceId == selectedOption.attr('value'));
+		});
+		$("#editPrice").val((getDiffPriceValue(list,$("#editHeight").val())/100).toFixed(2));
+	}else{
+		$("#editPrice").val((selectedOption.attr("data-price")/100).toFixed(2));
+	}
+}
+
 </script>
 
 <div id="loader"></div>
@@ -594,7 +659,7 @@ function clearEditOrderDetailForm(){
 										<div class='row'>
 											<div class="col-lg-12">
 												<div class="bootstrap-data-table-panel">
-													<table id="orderDetailTable" class="table table-striped table-bordered hover">
+													<table id="orderDetailTable" class="table hover"> <!-- table-striped table-bordered  -->
 														<thead>
 															<tr>
 																<th>#</th>

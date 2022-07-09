@@ -11,7 +11,19 @@
 		<result property="useQuantity" column="use_quantity" javaType="boolean"/>
 	</resultMap>
 	
+	<resultMap id="serviceDiffPriceResultMap" class="com.keiyin.ism.model.ServiceDiffPrice">
+		<result property="serviceId" column="service_id" javaType="int"/>
+		<result property="height" column="height" javaType="double"/>
+		<result property="price" column="price" javaType="int"/>
+	</resultMap>
+	
 	<select id="getServiceList" resultMap="serviceResultMap">
 		SELECT * FROM service
 	</select>
+	
+	<select id="getAllServiceDiffPrices" resultMap="serviceDiffPriceResultMap">
+		SELECT * FROM `service_diff_price`
+	</select>
+	
+	
 </sqlMap>

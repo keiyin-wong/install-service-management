@@ -6,9 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,16 +42,15 @@ import com.keiyin.ism.datatable.PaginationCriteria;
 import com.keiyin.ism.model.Order;
 import com.keiyin.ism.model.OrderDetail;
 import com.keiyin.ism.model.Service;
+import com.keiyin.ism.model.ServiceDiffPrice;
 import com.keiyin.ism.model.WriteResponse;
 
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.export.JRPdfExporter;
 
 @Controller
 @RequestMapping(value = "/order")
@@ -180,6 +177,22 @@ public class OrderController {
 			result.setStatus(SUCCESS);
 		} catch (SQLException e) {
 			log.info("Failed to delete order {}", orderId, e);
+			result.setStatus(FAIL);
+		}
+		
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/deleteOrders", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<WriteResponse> deleteOrder(@RequestParam String[] selectedOrderIds){
+		WriteResponse result = new WriteResponse();
+		
+		try {
+			orderDAO.deleteMultipleOrder(selectedOrderIds);
+			log.info("Successfully deleted order {}", selectedOrderIds.toString());
+			result.setStatus(SUCCESS);
+		} catch (SQLException e) {
+			log.info("Failed to delete order {}", selectedOrderIds.toString(), e);
 			result.setStatus(FAIL);
 		}
 		
@@ -329,16 +342,12 @@ public class OrderController {
 				 response.addHeader("Content-disposition", "attachment; filename=" +filename);
 			 }
 	         OutputStream outputStream = response.getOutputStream();
+	         log.info("Retrived report for order {}", orderId);
 	         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (JRException|SQLException e ) {
+			log.info("Jasper report part error",e );
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.info("Unexpected error occur",e );
 		}
 	}
 	
@@ -346,13 +355,12 @@ public class OrderController {
 	public void testReport(HttpServletRequest request, 
 			HttpServletResponse response) {
 		
-		List<OutputStream> oss = new ArrayList<OutputStream>();
+		List<OutputStream> oss = new ArrayList<>();
 		List<Order> orderList =  new ArrayList<>();
 		try {
 			orderList = orderDAO.datatableOrderList(-1, -1,null,null);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			log.error("qwe",e);
+			log.error("Failed to order list to compile report",e);
 		}
 		
 		try {
@@ -386,9 +394,23 @@ public class OrderController {
             os.flush();
         	
         }catch (Exception e) {
-            log.error("报表打包出现错误", e);
+            log.error("Error occurred during zipping", e);
         }
 		
+	}
+	
+	public OutputStream getReport(String orderId) throws JRException, SQLException, IOException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		JasperPrint jasperPrint = null;
+		
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("orderId", orderId);
+		InputStream inputStream = this.getClass().getResourceAsStream("/report/Invoice.jrxml");
+		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+		jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
+		JasperExportManager.exportReportToPdfStream(jasperPrint, os);
+		
+		return os;
 	}
 	
 	public void compressFile(OutputStream os, ZipOutputStream out, String fileName) throws IOException {
@@ -407,18 +429,23 @@ public class OrderController {
         bis.close();
     }
 	
-	public OutputStream getReport(String orderId) throws JRException, SQLException, IOException {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		JasperPrint jasperPrint = null;
+	
+	// -------------------------------------------------------------------------------------
+	// Service Type
+	// -------------------------------------------------------------------------------------
+	
+	@RequestMapping(value = "/getAllServiceDiffPrices", method = RequestMethod.GET)
+	public @ResponseBody List<ServiceDiffPrice> getAllServiceDiffPrices() {
+		List<ServiceDiffPrice> serviceDiffPriceList = new ArrayList<>();
 		
-		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("orderId", orderId);
-		InputStream inputStream = this.getClass().getResourceAsStream("/report/Invoice.jrxml");
-		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
-		jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
-		JasperExportManager.exportReportToPdfStream(jasperPrint, os);
-		
-		return os;
-	}
+		try {
+			serviceDiffPriceList = serviceDAO.getAllServiceDiffPrices();
+			log.info("Successfully retrieved serviceDiffPriceList");
+		} catch (SQLException e) {
+			log.error("Failed to retrieve serviceDiffPriceList", e);
+		}
+		return serviceDiffPriceList;
+	} 
+	
 	
 }

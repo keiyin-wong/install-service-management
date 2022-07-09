@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.keiyin.ism.model.Service;
+import com.keiyin.ism.model.ServiceDiffPrice;
 
 public class ServiceDAO {
 	private SqlMapClient sqlMapClient;
@@ -16,6 +17,15 @@ public class ServiceDAO {
 		servicesList = sqlMapClient.queryForList("Service.getServiceList");
 		
 		return servicesList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ServiceDiffPrice> getAllServiceDiffPrices() throws SQLException {
+		List<ServiceDiffPrice> servicesDiffServicesList;
+		
+		servicesDiffServicesList = sqlMapClient.queryForList("Service.getAllServiceDiffPrices");
+		
+		return servicesDiffServicesList;
 	}
 	
 
