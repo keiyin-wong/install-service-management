@@ -38,6 +38,7 @@
 	    <link href="${contextUrl}/assets/css/lib/helper.css" rel="stylesheet">
 	    <link href="${contextUrl}/assets/css/style.css" rel="stylesheet">		
 		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 		  
 		
 
