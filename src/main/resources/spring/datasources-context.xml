@@ -16,6 +16,13 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	<property name="password" value="${db.password}"></property>    
 </bean>
 
+<bean id="springSecurityJdbcDataSources" class="org.springframework.jdbc.datasource.DriverManagerDataSource">    
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>    
+	<property name="url" value="${db.connection}"></property>    
+	<property name="username" value="${db.username}"></property>    
+	<property name="password" value="${db.password}"></property>    
+</bean>
+
 <!-- <bean id="dataSources" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 	<property name="url" value="${db.connection}"/>

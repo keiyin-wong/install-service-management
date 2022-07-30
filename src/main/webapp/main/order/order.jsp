@@ -145,7 +145,7 @@ $(document).ready(function(){
 					if ( type === 'display' || type === 'filter' ) {
 						var date = new Date(data);
 					    const day = date.toLocaleString('default', { day: '2-digit' });
-					    const month = date.toLocaleString('default', { month: 'short' });
+					    const month = date.toLocaleString('default', { month: '2-digit' });
 					    const year = date.toLocaleString('default', { year: 'numeric' });
 					    return day + '-' + month + '-' + year;
 					}
@@ -171,6 +171,12 @@ $(document).ready(function(){
 			} */
 		],
 		order: [[1, 'desc']],
+		initComplete: function(settings, json){
+			$('#orderTable_filter input').unbind();
+			$('#orderTable_filter input').bind('change', function(e) {
+				orderTable.search( this.value ).draw();
+			}); 
+		}
 		/* columnDefs: [
 			{
 				targets: 4,
@@ -320,7 +326,7 @@ function deleteMultipleOrders(){
 							<div class='row'>
 								<div class="col-lg-12 checkbox-options">
 									<button id="showDeleteMultipleOrderModalButton" class="btn"><span class="ti-trash"></span></button>
-									<button  class="btn btn-sm btn-primary m-l-5">Print</button>
+									<!-- <button  class="btn btn-sm btn-primary m-l-5">Print</button> -->
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">

@@ -60,7 +60,7 @@ $(document).ready(function(){
 						return "N/A";
 					}
                 },
-				className: "dt-body-right"
+				//className: "dt-body-right"
 			},
 			{
 				data: "height", 
@@ -72,7 +72,7 @@ $(document).ready(function(){
 						return "N/A";
 					}
                 },
-				className: "dt-body-right"
+				//className: "dt-body-right"
 			},
 			{data: null, name:"ft", className: "dt-body-right"},
 			{
@@ -85,7 +85,7 @@ $(document).ready(function(){
 						return "N/A";
 					}
                 },
-				className: "dt-body-right"
+				//className: "dt-body-right"
 			},
 			{
 				data: "finalPrice", 
@@ -96,14 +96,14 @@ $(document).ready(function(){
 					}
 					return data;
 				},
-				className: "dt-body-right"
+				//className: "dt-body-right"
 			},
 			{
 				data:"totalPrice", 
 				name:"totalPrice", 
 				render: function (data, type){
 					if ( type === 'display' || type === 'filter' ) {
-						return (data/100).toFixed(2);
+						return 'RM ' + (data/100).toFixed(2);
 					}
 					return data;
 				},
@@ -130,7 +130,7 @@ $(document).ready(function(){
 				}
 			}
 		],
-		footerCallback: function (row, data, start, end, display) {
+		footerCallback: function (row, data, start, end, display) { // Calculate subtotal
 			var api = this.api();
 			var intVal = function (i) {
                 return typeof i === 'string' ? i.replace(/[\$,]/g, '') * 1 : typeof i === 'number' ? i : 0;
@@ -560,11 +560,15 @@ function clearEditOrderDetailForm(){
 function getDiffPriceValue(arr, value){
 	var result = null;;
 	arr.reverse();
+	
+	// 由大到下，如果现在的height大过，就exit loop by return false. 
 	$.each(arr, function(index, item){
 		if(value >= item.height){
 			result = item.price;
 			return false;
 		}
+		
+		// if reached the last, then return the smallest height
 		if(index == arr.length - 1){
 			result = arr[arr.length - 1].price;
 		}

@@ -19,9 +19,21 @@
         <put-attribute name="body" value="/main/order/order.jsp" />
     </definition>
     
-     <definition name="order-detail" extends="mainTemplate">
-    	<put-attribute name="title" value="Order Page" type="string" />
+    <definition name="order-detail" extends="mainTemplate">
+    	<put-attribute name="title" value="Order Detail Page" type="string" />
         <put-attribute name="body" value="/main/order/order-detail.jsp" />
+    </definition>
+    
+    <definition name="order-invoice" extends="mainTemplate">
+    	<put-attribute name="title" value="Invoice Page" type="string" />
+        <put-attribute name="body" value="/main/order/order-invoice.jsp" />
+    </definition>
+    
+    <definition name="login" extends="mainTemplate">
+    	<put-attribute name="title" value="Login Page" type="string" />
+    	<put-attribute name="header" value="/templates/blank.jsp" />
+    	<put-attribute name="menu" value="/templates/blank.jsp" />
+    	<put-attribute name="body" value="/main/login.jsp" />
     </definition>
     
     <definition name="dashboard" extends="mainTemplate">

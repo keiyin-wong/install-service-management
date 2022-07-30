@@ -17,6 +17,17 @@ public class OrderDAO {
 	
 	private SqlMapClient sqlMapClient;
 	
+	/**
+	 * Get order list for datatable
+	 * 
+	 * 
+	 * @param start -1 representing no limit
+	 * @param limit -1 representing no offset
+	 * @param searchParameter <code>null</code> representing did not filter anything
+	 * @param orderClause <code>null</code> representing did not order by anything
+	 * @return
+	 * @throws SQLException
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Order> datatableOrderList(int start, int limit, String searchParameter, String orderClause) throws SQLException {
 		if(searchParameter== null || searchParameter.isEmpty()) {

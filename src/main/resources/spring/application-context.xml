@@ -14,6 +14,7 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 	<context:component-scan base-package="com.keiyin" />
 	
 	<mvc:annotation-driven />
+	<mvc:default-servlet-handler />
 	
 	<mvc:resources mapping="/assets/**" location="/assets/"/>
 
@@ -21,11 +22,11 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 		<property name="location" value="classpath:core.properties" />
 	</bean>
 	
-	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<!-- 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/"/>
 		<property name="suffix" value=".jsp"/>
 		<property name="order" value="1"/>
-	</bean>
+	</bean> -->
 	
 	<bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
 	    <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
@@ -43,5 +44,6 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 	
 	<!-- IBatis framework -->
 	<import resource="classpath:spring/datasources-context.xml" />
+	<import resource="classpath:spring/spring-security.xml" />
 	
 </beans>

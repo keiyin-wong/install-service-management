@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +52,9 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 
 @Controller
 @RequestMapping(value = "/order")
@@ -72,6 +76,7 @@ public class OrderController {
 	
 	private static final String FAIL = "fail";
 	private static final String SUCCESS = "success";
+	private static final String INVOICE_JRXML_PATH = "/report/Invoice.jrxml";
 	
 	
 	@RequestMapping(value = "/order.html", method = RequestMethod.GET)
@@ -189,10 +194,10 @@ public class OrderController {
 		
 		try {
 			orderDAO.deleteMultipleOrder(selectedOrderIds);
-			log.info("Successfully deleted order {}", selectedOrderIds.toString());
+			log.info("Successfully deleted order {}", Arrays.toString(selectedOrderIds));
 			result.setStatus(SUCCESS);
 		} catch (SQLException e) {
-			log.info("Failed to delete order {}", selectedOrderIds.toString(), e);
+			log.info("Failed to delete order {}", Arrays.toString(selectedOrderIds), e);
 			result.setStatus(FAIL);
 		}
 		
@@ -200,13 +205,13 @@ public class OrderController {
 	}
 	
 	
-	// -------------------------------------------------------------------------
+	// ==================================================================================
 	// Order detail page
-	// -------------------------------------------------------------------------
+	// ==================================================================================
 	
 	@RequestMapping(value = "/order-detail.html", method = RequestMethod.GET)
 	public ModelAndView renderOrderDetailPage(@RequestParam String orderId) {
-		Map<String,Object> parameterMap = new HashMap<String, Object>();
+		Map<String,Object> parameterMap = new HashMap<>();
 		List<Service> serviceList = new ArrayList<>();
 		
 		try {
@@ -241,9 +246,9 @@ public class OrderController {
 		
 		try {
 			orderDetail = orderDAO.getOrderDetail(orderId, lineNumber);
-			log.info("Successfully retrieved order {}", orderDetail);
+			log.info("Successfully retrieved order detail {}", orderDetail);
 		} catch (SQLException e) {
-			log.error("Failed to retrieve order {}", orderDetail, e);
+			log.error("Failed to retrieve order detail {}", orderDetail, e);
 		}
 		return orderDetail;
 	}
@@ -318,21 +323,35 @@ public class OrderController {
 		
 	}
 	
-	//--------------------------------------------------------------------------------
-	// Order report
-	//--------------------------------------------------------------------------------
-	@RequestMapping(value="/orderReport.do")
+	// ==================================================================================
+	// Report part
+	// ==================================================================================
+	
+	@RequestMapping(value = "/order-invoice.html", method = RequestMethod.GET)
+	public ModelAndView renderOrderInvoicePage() {
+		 return new ModelAndView(ViewConstants.ORDER_INVOICE);
+	}
+	
+	/**
+	 * Get a report
+	 * 
+	 * @param orderId
+	 * @param inline
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value="/orderReport.do", method = RequestMethod.GET)
 	public void generateProductDetailReport(
 			@RequestParam String orderId, 
 			@RequestParam(required=false, defaultValue = "1")int inline, 
 			HttpServletRequest request, 
 			HttpServletResponse response) {
-		Map<String, Object> parameterMap = new HashMap<String, Object>();
-		String filename = orderId + ".pdf";
+		Map<String, Object> parameterMap = new HashMap<>();
+		String filename = "Invoice_" + orderId + ".pdf";
 		
 		parameterMap.put("orderId", orderId);
 		try {
-			InputStream inputStream = this.getClass().getResourceAsStream("/report/Invoice.jrxml");
+			InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
 			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
 			response.setContentType("application/pdf");
@@ -351,6 +370,38 @@ public class OrderController {
 		}
 	}
 	
+	@RequestMapping(value="/orderReportHtml.do", method = RequestMethod.GET)
+	public void generateProductDetailHtml(
+			@RequestParam String orderId, 
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		Map<String, Object> parameterMap = new HashMap<>();
+		
+		parameterMap.put("orderId", orderId);
+		try {
+			InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
+			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
+			HtmlExporter exporter = new HtmlExporter();
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			OutputStream outputStream = response.getOutputStream();
+			SimpleHtmlExporterOutput htmlExporterOutput = new SimpleHtmlExporterOutput(outputStream);
+			exporter.setExporterOutput(htmlExporterOutput);
+		    exporter.exportReport();
+		    log.info("Retrived report html for order {}", orderId);
+		} catch (JRException|SQLException e ) {
+			log.info("Jasper report part error",e );
+		} catch (Exception e) {
+			log.info("Unexpected error occur",e );
+		}
+	}
+	
+	/**
+	 * Get multiple report
+	 * 
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping(value="/orderReportTest.do")
 	public void testReport(HttpServletRequest request, 
 			HttpServletResponse response) {
@@ -405,7 +456,7 @@ public class OrderController {
 		
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
-		InputStream inputStream = this.getClass().getResourceAsStream("/report/Invoice.jrxml");
+		InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
 		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
 		jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
 		JasperExportManager.exportReportToPdfStream(jasperPrint, os);
