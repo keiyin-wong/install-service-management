@@ -12,10 +12,10 @@
                     </div> -->
                     <div class="login-form">
                         <h4>User Login</h4>
-                        <form action="j_spring_security_check" method="post">
+                        <form action="${pageContext.request.contextPath}/j_spring_security_check" method="post">
                             <div class="form-group">
                                 <label>UserName</label>
-                                <input type="text" name="username" class="form-control" placeholder="User Name">
+                                <input type="text" name="username" class="form-control" placeholder="User name">
                             </div>
                             <div class="form-group">
                                 <label>Password</label>

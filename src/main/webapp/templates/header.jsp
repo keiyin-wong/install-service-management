@@ -2,6 +2,17 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$("#logout").on("click", function(){
+		window.open("${pageContext.request.contextPath}/j_spring_security_logout", "_self");
+	})
+});
+
+</script>
+
+
 <div class="header">
 	<div class="container-fluid">
 		<div class="row">
@@ -161,7 +172,7 @@
 										<li><a href="#"> <i class="ti-lock"></i> <span>Lock
 													Screen</span>
 										</a></li> -->
-										<li>
+										<li id="logout">
 											<a href="#">
 												<i class="ti-power-off"></i><span>Logout</span>
 											</a>

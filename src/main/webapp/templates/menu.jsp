@@ -16,8 +16,8 @@
 				<li class="label">Order</li>
 				<li><a href="${contextUrl}/install-service-management/order/order.html"><i class="ti-layout-grid2"></i> Orders </a></li>
 				<li><a href="${contextUrl}/install-service-management/order/order-invoice.html"><i class="ti-files"></i> Invoices </a></li>
-				<li class="label">Services</li>
-				<li><a href="app-event-calender.html"><i class="ti-package"></i> Service Type </a></li>
+				<!-- <li class="label">Services</li>
+				<li><a href="app-event-calender.html"><i class="ti-package"></i> Service Type </a></li> -->
 			</ul>
 		</div>
 	</div>
