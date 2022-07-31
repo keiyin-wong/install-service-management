@@ -341,7 +341,7 @@ public class OrderController {
 	 * @param response
 	 */
 	@RequestMapping(value="/orderReport.do", method = RequestMethod.GET)
-	public void generateProductDetailReport(
+	public void generateOrderInvoiceReport(
 			@RequestParam String orderId, 
 			@RequestParam(required=false, defaultValue = "1")int inline, 
 			HttpServletRequest request, 
@@ -371,7 +371,7 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value="/orderReportHtml.do", method = RequestMethod.GET)
-	public void generateProductDetailHtml(
+	public void generateOrderInvoiceReportHtml(
 			@RequestParam String orderId, 
 			HttpServletRequest request, 
 			HttpServletResponse response) {
@@ -402,21 +402,16 @@ public class OrderController {
 	 * @param request
 	 * @param response
 	 */
-	@RequestMapping(value="/orderReportTest.do")
-	public void testReport(HttpServletRequest request, 
-			HttpServletResponse response) {
-		
+	@RequestMapping(value="/multipleOrderReport.do", method = RequestMethod.GET)
+	public void generateMultipleOrderInvoiceReport(HttpServletRequest request, 
+			HttpServletResponse response,
+			@RequestParam String[] selectedOrderIds) {
+		log.info("Generating multiple order invoices, {}", Arrays.toString(selectedOrderIds));
 		List<OutputStream> oss = new ArrayList<>();
-		List<Order> orderList =  new ArrayList<>();
-		try {
-			orderList = orderDAO.datatableOrderList(-1, -1,null,null);
-		} catch (SQLException e) {
-			log.error("Failed to order list to compile report",e);
-		}
 		
 		try {
-			for (Order i : orderList) {
-				OutputStream os = getReport(i.getId());
+			for (String i : selectedOrderIds) {
+				OutputStream os = getReport(i);
 				oss.add(os);
 			}
 		} catch (Exception e) {
@@ -439,7 +434,7 @@ public class OrderController {
             zipOut = new ZipOutputStream(cos);
             // 将单个文件的流添加到压缩文件中
             for (int i = 0; i < oss.size(); i++) {
-                compressFile(oss.get(i), zipOut, orderList.get(i).getId() + ".pdf");
+                compressFile(oss.get(i), zipOut, "Invoice_" + selectedOrderIds[i] + ".pdf");
             }
             zipOut.flush();zipOut.close();
             os.flush();

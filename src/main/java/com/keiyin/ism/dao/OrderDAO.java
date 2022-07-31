@@ -1,17 +1,14 @@
 package com.keiyin.ism.dao;
 
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import com.ibatis.sqlmap.client.SqlMapClient;
+import com.keiyin.ism.model.MonthlyTotal;
 import com.keiyin.ism.model.Order;
 import com.keiyin.ism.model.OrderDetail;
-import com.mysql.cj.x.protobuf.MysqlxCrud.Update;
 
 public class OrderDAO {
 	
@@ -98,6 +95,23 @@ public class OrderDAO {
 		sqlMapClient.delete("Order.deleteMultipleOrder", parameterMap);
 	}
 	
+	public List<MonthlyTotal> getMonthlyTotal(int year) throws SQLException {
+		Map<String, Object> parameterMap = new HashMap<>();
+		parameterMap.put("year", year);
+		@SuppressWarnings("unchecked")
+		List<MonthlyTotal> monthlyTotalList = sqlMapClient.queryForList("Order.getMonthlyTotal", parameterMap);
+		List<MonthlyTotal> resultList = MonthlyTotal.getTwelveMonthsList(year);
+		for(MonthlyTotal monthlyTotal : monthlyTotalList) {
+			for(MonthlyTotal result : resultList) {
+				if(monthlyTotal.getMonth() == result.getMonth()) {
+					result.setTotal(monthlyTotal.getTotal());
+				}
+			}
+		}
+		
+		return resultList;
+	}
+	
 	
 	// ---------------------------------------------------------------------------
 	// Order detail
@@ -155,7 +169,7 @@ public class OrderDAO {
 			String editPriceSen) throws SQLException {
 		
 		Map<String, Object> parameterMap = new HashMap<>();
-		parameterMap.put("orderId", orderId);
+		parameterMap.put("orderId", orderId);	
 		parameterMap.put("editLineNumber", editLineNumber);
 		parameterMap.put("editService", editService);
 		parameterMap.put("editDescription", editDescription);

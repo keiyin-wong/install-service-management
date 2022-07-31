@@ -9,7 +9,7 @@
     <http pattern="/login/**" security="none"/>
     
 	<http auto-config="true" use-expressions="true" >
-		<intercept-url pattern="/order/**" access="hasRole('ROLE_USER')"  />
+		<!-- <intercept-url pattern="/order/**" access="hasRole('ROLE_USER')"  /> -->
 		
 		<access-denied-handler error-page="/403" />
 		

@@ -13,6 +13,12 @@
 		<result property="total" column="total_price" javaType="Integer"/>
 	</resultMap>
 	
+	<resultMap id="monthlyTotalResultMap" class="com.keiyin.ism.model.MonthlyTotal">
+		<result property="year" column="year" javaType="int"/>
+		<result property="month" column="month" javaType="int"/>
+		<result property="total" column="total" javaType="int"/>
+	</resultMap>
+	
 	<resultMap id="orderDetailResultMap" class="com.keiyin.ism.model.OrderDetail">
 		<result property="orderId" column="order_id" javaType="String"/>
 		<result property="lineNumber" column="line_number" javaType="int"/>
@@ -111,6 +117,28 @@
 				#selectedOrderIds[]#
 			</iterate>
 	</delete>
+	
+	<select id="getMonthlyTotal" resultMap="monthlyTotalResultMap" parameterClass="java.util.HashMap">
+		SELECT * 
+		FROM
+		(
+		SELECT
+		YEAR(o.date) AS `year`,
+		MONTH(o.date) AS `month`,
+		COALESCE(SUM(
+			CASE
+			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
+			END
+		),0) AS total
+		FROM `order` o
+		LEFT JOIN `order_detail` od ON o.id = od.order_id
+		LEFT JOIN `service` s ON s.id = od.service_id
+		WHERE YEAR(o.date)= #year#
+		GROUP BY `year`,`month`
+		) a
+	</select>
+	
 	
 	<select id="getOrderDetailList" resultMap="orderDetailResultMap" parameterClass="String">
 		SELECT 

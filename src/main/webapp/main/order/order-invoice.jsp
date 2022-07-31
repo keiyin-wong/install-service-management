@@ -19,7 +19,7 @@ var orderTable;
 
 $(document).ready(function(){
 	loaderSpinner = $('#loader');
-	
+	$(".checkbox-options").hide();
 	
 	
 	// ============================================================
@@ -154,6 +154,10 @@ $(document).ready(function(){
 		downloadInvoice($("#showInvoiceModelOrderId").val());
 	});
 	
+	$("#showDownloadMultipleModalButton").on("click", function(){
+		showDownloadMultipleModal();
+	});
+	
 });
 
 //============================================================
@@ -195,6 +199,27 @@ function downloadInvoice(orderId) {
 	window.open("orderReport.do?orderId=" + orderId + "&inline=0");
 }
 
+
+//============================================================
+//Download multiple model functions
+//===========================================================
+function showDownloadMultipleModal(){
+	$('#downloadMultipleModal .modal-title').html('Download selected invoices');
+	$('#downloadMultipleModal').modal();
+	$('#downloadMultipleModalButton').html(
+			'<button type="button" class="btn btn-primary" onClick="javascript:downloadMultipleInvoices()">Download</button>'
+	);
+}
+
+function downloadMultipleInvoices() {
+	$('#downloadMultipleModal').modal('hide');
+	let data = $("input[type=checkbox][name=selectedOrderIds]:checked").serialize();
+	window.open("multipleOrderReport.do?"+ data );
+	$("input[type=checkbox][name=selectedOrderIds]:checked").prop("checked", false);
+	$(".checkbox-options").hide();
+	orderTable.DataTable().ajax.reload();
+}
+
 </script>
 
 <div id="loader"></div>
@@ -208,7 +233,7 @@ function downloadInvoice(orderId) {
 					<div class="page-header pull-left">
 						<div class="page-title">
         					<ol class="breadcrumb">
-            					<li class="breadcrumb-item"><a href="${contextUrl}/install-service-management/order/order.html">Orders</a></li>
+            					<li class="breadcrumb-item"><a href="${contextUrl}/install-service-management/order/order-invoice.html">Invoices</a></li>
         					</ol>
 					    </div>
 					</div>
@@ -220,7 +245,7 @@ function downloadInvoice(orderId) {
 						<div class="card">
 							<div class='row'>
 								<div class="col-lg-12 checkbox-options">
-									<button  class="btn btn-sm btn-primary m-l-5">Print</button>
+									<button id="showDownloadMultipleModalButton" class="btn btn-sm btn-primary m-l-5">Download</button>
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
@@ -270,3 +295,26 @@ function downloadInvoice(orderId) {
 </div>
 
 
+<div class="modal fade" id="downloadMultipleModal" tabindex="-1" role="dialog"
+	aria-labelledby="deleteOrderModal" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Download invoices</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="alert">
+					Do you want to download this order?
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<span id='downloadMultipleModalButton'></span>
+			</div>
+		</div>
+	</div>
+</div>
