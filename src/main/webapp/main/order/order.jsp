@@ -35,24 +35,15 @@ $(document).ready(function(){
 				dataType : "json",
 				success : function(data){
 					if(data.status == "success"){
-						popMessage('success', 'Successfully create order');
-						setTimeout(function() {
-					        $("#pop-message .alert").alert('close');
-					    }, 3000);
+					    popSuccessToastr("Success", 'Successfully create order');
 					}else if(data.status == "fail"){
-						popMessage('danger', 'Failed to create order');
-						setTimeout(function() {
-					        $("#pop-message .alert").alert('close');
-					    }, 3000);
+						popErrorToastr("Failed", "Failed to create order");
 					}
 					$('#orderTable').DataTable().ajax.reload();
 				},
 				error: function(data){
 					loaderSpinner.hide();
-					popMessage('danger', 'Failed to create order');
-					setTimeout(function() {
-				        $("#pop-message .alert").alert('close');
-				    }, 3000);
+					popErrorToastr("Failed", "Failed to create order");
 				}
 			}).done(function(){
 				loaderSpinner.hide();
@@ -114,6 +105,12 @@ $(document).ready(function(){
 				data: null, 
 				orderable: false,
 				defaultContent: "",
+				className: "datatable-skip-click"
+			},
+			{
+				data: null, 
+				orderable: false,
+				defaultContent: "",
 				render: function (data, type, row) {
 					return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '"/>';
 				},
@@ -170,7 +167,7 @@ $(document).ready(function(){
 				className: "datatable-skip-click"
 			} */
 		],
-		order: [[1, 'desc']],
+		order: [[2, 'desc']],
 		initComplete: function(settings, json){
 			$('#orderTable_filter input').unbind();
 			$('#orderTable_filter input').bind('change', function(e) {
@@ -270,6 +267,7 @@ function deleteOrder(dataId){
 
 function deleteMultipleOrders(){
 	$('#deleteOrderModal').modal('hide');
+	loaderSpinner.show();
 	//alert($("input[type=checkbox][name=selectedOrderIds]:checked").serialize());
 	$.ajax({
 		type : "POST",
@@ -282,19 +280,13 @@ function deleteMultipleOrders(){
 		},
 		error: function(data){
 			loaderSpinner.hide();
-			popMessage('danger', 'Failed to delete orders');
-			setTimeout(function() {
-		        $("#pop-message .alert").alert('close');
-		    }, 3000);
+			popErrorToastr("Failed", "Failed to delete order");
 			$('#orderTable').DataTable().ajax.reload();
 			
 		}
 	}).done(function(){
 		loaderSpinner.hide();
-		popMessage('success', 'Successfully deleted orders');
-		setTimeout(function() {
-	        $("#pop-message .alert").alert('close');
-	    }, 3000);
+		popSuccessToastr("Success", 'Successfully delete orders');
 	});
 }
 </script>
@@ -333,6 +325,7 @@ function deleteMultipleOrders(){
 										<table id="orderTable" class="table hover"> <!-- table-striped -->
 											<thead>
 												<tr>
+													<th>#</th>
 													<th></th>
 													<th>Order Id</th>
 													<th>Order Date</th>

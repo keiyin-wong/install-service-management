@@ -80,3 +80,45 @@ function popMessage(type, message){
 
     $("#pop-message").html(html);
 }
+
+function popSuccessToastr(title, message) {
+	toastr.success(message,title,{
+        "positionClass": "toast-top-center",
+        timeOut: 5000,
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        "tapToDismiss": false
+    });
+}
+
+function popErrorToastr(title, message) {
+	toastr.error(message,title,{
+		"positionClass": "toast-top-center",
+		timeOut: 5000,
+		"closeButton": true,
+		"debug": false,
+		"newestOnTop": true,
+		"progressBar": true,
+		"preventDuplicates": true,
+		"onclick": null,
+		"showDuration": "300",
+		"hideDuration": "1000",
+		"extendedTimeOut": "1000",
+		"showEasing": "swing",
+		"hideEasing": "linear",
+		"showMethod": "fadeIn",
+		"hideMethod": "fadeOut",
+		"tapToDismiss": false
+	});
+}

@@ -40,9 +40,9 @@ $(document).ready(function(){
 		monthlyTotalList[${loop.index}] = ${monthlyTotal.total}/100;
 	</c:forEach>
 	
-	var ctx = document.getElementById( "singelBarChart" );
+	var ctx = document.getElementById( "monthlyIncomeBarChart" );
 	ctx.height = 100;
-	var myChart = new Chart( ctx, {
+	var monthlyIncomeBarChart = new Chart( ctx, {
 		type: 'bar',
 		data: {
 			labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -74,10 +74,10 @@ $(document).ready(function(){
 		}
 	} );
 	
-	getMonthlyTotal(myChart);
+	getMonthlyTotal(monthlyIncomeBarChart);
 	
 	$("#monthlyIncomeDatepicker").on("change", function() {
-		getMonthlyTotal(myChart);
+		getMonthlyTotal(monthlyIncomeBarChart);
 	})
 
 })
@@ -151,7 +151,7 @@ function removeData(chart) {
 							<h4>Monthly income&nbsp</h4><input type="text" style="max-width: 50px;  border: none; border-bottom: 1px solid;" name="monthlyIncomeDatepicker" id="monthlyIncomeDatepicker" />
 						</div>
 						<div class="card-body">
-							<canvas id="singelBarChart"></canvas>
+							<canvas id="monthlyIncomeBarChart"></canvas>
 						</div>
 					</div>
 				</div>

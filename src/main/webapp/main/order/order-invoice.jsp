@@ -187,10 +187,7 @@ function fillInvoiceToModal(orderId) {
 		},
 		error: function(data) {
 			loaderSpinner.hide();
-			popMessage('danger', 'Failed to get order ' + orderId + ' report.');
-			setTimeout(function() {
-		        $("#pop-message .alert").alert('close');
-		    }, 3000);
+			popErrorToastr("Failed", "Failed to get invoice " + orderId);
 		}
 	})
 }

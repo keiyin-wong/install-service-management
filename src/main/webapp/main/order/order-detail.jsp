@@ -33,10 +33,17 @@ $(document).ready(function(){
 	
 	
 	orderDetailTable = $('#orderDetailTable').DataTable({
+		serverSide: true,
 		ajax: {
-			url: 'getOrderDetailDataTable?orderId=' + urlParams.get('orderId'),
+			url: 'getOrderDetailDataTable',
 			type: 'POST',
+			data: function(d){
+				 d.orderId = urlParams.get('orderId');
+			}
 		},
+		responsive: true,
+		lengthChange: true,
+		pageLength: 10,
 		processing: true,
 		paging: false,
 		columns:[
@@ -143,10 +150,13 @@ $(document).ready(function(){
                 return intVal(a) + intVal(b);
             }, 0);
 
-            $(api.column(8).footer()).addClass("text-right");
-            $(api.column(8).footer()).html('RM ' + (total/100).toFixed(2));
+            $(api.column(0).footer()).addClass("text-right");
+            $(api.column(0).footer()).html('RM ' + (total/100).toFixed(2));
 		}
+		
 	});
+	
+	$('#orderDetailTable').DataTable().ajax.reload();
 	
 	$("#printInvoiceButton").click(function(){
 		window.open("orderReport.do?inline=1&orderId=" + urlParams.get("orderId"), '_blank');
@@ -161,16 +171,10 @@ $(document).ready(function(){
 			data: $('#orderForm').serialize(),
 			success: function(data){
 				if(data.status == "success"){
-					popMessage('success', 'Successfully update order date');
-					setTimeout(function() {
-				        $("#pop-message .alert").alert('close');
-				    }, 3000);
+					popSuccessToastr("Success", 'Successfully update order date');
 					getOrder();
 				}else if(data.status == "fail"){
-					popMessage('danger', 'Failed to order update date');
-					setTimeout(function() {
-				        $("#pop-message .alert").alert('close');
-				    }, 3000);
+					popErrorToastr('Failed', 'Failed to update order date');
 				}
 			},
 			error: function(){
@@ -371,25 +375,16 @@ function createOrderDetail(){
 			success : function(data){
 				if(data.status == "success"){
 					loaderSpinner.hide();
-					popMessage('success', 'Successfully create order detail');
-					setTimeout(function() {
-				        $("#pop-message .alert").alert('close');
-				    }, 3000);
+					popSuccessToastr("Success", 'Successfully create order detail');
 				}else if(data.status == "fail"){
-					popMessage('danger', 'Failed to create order detail');
-					setTimeout(function() {
-				        $("#pop-message .alert").alert('close');
-				    }, 3000);
+					popErrorToastr("Failed", "Failed to create order detail");
 				}
 				rowNumber = 0;
 				$('#orderDetailTable').DataTable().ajax.reload();
 			},
 			error: function(data){
 				loaderSpinner.hide();
-				popMessage('danger', 'Failed to create order detail');
-				setTimeout(function() {
-			        $("#pop-message .alert").alert('close');
-			    }, 3000);
+				popErrorToastr("Failed", "Failed to create order detail");
 			}
 		}).done(function(){
 			
@@ -422,25 +417,16 @@ function deleteOrderDetail(lineNumber) {
 		success : function(data){
 			if(data.status == "success"){
 				loaderSpinner.hide();
-				popMessage('success', 'Successfully deleted order detail');
-				setTimeout(function() {
-			        $("#pop-message .alert").alert('close');
-			    }, 3000);
+				popSuccessToastr("Success", 'Successfully delete order detail');
 			}else if(data.status == "fail"){
-				popMessage('danger', 'Failed to delete order detail');
-				setTimeout(function() {
-			        $("#pop-message .alert").alert('close');
-			    }, 3000);
+				popErrorToastr("Failed", "Failed to delete order detail");
 			}
 			rowNumber = 0;
 			$('#orderDetailTable').DataTable().ajax.reload();
 		},
 		error: function (data){
 			loaderSpinner.hide();
-			popMessage('danger', 'Failed to delete order detail');
-			setTimeout(function() {
-		        $("#pop-message .alert").alert('close');
-		    }, 3000);
+			popErrorToastr("Failed", "Failed to delete order detail");
 			rowNumber = 0;
 			$('#orderDetailTable').DataTable().ajax.reload();
 		}
@@ -497,10 +483,7 @@ function getEditOrderDetail(lineNumber){
 		},
 		error: function (data){
 			loaderSpinner.hide();
-			popMessage('danger', 'Failed to retrieve order detail');
-			setTimeout(function() {
-		        $("#pop-message .alert").alert('close');
-		    }, 3000);
+			popErrorToastr("Failed", "Failed to retrieve order detail");
 		}
 	});
 }
@@ -521,25 +504,16 @@ function updateOrderDetail(){
 			success : function(data){
 				if(data.status == "success"){
 					loaderSpinner.hide();
-					popMessage('success', 'Successfully update order detail');
-					setTimeout(function() {
-				        $("#pop-message .alert").alert('close');
-				    }, 3000);
+					popSuccessToastr("Success", 'Successfully update order detail');
 				}else if(data.status == "fail"){
-					popMessage('danger', 'Failed to update order detail');
-					setTimeout(function() {
-				        $("#pop-message .alert").alert('close');
-				    }, 3000);
+					popErrorToastr("Failed", "Failed to update order detail");
 				}
 				rowNumber = 0;
 				$('#orderDetailTable').DataTable().ajax.reload();
 			},
 			error: function (data){
 				loaderSpinner.hide();
-				popMessage('danger', 'Failed to delete order detail');
-				setTimeout(function() {
-			        $("#pop-message .alert").alert('close');
-			    }, 3000);
+				popErrorToastr("Failed", "Failed to update order detail");
 				rowNumber = 0;
 				$('#orderDetailTable').DataTable().ajax.reload();
 			}
@@ -663,7 +637,7 @@ function changeEditPriveValueBasedOnHeight(){
 										<div class='row'>
 											<div class="col-lg-12">
 												<div class="bootstrap-data-table-panel">
-													<table id="orderDetailTable" class="table hover"> <!-- table-striped table-bordered  -->
+													<table id="orderDetailTable" class="table hover"  width="100%"> <!-- table-striped table-bordered  -->
 														<thead>
 															<tr>
 																<th>#</th>
@@ -682,7 +656,7 @@ function changeEditPriveValueBasedOnHeight(){
 														</tbody>
 														 <tfoot>
 												            <tr>
-												                <th colspan="8" style="text-align:right">Total:</th>
+												                <th colspan="9" style="text-align:right"></th>
 												                <th></th>
 												            </tr>
 												        </tfoot>

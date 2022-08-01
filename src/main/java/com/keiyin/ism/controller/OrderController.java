@@ -100,6 +100,7 @@ public class OrderController {
 		}
 		
 		JsonDatableQueryResponse jsonResponse = new JsonDatableQueryResponse();
+		jsonResponse.setDraw(datatableRequest.getDraw());
 		jsonResponse.setRecordsTotal(totalCount);
 		jsonResponse.setData(orderList);
 		jsonResponse.setRecordsFiltered(totalCount);
@@ -224,9 +225,9 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value = "/getOrderDetailDataTable", method = RequestMethod.POST)
-	public @ResponseBody JsonDatableQueryResponse queryOrderDetailList(String orderId) {
+	public @ResponseBody JsonDatableQueryResponse queryOrderDetailList(HttpServletRequest request, @RequestParam String orderId) {
 		List<OrderDetail> orderDetailList = new ArrayList<>();
-		
+		DatatableRequest datatableRequest = new DatatableRequest(request);
 		try {
 			orderDetailList = orderDAO.getOrderDetailList(orderId);
 			log.info("Successfully query order detail list datatable for order {}", orderId);
@@ -235,7 +236,10 @@ public class OrderController {
 		}
 		
 		JsonDatableQueryResponse jsonResponse = new JsonDatableQueryResponse();
+		jsonResponse.setDraw(datatableRequest.getDraw());
 		jsonResponse.setData(orderDetailList);
+		jsonResponse.setRecordsTotal(orderDetailList.size());
+		jsonResponse.setRecordsFiltered(orderDetailList.size());
 		
 		return jsonResponse;
 	}
