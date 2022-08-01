@@ -9,17 +9,19 @@
     <http pattern="/login/**" security="none"/>
     
 	<http auto-config="true" use-expressions="true" >
-		<!-- <intercept-url pattern="/order/**" access="hasRole('ROLE_USER')"  /> -->
+		<intercept-url pattern="/order/**" access="hasRole('ROLE_USER')"  />
+		<intercept-url pattern="/dashboard/**" access="hasRole('ROLE_USER')"  />
 		
 		<access-denied-handler error-page="/403" />
 		
 		<form-login 
 			login-page="/login/login.html"
-			default-target-url="/order/order.html"
+			default-target-url="/dashboard/dashboard.html"
 			authentication-failure-url="/login/login.html?error"
 			username-parameter="username"
 			password-parameter="password"
 		/>
+		<!-- /order/order.html -->
 		
 		<logout logout-success-url="/login/login.html"/>  <!-- logout-url="/login/logout"  -->
 	</http>

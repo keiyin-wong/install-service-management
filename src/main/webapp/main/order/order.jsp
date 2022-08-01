@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <style>
 #orderTable tbody tr{
@@ -111,6 +112,7 @@ $(document).ready(function(){
 				data: null, 
 				orderable: false,
 				defaultContent: "",
+				<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
 				render: function (data, type, row) {
 					return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '"/>';
 				},
@@ -129,6 +131,7 @@ $(document).ready(function(){
 					}
 					//console.log($("input[type=checkbox][name=selectedOrderIds]:checked").length);
 				})
+				</sec:authorize>
 			},
 			{
 				data: "id", 
@@ -173,9 +176,9 @@ $(document).ready(function(){
 			$('#orderTable_filter input').bind('change', function(e) {
 				orderTable.search( this.value ).draw();
 			}); 
-		}
-		/* columnDefs: [
-			{
+		},
+		columnDefs: [
+			/* {
 				targets: 4,
 				render: function (data, type, row) {
                     return ""
@@ -183,8 +186,12 @@ $(document).ready(function(){
                     + '<a onclick="showDeleteModal(\'' + data.id + '\')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
                     + '<a target="_blank" href="orderReport.do?inline=0&orderId='+data.id+'" class="btn btn-sm btn-info m-l-5">Invoice</a>'
                 },
+			}, */
+			{
+				width: "5%", 
+				targets: 0
 			}
-		], */
+		],
 	} );
 	
 	$('#orderTable').on('click', 'tbody td:not(".datatable-skip-click")', function() {
@@ -310,11 +317,13 @@ function deleteMultipleOrders(){
 				<div class="row">
 					<div class="col-lg-12">
 						<div class="card">
-							<div class='row'>
-								<div class="col-lg-12">
-									<button class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#addNewOrderModal"><i class="ti-plus m-r-5"></i>Add new order</button>
+							<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
+								<div class='row'>
+									<div class="col-lg-12">
+										<button class="btn btn-sm btn-primary float-right" data-toggle="modal" data-target="#addNewOrderModal"><i class="ti-plus m-r-5"></i>Add new order</button>
+									</div>
 								</div>
-							</div>
+							</sec:authorize>
 							<div class='row'>
 								<div class="col-lg-12 checkbox-options">
 									<button id="showDeleteMultipleOrderModalButton" class="btn"><span class="ti-trash"></span></button>
@@ -327,7 +336,7 @@ function deleteMultipleOrders(){
 												<tr>
 													<th>#</th>
 													<th></th>
-													<th>Order Id</th>
+													<th>Order Id </th>
 													<th>Order Date</th>
 													<th>Total</th>
 													<!-- <th>Action</th> -->

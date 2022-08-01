@@ -37,7 +37,6 @@
 	    <link href="${contextUrl}/assets/css/lib/bootstrap.min.css" rel="stylesheet"> <%-- Bootstrap v4.1.1 --%>
 	    <link href="${contextUrl}/assets/css/lib/helper.css" rel="stylesheet">
 	    <link href="${contextUrl}/assets/css/style.css" rel="stylesheet">		
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
 		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 		<link href="${contextUrl}/assets/css/lib/toastr/toastr.min.css" rel="stylesheet">
 		  
@@ -56,6 +55,7 @@
 	    <!-- datatable -->
 	    <%-- <script src="${contextUrl}/assets/js/lib/data-table/jquery.dataTables.min.js"></script> --%>
      	<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+     	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
      	<script src="https://cdn.datatables.net/responsive/2.1.1/js/dataTables.responsive.js"></script>
      	<link href="https://cdn.datatables.net/responsive/2.1.1/css/responsive.dataTables.css" rel="stylesheet">	
      	

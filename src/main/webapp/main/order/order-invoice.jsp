@@ -56,6 +56,12 @@ $(document).ready(function(){
 				data: null, 
 				orderable: false,
 				defaultContent: "",
+				className: "datatable-skip-click"
+			},
+			{
+				data: null, 
+				orderable: false,
+				defaultContent: "",
 				render: function (data, type, row) {
 					return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '"/>';
 				},
@@ -112,15 +118,15 @@ $(document).ready(function(){
 				className: "datatable-skip-click"
 			} */
 		],
-		order: [[1, 'desc']],
+		order: [[2, 'desc']],
 		initComplete: function(settings, json){
 			$('#orderTable_filter input').unbind();
 			$('#orderTable_filter input').bind('change', function(e) {
 				orderTable.search( this.value ).draw();
 			}); 
 		},
-		/* columnDefs: [
-			{
+		columnDefs: [
+/* 			{
 				targets: 4,
 				render: function (data, type, row) {
                     return ""
@@ -128,8 +134,12 @@ $(document).ready(function(){
                     + '<a onclick="showDeleteModal(\'' + data.id + '\')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
                     + '<a target="_blank" href="orderReport.do?inline=0&orderId='+data.id+'" class="btn btn-sm btn-info m-l-5">Invoice</a>'
                 },
+			}, */
+		 	{
+				width: "5%", 
+				targets: 0
 			}
-		], */
+		],
 	} );
 	
 	$('#orderTable').on('click', 'tbody td:not(".datatable-skip-click")', function() {
@@ -249,6 +259,7 @@ function downloadMultipleInvoices() {
 										<table id="orderTable" class="table hover"> <!-- table-striped -->
 											<thead>
 												<tr>
+													<th>#</th>
 													<th></th>
 													<th>Order Id</th>
 													<th>Order Date</th>

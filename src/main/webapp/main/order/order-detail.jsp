@@ -2,11 +2,10 @@
     pageEncoding="utf-8"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <script>
 var orderDetailTable;
-var rowNumber = 0;
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var loaderSpinner = $('#loader');
@@ -51,8 +50,8 @@ $(document).ready(function(){
 				data: null , 
 				name:"id", 
 				defaultContent: "",
-				render: function (data, type){
-					return ++rowNumber;
+				render: function (data, type, row, meta){
+					return meta.row + meta.settings._iDisplayStart + 1;
 				}
 			},
 			{data: "serviceName", name:"id"},
@@ -129,13 +128,15 @@ $(document).ready(function(){
                     return ft;
                 },
 			},
-			{
-				targets: 9,
-				render: function(data, type, row){
-					return "<a onclick='showEditOrderDetailModal("+ data.lineNumber + ")' class='btn btn-sm btn-primary m-l-5'>Edit</a>"
-					+ '<a onclick="showDeleteOrderDetailModal(' + data.lineNumber + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
+			<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
+				{
+					targets: 9,
+					render: function(data, type, row){
+						return "<a onclick='showEditOrderDetailModal("+ data.lineNumber + ")' class='btn btn-sm btn-primary m-l-5'>Edit</a>"
+						+ '<a onclick="showDeleteOrderDetailModal(' + data.lineNumber + ')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
+					}
 				}
-			}
+			</sec:authorize>
 		],
 		footerCallback: function (row, data, start, end, display) { // Calculate subtotal
 			var api = this.api();
@@ -379,7 +380,6 @@ function createOrderDetail(){
 				}else if(data.status == "fail"){
 					popErrorToastr("Failed", "Failed to create order detail");
 				}
-				rowNumber = 0;
 				$('#orderDetailTable').DataTable().ajax.reload();
 			},
 			error: function(data){
@@ -421,13 +421,11 @@ function deleteOrderDetail(lineNumber) {
 			}else if(data.status == "fail"){
 				popErrorToastr("Failed", "Failed to delete order detail");
 			}
-			rowNumber = 0;
 			$('#orderDetailTable').DataTable().ajax.reload();
 		},
 		error: function (data){
 			loaderSpinner.hide();
 			popErrorToastr("Failed", "Failed to delete order detail");
-			rowNumber = 0;
 			$('#orderDetailTable').DataTable().ajax.reload();
 		}
 	});
@@ -508,13 +506,11 @@ function updateOrderDetail(){
 				}else if(data.status == "fail"){
 					popErrorToastr("Failed", "Failed to update order detail");
 				}
-				rowNumber = 0;
 				$('#orderDetailTable').DataTable().ajax.reload();
 			},
 			error: function (data){
 				loaderSpinner.hide();
 				popErrorToastr("Failed", "Failed to update order detail");
-				rowNumber = 0;
 				$('#orderDetailTable').DataTable().ajax.reload();
 			}
 		});
@@ -612,7 +608,11 @@ function changeEditPriveValueBasedOnHeight(){
 											<div class="form-group row">
 												<label for="recipient-name" class="col-sm-3 col-form-label">Date:</label>
 												<div class="col-sm-9">
-													<input type="date" class="form-control" id="orderDate" name="orderDate" id="date" required>
+													<input type="date" class="form-control" id="orderDate" name="orderDate" id="date" required
+													<sec:authorize access="!hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
+														disabled
+													</sec:authorize>
+													>
 												</div>
 											</div>
 										</form>
@@ -629,11 +629,13 @@ function changeEditPriveValueBasedOnHeight(){
 								</div>
 								 <div class="row">
 								 	<div class="col-md-12">
-								 		<div class='row'>
-											<div class="col-lg-12">
-												<button id="addNewOrderDetailModalButton" class="btn btn-sm btn-primary float-right" data-toggle="modal"><i class="ti-plus m-r-5"></i>Add new order detail</button>
+								 		<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
+								 			<div class='row'>
+												<div class="col-lg-12">
+													<button id="addNewOrderDetailModalButton" class="btn btn-sm btn-primary float-right" data-toggle="modal"><i class="ti-plus m-r-5"></i>Add new order detail</button>
+												</div>
 											</div>
-										</div>
+										</sec:authorize>
 										<div class='row'>
 											<div class="col-lg-12">
 												<div class="bootstrap-data-table-panel">
