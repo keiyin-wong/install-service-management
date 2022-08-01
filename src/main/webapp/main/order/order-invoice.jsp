@@ -84,6 +84,9 @@ $(document).ready(function(){
 			{
 				data: "id", 
 				name:"id",
+				render: function (data, type, row) {
+					return '<a class="text-primary" href="javascript:showInvoiceModal(' + data + ')" >' + data + '</a>';
+				},
 				createdCell: cell => $(cell).addClass("text-primary")
 			},
 			{
