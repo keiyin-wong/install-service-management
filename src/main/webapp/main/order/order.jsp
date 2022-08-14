@@ -78,10 +78,11 @@ $(document).ready(function(){
 
 	orderTable = $('#orderTable').DataTable( {
 		serverSide: true,
+		dom: "lfrtip",
 		searching: true,
 		processing: true,
 		language: { 
-			processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+			//processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
 		},
 		responsive: true,
 		search: {
@@ -113,24 +114,24 @@ $(document).ready(function(){
 				orderable: false,
 				defaultContent: "",
 				<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
-				render: function (data, type, row) {
-					return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '"/>';
-				},
-				createdCell: cell => $(cell).addClass("datatable-skip-click").click(function(event){
-					var $target = $(event.target);
-					if(!$target.is('input:checkbox')){
-						if($(this).find('input').is(':checked')){
-							$(this).find('input').prop("checked",false);
-						}else
-							$(this).find('input').prop("checked",true);
-					}
-					if($("input[type=checkbox][name=selectedOrderIds]:checked").length == 0){
-						$(".checkbox-options").hide();
-					}else{
-						$(".checkbox-options").show();
-					}
-					//console.log($("input[type=checkbox][name=selectedOrderIds]:checked").length);
-				})
+					render: function (data, type, row) {
+						return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '"/>';
+					},
+					createdCell: cell => $(cell).addClass("datatable-skip-click").click(function(event){
+						var $target = $(event.target);
+						if(!$target.is('input:checkbox')){
+							if($(this).find('input').is(':checked')){
+								$(this).find('input').prop("checked",false);
+							}else
+								$(this).find('input').prop("checked",true);
+						}
+						if($("input[type=checkbox][name=selectedOrderIds]:checked").length == 0){
+							$(".checkbox-options").hide();
+						}else{
+							$(".checkbox-options").show();
+						}
+						//console.log($("input[type=checkbox][name=selectedOrderIds]:checked").length);
+					})
 				</sec:authorize>
 			},
 			{
@@ -164,7 +165,7 @@ $(document).ready(function(){
 					}
 					return data;
 				},
-				className: "dt-body-right"
+				className: "dt-right"
 			},
 /* 			{
 				data: null, 
@@ -334,7 +335,7 @@ function deleteMultipleOrders(){
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
-										<table id="orderTable" class="table hover"> <!-- table-striped -->
+										<table id="orderTable" class="table"> <!-- table-striped -->
 											<thead>
 												<tr>
 													<th>#</th>

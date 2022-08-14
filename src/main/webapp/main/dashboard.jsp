@@ -14,6 +14,12 @@
   stroke:  #00a79d;
   stroke-width: 20;
 }
+/* @media only screen and (max-width: 400px) {
+	.chartBox {
+		width: 90%;
+		height: 45%;
+	}
+} */
 </style>
 
 
@@ -41,7 +47,7 @@ $(document).ready(function(){
 	</c:forEach>
 	
 	var ctx = document.getElementById( "monthlyIncomeBarChart" );
-	ctx.height = 100;
+	ctx.height = 300;
 	var monthlyIncomeBarChart = new Chart( ctx, {
 		type: 'bar',
 		data: {
@@ -70,7 +76,9 @@ $(document).ready(function(){
 						labelString: 'probability'
 					} */
 				} ]
-			}
+			},
+			 responsive: true,
+			 maintainAspectRatio: false,
 		}
 	} );
 	
@@ -151,7 +159,7 @@ function removeData(chart) {
 							<h4>Monthly income&nbsp</h4><input type="text" style="max-width: 50px;  border: none; border-bottom: 1px solid;" name="monthlyIncomeDatepicker" id="monthlyIncomeDatepicker" />
 						</div>
 						<div class="card-body">
-							<canvas id="monthlyIncomeBarChart"></canvas>
+							<canvas id="monthlyIncomeBarChart" style="min-height:160px"></canvas>
 						</div>
 					</div>
 				</div>

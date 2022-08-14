@@ -225,7 +225,7 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value = "/getOrderDetailDataTable", method = RequestMethod.POST)
-	public @ResponseBody JsonDatableQueryResponse queryOrderDetailList(HttpServletRequest request, @RequestParam String orderId) {
+	public @ResponseBody JsonDatableQueryResponse queryOrderDetailDatatable(HttpServletRequest request, @RequestParam String orderId) {
 		List<OrderDetail> orderDetailList = new ArrayList<>();
 		DatatableRequest datatableRequest = new DatatableRequest(request);
 		try {
@@ -242,6 +242,20 @@ public class OrderController {
 		jsonResponse.setRecordsFiltered(orderDetailList.size());
 		
 		return jsonResponse;
+	}
+	
+	@RequestMapping(value = "/getOrderDetailList", method = RequestMethod.POST)
+	public @ResponseBody List<OrderDetail> queryOrderDetailList(HttpServletRequest request, @RequestParam String orderId) {
+		List<OrderDetail> orderDetailList = new ArrayList<>();
+		// DatatableRequest datatableRequest = new DatatableRequest(request);
+		try {
+			orderDetailList = orderDAO.getOrderDetailList(orderId);
+			log.info("Successfully query order detail list datatable for order {}", orderId);
+		} catch (SQLException e) {
+			log.info("Failed query order detail list datatable for order {}", orderId, e);
+		}
+		
+		return orderDetailList;
 	}
 	
 	@RequestMapping(value = "/getOrderDetail", method = RequestMethod.GET)

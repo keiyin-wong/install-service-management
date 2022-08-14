@@ -18,7 +18,15 @@
 	</resultMap>
 	
 	<select id="getServiceList" resultMap="serviceResultMap">
+		<!-- SELECT * FROM service -->
 		SELECT * FROM service
+		ORDER BY 
+		CASE
+			WHEN description_english IS NULL THEN 3 
+			WHEN description_english = '' THEN 2 
+			ELSE 1 
+		END, 
+		description_english ASC;
 	</select>
 	
 	<select id="getAllServiceDiffPrices" resultMap="serviceDiffPriceResultMap">

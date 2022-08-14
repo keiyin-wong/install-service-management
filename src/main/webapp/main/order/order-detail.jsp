@@ -15,6 +15,7 @@ $(document).ready(function(){
 	document.title = urlParams.get('orderId');
 	getOrder();
 	loaderSpinner = $('#loader');
+	$('select').selectpicker();
 	
 	// Get different price list
 	$.ajax({
@@ -32,12 +33,15 @@ $(document).ready(function(){
 	
 	
 	orderDetailTable = $('#orderDetailTable').DataTable({
-		serverSide: true,
+		serverSide: false,
 		ajax: {
-			url: 'getOrderDetailDataTable',
+			url: 'getOrderDetailList',
 			type: 'POST',
 			data: function(d){
 				 d.orderId = urlParams.get('orderId');
+			},
+			dataSrc: function ( json ) {
+			  return json;
 			}
 		},
 		responsive: true,
@@ -157,7 +161,7 @@ $(document).ready(function(){
 		
 	});
 	
-	$('#orderDetailTable').DataTable().ajax.reload();
+	// $('#orderDetailTable').DataTable().ajax.reload();
 	
 	$("#printInvoiceButton").click(function(){
 		window.open("orderReport.do?inline=1&orderId=" + urlParams.get("orderId"), '_blank');
@@ -353,6 +357,7 @@ function getOrder(){
 
 function clearCreateOrderDetailForm(){
 	$("#createService").val("");
+	$('#createService').selectpicker('val', '');
 	$("#createDescription").val("");
 	$("#createWidth").val("");
 	$("#createHeight").val("");
@@ -454,6 +459,7 @@ function getEditOrderDetail(lineNumber){
 		success : function(data){
 			$("#editLineNumber").val(data.lineNumber);
 			$("#editService").val(data.serviceId);
+			$('#editService').selectpicker('render');
 			$("#editDescription").val(data.description);
 			$("#editWidth").val(data.width);
 			$("#editHeight").val(data.height);
@@ -520,6 +526,7 @@ function updateOrderDetail(){
 
 function clearEditOrderDetailForm(){
 	$("#editService").val("");
+	$('#editService').selectpicker('val', '');
 	$("#editDescription").val("");
 	$("#editWidth").val("");
 	$("#editHeight").val("");
@@ -639,7 +646,7 @@ function changeEditPriveValueBasedOnHeight(){
 										<div class='row'>
 											<div class="col-lg-12">
 												<div class="bootstrap-data-table-panel">
-													<table id="orderDetailTable" class="table hover"  width="100%"> <!-- table-striped table-bordered  -->
+													<table id="orderDetailTable" class="table table-bordered"  width="100%"> <!-- table-striped table-bordered  -->
 														<thead>
 															<tr>
 																<th>#</th>
@@ -693,7 +700,7 @@ function changeEditPriveValueBasedOnHeight(){
 					<div class="form-group row">
 						<label for="recipient-name" class="col-sm-3 col-form-label">Service</label>
 						<div class="col-sm-9">
-							<select class="form-control" id="createService" name="createService" required>
+							<select class="form-control selectpicker" data-live-search="true" id="createService" name="createService" required>
 								<c:forEach var="item" items="${serviceList}">
 								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" use-quantity="${item.useQuantity}">${item.descriptionEnglish}
 								    	<c:if test="${not empty item.descriptionChinese}">
@@ -760,7 +767,7 @@ function changeEditPriveValueBasedOnHeight(){
 					<div class="form-group row">
 						<label for="recipient-name" class="col-sm-3 col-form-label">Service</label>
 						<div class="col-sm-9">
-							<select class="form-control" id="editService" name="editService" required>
+							<select class="form-control" data-live-search="true" id="editService" name="editService" required>
 								<c:forEach var="item" items="${serviceList}">
 								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" use-quantity="${item.useQuantity}">${item.descriptionEnglish}
 								    	<c:if test="${not empty item.descriptionChinese}">
