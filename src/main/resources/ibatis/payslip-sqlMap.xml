@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Payslip">
+	<resultMap id="payslipResultMap" class="com.keiyin.ism.model.Payslip">
+		<result property="id" column="id" javaType="int"/>
+		<result property="type" column="type" javaType="String"/>
+		<result property="name" column="name" javaType="String"/>
+		<result property="amount" column="amount" javaType="Double"/>
+	</resultMap>
+	
+	<select id="getAllPayslip" resultMap="payslipResultMap">
+		SELECT * 
+		FROM
+		payslip_tab
+	</select>
+</sqlMap>

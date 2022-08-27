@@ -40,5 +40,10 @@
     	<put-attribute name="title" value="Dashboard" type="string" />
         <put-attribute name="body" value="/main/dashboard.jsp" />
     </definition>
+    
+    <definition name="payslip-generator" extends="mainTemplate">
+    	<put-attribute name="title" value="Payslip Generator" type="string" />
+        <put-attribute name="body" value="/main/payslip/payslip-generator.jsp" />
+    </definition>
 
 </tiles-definitions>

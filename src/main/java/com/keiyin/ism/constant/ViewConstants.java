@@ -8,4 +8,6 @@ public class ViewConstants {
 	public static final String ORDER_INVOICE = "order-invoice";
 	
 	public static final String DASHBOARD_VIEW = "dashboard";
+	
+	public static final String PAYSLIP_GENERATOR = "payslip-generator";
 }

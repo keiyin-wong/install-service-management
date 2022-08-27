@@ -23,6 +23,13 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	<property name="password" value="${db.password}"></property>    
 </bean>
 
+<bean id="payslipDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">    
+	<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>    
+	<property name="url" value="${payslip.connection}"></property>    
+	<property name="username" value="${payslip.username}"></property>    
+	<property name="password" value="${payslip.password}"></property>    
+</bean>
+
 <!-- <bean id="dataSources" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 	<property name="url" value="${db.connection}"/>
@@ -36,6 +43,11 @@ http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 	<property name="dataSource" ref="springJdbcDataSources"/>
+	<property name="configLocation" value="classpath:spring/sqlMap-config.xml"/>
+</bean>
+
+<bean id="sqlMapPaySlipClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	<property name="dataSource" ref="payslipDataSource"/>
 	<property name="configLocation" value="classpath:spring/sqlMap-config.xml"/>
 </bean>
 
