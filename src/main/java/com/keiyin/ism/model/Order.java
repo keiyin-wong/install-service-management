@@ -3,10 +3,6 @@ package com.keiyin.ism.model;
 import java.util.Date;
 import java.util.List;
 
-import org.omg.CosNaming._BindingIteratorImplBase;
-
-
-
 public class Order {
 	String id;
 	Date date;
@@ -38,6 +34,7 @@ public class Order {
 		this.orderDetailList = orderDetailList;
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public String toString() {
 		return "[orderId=" + id + ", date=" + date.toLocaleString() + ", total=" + total + "]";

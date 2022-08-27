@@ -6,8 +6,13 @@
 	<pdfEmbeded>true</pdfEmbeded>
 	</fontFamily> -->
 	<fontFamily name="FZHTJW">
-	<normal>report/FZHTJW.TTF</normal>
-	<pdfEnconding>Identity-H</pdfEnconding>
-	<pdfEmbeded>true</pdfEmbeded>
+		<normal>report/ttf/FZHTJW.TTF</normal>
+		<pdfEnconding>Identity-H</pdfEnconding>
+		<pdfEmbeded>true</pdfEmbeded>
+	</fontFamily>
+	<fontFamily name="courier_regular">
+		<normal>report/ttf/Courier Regular.ttf</normal>
+		<pdfEnconding>Identity-H</pdfEnconding>
+		<pdfEmbeded>true</pdfEmbeded>
 	</fontFamily>
 </fontFamilies>

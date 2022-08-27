@@ -1,0 +1,1135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="payslip" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="822" leftMargin="20" rightMargin="0" topMargin="20" bottomMargin="20" uuid="041f7968-2d3a-49fa-830b-f0e9d7b4fe3e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="payslip\data-source\payslip.jrdax"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.report.description" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="net.sf.jasperreports.default.pdf.font.name" value="Monospaced"/>
+	<subDataset name="db" uuid="b5999a7a-10c5-4107-9683-81987170e836">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="payslip\data-source\payslip.jrdax"/>
+		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="402"/>
+		<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="591"/>
+		<parameter name="type" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[select * from payslip_tab]]>
+		</queryString>
+		<field name="type" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="type"/>
+			<fieldDescription><![CDATA[type]]></fieldDescription>
+		</field>
+		<field name="name" class="java.lang.String">
+			<property name="net.sf.jasperreports.json.field.expression" value="name"/>
+			<fieldDescription><![CDATA[name]]></fieldDescription>
+		</field>
+		<field name="amount" class="java.lang.Double">
+			<property name="net.sf.jasperreports.json.field.expression" value="amount"/>
+			<fieldDescription><![CDATA[amount]]></fieldDescription>
+		</field>
+		<filterExpression><![CDATA[$F{type}.equals($P{type})]]></filterExpression>
+	</subDataset>
+	<parameter name="XLS_WORKBOOK" class="org.apache.poi.ss.usermodel.Workbook" isForPrompting="false"/>
+	<parameter name="XLS_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false"/>
+	<parameter name="XLS_FILE" class="java.io.File" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.source" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.column.names" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.column.indexes" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="XLS_COLUMN_NAMES_ARRAY" class="java.lang.String[]" isForPrompting="false"/>
+	<parameter name="XLS_COLUMN_INDEXES_ARRAY" class="java.lang.Integer[]" isForPrompting="false"/>
+	<parameter name="XLS_DATE_FORMAT" class="java.text.DateFormat" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.date.pattern" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="XLS_NUMBER_FORMAT" class="java.text.NumberFormat" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.number.pattern" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="XLS_USE_FIRST_ROW_AS_HEADER" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="XLS_LOCALE" class="java.util.Locale" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.locale.code" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="XLS_TIMEZONE" class="java.util.TimeZone" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.timezone.id" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.sheet.selection" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.xls.format" class="net.sf.jasperreports.data.excel.ExcelFormatEnum" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.source" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="CSV_INPUT_STREAM" class="java.io.InputStream" isForPrompting="false"/>
+	<parameter name="CSV_URL" class="java.net.URL" isForPrompting="false"/>
+	<parameter name="CSV_FILE" class="java.io.File" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.encoding" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="CSV_READER" class="java.io.Reader" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.column.names" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="CSV_COLUMN_NAMES_ARRAY" class="java.lang.String[]" isForPrompting="false"/>
+	<parameter name="CSV_DATE_FORMAT" class="java.text.DateFormat" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.date.pattern" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.field.delimiter" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="CSV_NUMBER_FORMAT" class="java.text.NumberFormat" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.number.pattern" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.record.delimiter" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="CSV_USE_FIRST_ROW_AS_HEADER" class="java.lang.Boolean" isForPrompting="false"/>
+	<parameter name="CSV_LOCALE" class="java.util.Locale" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.locale.code" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="CSV_TIMEZONE" class="java.util.TimeZone" isForPrompting="false"/>
+	<parameter name="net.sf.jasperreports.csv.timezone.id" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="datasource" class="net.sf.jasperreports.engine.data.JsonDataSource" isForPrompting="false" evaluationTime="Early">
+		<defaultValueExpression><![CDATA[new net.sf.jasperreports.engine.data.JsonDataSource("https://script.google.com/macros/s/AKfycbxpBsMCpwwFH2fsDF9jE5v-M1wO2MPr8U3hEFz_j1epigmgxPbtmn2o52U7pzQyRuoA/exec", "")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="datasource2" class="net.sf.jasperreports.engine.data.JsonDataSource" isForPrompting="false" evaluationTime="Late">
+		<defaultValueExpression><![CDATA[$P{datasource}]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select * from payslip_tab]]>
+	</queryString>
+	<field name="type" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="type"/>
+		<fieldDescription><![CDATA[type]]></fieldDescription>
+	</field>
+	<field name="name" class="java.lang.String">
+		<property name="net.sf.jasperreports.json.field.expression" value="name"/>
+		<fieldDescription><![CDATA[name]]></fieldDescription>
+	</field>
+	<field name="amount" class="java.lang.Double">
+		<property name="net.sf.jasperreports.json.field.expression" value="amount"/>
+		<fieldDescription><![CDATA[amount]]></fieldDescription>
+	</field>
+	<variable name="total_earning" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{type}.equals("earning")? ($F{amount}) : 0]]></variableExpression>
+	</variable>
+	<variable name="total_deduction" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{type}.equals("deduction")? ($F{amount}) : 0]]></variableExpression>
+	</variable>
+	<variable name="total_month_sosco" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($F{type}.equals("employee_month_sosco") || $F{type}.equals("employer_month_sosco"))? $F{amount} : 0]]></variableExpression>
+	</variable>
+	<variable name="total_month_epf" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($F{type}.equals("employee_month_epf") || $F{type}.equals("employer_month_epf"))? $F{amount} : 0]]></variableExpression>
+	</variable>
+	<variable name="total_month_eis" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($F{type}.equals("employee_month_eis") || $F{type}.equals("employer_month_eis"))? $F{amount} : 0]]></variableExpression>
+	</variable>
+	<variable name="total_year_epf" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($F{type}.equals("employee_year_epf") || $F{type}.equals("employer_year_epf"))? $F{amount} : 0]]></variableExpression>
+	</variable>
+	<variable name="total_year_eis" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($F{type}.equals("employee_year_eis") || $F{type}.equals("employer_year_eis"))? $F{amount} : 0]]></variableExpression>
+	</variable>
+	<variable name="total_year_sosco" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[($F{type}.equals("employee_year_sosco") || $F{type}.equals("employer_year_sosco"))? $F{amount} : 0]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="20" width="70" height="20" uuid="9268b54d-3df8-4d2e-a667-c00291aa46aa"/>
+				<box>
+					<pen lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[NAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="20" width="10" height="20" uuid="4309fb41-292e-4ffa-a30f-517b3662c0ab"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="40" width="70" height="20" uuid="4e56f420-bafe-4f96-99a4-175c2e7a033c"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[DEPT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="70" y="40" width="10" height="20" uuid="ae8ca204-1806-4107-9391-462380ff1007"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="509" y="0" width="91" height="20" uuid="242180d4-32cc-47fd-a7c6-5ac9c1b7f37a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[PAY PERIOD]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="600" y="0" width="10" height="20" uuid="e721bd77-a584-4397-ac2c-191c4977291b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="600" y="20" width="10" height="20" uuid="1aefd032-64e4-4620-981a-21025a20c099"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="509" y="20" width="91" height="20" uuid="b044bcf5-6528-40de-93e7-4c402bee91b4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[STAFF#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="509" y="40" width="91" height="20" uuid="d60d239b-0455-482c-8407-f43a9a0136cd"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[I/C#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="600" y="40" width="10" height="20" uuid="6e91f353-ef00-4c33-bfbc-6d1812842e42"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="0" y="1" width="290" height="19" uuid="f70d69cf-cf6c-4d39-955d-c9a34ef14b9d"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="3e62b1f8-505f-46d0-a9a0-8dd57129f89f">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["comp_name"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="19" width="290">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="290" height="19" uuid="0270ddf0-62ba-4441-9194-92e55d9cd8f9"/>
+							<box leftPadding="0"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12" isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="80" y="20" width="210" height="20" uuid="0b66c707-139c-41df-b3e9-adf985d0084f"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="221cf706-2451-4ff6-9886-610e20b422ee">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["emp_name"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="210">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="210" height="19" uuid="3289075a-d998-4768-bbb9-28e313eeed5d"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="80" y="40" width="210" height="20" uuid="dd70e8d7-b3b3-4a61-a48a-e2d310bb5058"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="3f300637-b246-41bf-a64b-656e69bbabb5">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["dept"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="210">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="210" height="19" uuid="1955bce7-ecfa-4dec-8409-80fe4bf24d2d"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="610" y="0" width="192" height="20" uuid="8a5ea8c1-53d6-4e3c-a414-ad27537b498e"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="e195e6e4-c85d-469a-8d5d-66736e7f7a3e">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["pay_period"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="192">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="192" height="19" uuid="abc843b9-9235-49a6-b3f5-0607b77ea39a"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="610" y="20" width="192" height="20" uuid="59b26fbe-0a1e-4a37-813b-2f41d1000b26"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="6ee0942b-83d1-4830-8ff5-d96ac2abb62c">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["staff_id"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="192">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="192" height="19" uuid="673d1b42-6aa4-4b07-90a7-19b7fa147a66"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="610" y="40" width="192" height="20" uuid="ab6d653f-2362-4b8a-82dc-cf1ac9355e64"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="b40665b1-07f5-4da8-a32d-dd0e2628b9c6">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["ic"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="192">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="192" height="19" uuid="a02ca57d-504c-43cd-a1e5-38a19a3189dd"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="27">
+			<staticText>
+				<reportElement x="0" y="0" width="260" height="20" uuid="212a00b2-6970-45d9-858e-46d3104c9a7f"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[--- EARNINGS ---]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="290" y="0" width="100" height="20" uuid="68d344a9-8f7e-4263-948f-650af3711e36"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[--- RM ---]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="0" width="260" height="20" uuid="ea43e21c-4847-4545-88a4-daf66747d945"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[--- DEDUCTIONS ---]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="700" y="0" width="100" height="20" uuid="64bc72f5-7f99-4cef-a829-03cfe5ad0c22"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[--- RM ---]]></text>
+			</staticText>
+			<line>
+				<reportElement x="700" y="0" width="1" height="27" uuid="df795604-bdb6-43e6-b85a-67404ab71c53"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="290" y="0" width="1" height="27" uuid="a0685e68-ead9-4743-9ff0-229a7c38ac9d"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="401" y="0" width="1" height="27" uuid="3463730c-e8ea-4307-a06e-3284494451ae"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="410" splitType="Stretch">
+			<componentElement>
+				<reportElement x="410" y="0" width="391" height="20" uuid="db810e92-2172-4a72-8c62-90c7b9f3b3d5"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="1287a8c1-df67-403f-b498-6bfa217c8281">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["deduction"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="391">
+						<textField>
+							<reportElement x="0" y="0" width="260" height="20" uuid="5b49ea0b-90a0-4f88-a44a-b80db5bd63a4"/>
+							<textElement>
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+						<textField pattern="0.00">
+							<reportElement x="260" y="0" width="129" height="20" uuid="2072b317-a8b8-49eb-8ed9-8fa7145ba4ab"/>
+							<box rightPadding="2"/>
+							<textElement textAlignment="Right">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement stretchType="ContainerBottom" x="0" y="0" width="390" height="20" uuid="2964d981-9c40-4164-974d-a1ba557e47e9"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="6d846408-1503-45f4-aa35-4c368feb739a">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["earning"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="390">
+						<textField>
+							<reportElement x="0" y="0" width="261" height="20" uuid="482ae1a6-cd2b-4491-b915-f54557311040"/>
+							<textElement>
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+						<textField pattern="0.00">
+							<reportElement x="261" y="0" width="129" height="20" uuid="fa406f04-9ec8-4dd1-b277-1708432c9aa7"/>
+							<box rightPadding="2"/>
+							<textElement textAlignment="Right">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<line>
+				<reportElement x="290" y="0" width="1" height="210" uuid="1da44a65-5314-437f-87d8-fffd59c7c8c8">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="700" y="0" width="1" height="240" uuid="f9342ca0-81fe-4732-970c-f21870bb6d39">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<textField pattern="0.00">
+				<reportElement x="290" y="180" width="100" height="30" uuid="bf9620ff-8fd3-4e81-9519-5d7d69b09884"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_earning}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="189" y="180" width="101" height="30" uuid="21bf1a8f-4d93-43d3-98a4-86b072502de7"/>
+				<box rightPadding="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[TOTAL : ]]></text>
+			</staticText>
+			<textField pattern="0.00">
+				<reportElement x="701" y="180" width="101" height="30" uuid="0459cb19-6b8a-4414-885e-8563c9dd792f"/>
+				<box rightPadding="2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_deduction}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="571" y="180" width="128" height="30" uuid="d06e49c2-bb46-4cbd-8ece-6f1589f335c1"/>
+				<box rightPadding="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[TOTAL : ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="210" width="802" height="1" uuid="404e4cef-2718-4dcd-bac4-8f44d1446a6d"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="401" y="0" width="1" height="410" uuid="9f5898fd-ad73-4124-bcfd-443b55662028">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<textField pattern="0.00">
+				<reportElement x="701" y="210" width="100" height="30" uuid="34f3e1af-09aa-419a-83fa-c627690285db"/>
+				<box>
+					<bottomPen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_earning} - $V{total_deduction}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="598" y="210" width="101" height="30" uuid="05e418c0-493f-480c-81a8-0d0a7f6881e8"/>
+				<box rightPadding="10"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[NETT PAY : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="248" width="80" height="19" uuid="711858d5-43eb-4f6f-bcfc-2152b9d005f1"/>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[EPF#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="248" width="10" height="19" uuid="0786e5cc-4992-439f-a470-430dc78526aa"/>
+				<textElement textAlignment="Right">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="490" y="267" width="10" height="19" uuid="932454a1-d621-4a1b-862e-48c52a5d438e"/>
+				<textElement textAlignment="Right">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="267" width="80" height="19" uuid="736c29dc-7b54-4e42-9ae2-0fe065266466"/>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[SOSCO/EIS#]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="500" y="248" width="120" height="19" uuid="091bd045-2bdc-4cc7-99f1-21f4c0b8dc98"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="410e1fe8-3ef8-442d-bd89-1f2caa53241b">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["epf_id"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="19" width="120">
+						<textField>
+							<reportElement x="0" y="0" width="120" height="19" uuid="9d82a475-28b3-4f82-8240-daa6f2690fe7"/>
+							<box leftPadding="3"/>
+							<textElement verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="500" y="267" width="120" height="19" uuid="2276d6ee-6bdc-4062-a8a2-dfae823c2ceb"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="01b9f2bb-d5ed-4370-bb53-a5400585d2a4">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["sosco_id"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="19" width="120">
+						<textField>
+							<reportElement x="0" y="0" width="120" height="19" uuid="3f2da45a-7fe8-4962-bb56-2101a30a2889"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="630" y="267" width="42" height="19" uuid="36174863-9833-4470-8358-941de906f250"/>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[BANK#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="672" y="267" width="10" height="19" uuid="346f562f-08c7-41cd-a03a-3a01f882c5b9"/>
+				<textElement textAlignment="Right">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="682" y="267" width="120" height="19" uuid="7d0bbb61-a105-4334-a7b3-b4703f42b740"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="ccf98bfb-9f97-4070-b5f3-dd2cb480f80d">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["bank_acc"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="19" width="120">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="120" height="19" uuid="239653db-f93b-40b1-8612-256a8b746f1a"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="630" y="248" width="42" height="19" uuid="fed31535-ecd8-4fe5-b0b5-9fadf1822f60"/>
+				<box rightPadding="0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[TAX#]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="672" y="248" width="10" height="19" uuid="123335d3-a36c-4eea-83f8-9ef64140322b"/>
+				<textElement textAlignment="Right">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="682" y="248" width="120" height="19" uuid="d8973d5a-2a06-445d-9dd7-dcbb8cb57187"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="0a523603-2f5a-41df-952f-8fe672df68c4">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["tax_id"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="19" width="120">
+						<textField isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="120" height="19" uuid="1809534b-4d02-428e-855d-9cdb92039f30"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="12"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<staticText>
+				<reportElement x="140" y="290" width="110" height="20" uuid="f647e645-41e6-41eb-8f0e-fec154fc7618"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[CURRENT-MONTH]]></text>
+			</staticText>
+			<line>
+				<reportElement x="250" y="300" width="152" height="1" uuid="887c0bc8-d6a1-4305-a7cd-4bae7da79cab"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="300" width="140" height="1" uuid="549bf593-cf4d-4b4b-bf22-ba5d7f49d704"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="400" y="300" width="160" height="1" uuid="3f4bff40-9b9d-4a20-829f-10661d02ce5f"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="560" y="290" width="100" height="20" uuid="38d63d62-68e3-4235-a488-2e0323797c6a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="12"/>
+				</textElement>
+				<text><![CDATA[YEAR-TO-DATE]]></text>
+			</staticText>
+			<line>
+				<reportElement x="660" y="300" width="142" height="1" uuid="a79d41e4-d53a-49f7-a400-2a150294fc7d"/>
+				<graphicElement>
+					<pen lineWidth="1.5" lineColor="rgba(0, 0, 0, 0.6666667)"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="80" y="314" width="80" height="20" uuid="473d6eb2-6175-4ac8-aca4-82ca1db9195c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[E.P.F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="314" width="80" height="20" uuid="dffd10d8-da3e-4ec1-961e-825735ca2e52"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[SOCSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="240" y="314" width="70" height="20" uuid="797ecb0d-f3f0-4180-89b7-0f00e7b06fad"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[EIS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="320" y="314" width="70" height="20" uuid="7a3d8481-8c81-425d-999d-96a53443139e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[TAX]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="334" width="50" height="20" uuid="41701676-411b-4799-b237-b885f825eb43"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[EMP'EE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="354" width="50" height="20" uuid="dfc25e0b-978b-4937-b4f0-de498d751d6b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[EMP'ER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="374" width="50" height="20" uuid="1e5aea11-f929-4809-904c-25557a1324a7"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="334" width="10" height="20" uuid="c6689a20-b01b-4378-bdb9-d5b92039a3a9"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="354" width="10" height="20" uuid="a3762a33-3f2f-4dfc-988c-f56b4a6f2d80"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="374" width="10" height="20" uuid="b4d908c2-b331-4a02-a836-b652b7e835b4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="80" y="334" width="80" height="20" uuid="dfc37d6a-6d8e-41cf-9e57-f3b0579b6823"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="47bbb664-cbc8-4a94-8a6a-41cd9b4f5866">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employee_month_epf"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="5e50340c-3ecc-41bc-839c-96915bf58fc0"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="80" y="354" width="80" height="20" uuid="dbc27e05-6843-4dfd-8205-42b7a4b09658"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="72140f29-5ecc-4a36-b444-8205f603fefe">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employer_month_epf"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="2cc7a019-b511-4dd1-bf30-fc0670b41f9c"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="160" y="354" width="80" height="20" uuid="0ea1198b-af6b-4e1b-9cd1-70d241dba209"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="6e7f96fa-184d-4522-92c2-ed62d58536a3">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employer_month_sosco"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="aa70a105-0395-4339-8f54-d3df2fee7c3b"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="160" y="334" width="80" height="20" uuid="4b8be031-ef0f-4260-8723-6601761f5369"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="dd312c7a-7594-4da1-8209-d762460bf23d">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employee_month_sosco"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="ef005476-0281-4e7d-aa48-d8cc599ea123"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="240" y="334" width="70" height="20" uuid="585d75ee-a586-47ee-b9de-e402c6a12267"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="6e1ec6c5-f504-4292-ba59-08e32ed639eb">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employee_month_eis"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="70">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="1" width="70" height="19" uuid="401866c0-74cc-48d5-a16b-ca400840d4d0"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="240" y="354" width="70" height="20" uuid="404315a7-f7da-4881-a4aa-5eeb7617f485"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="b0bcd383-5aef-493a-a444-073821582970">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employer_month_eis"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="70">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="70" height="19" uuid="feefb44b-b4c7-4ee9-92c9-45f05c38c545"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<textField pattern="0.00">
+				<reportElement x="80" y="374" width="80" height="20" uuid="61d4ad11-3efa-46a1-ae00-ad6aa94a0d72"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_month_epf}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement x="160" y="374" width="80" height="20" uuid="84e065e7-0cfe-4027-900c-ad130ac5ab82"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_month_sosco}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement x="240" y="374" width="70" height="20" uuid="c2c80700-bd68-4d0e-9144-4080db819e75"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_month_eis}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="490" y="314" width="80" height="20" uuid="287cb3ba-3390-4971-88c9-f86fbf269dde"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[E.P.F]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="570" y="314" width="80" height="20" uuid="f9f79182-8063-4747-980c-ae7b25a5cf47"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[SOCSO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="650" y="314" width="70" height="20" uuid="b56a673e-73b9-4b73-bcc3-bb1aa7854db0"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[EIS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="730" y="314" width="70" height="20" uuid="e601baca-e312-49fe-8a0c-6c342f790be4"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[TAX]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="334" width="50" height="20" uuid="ac0bf98c-3b49-4f18-b12d-e020970a32f5"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[EMP'EE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="354" width="50" height="20" uuid="a36a8174-196e-447b-914e-b7521de10454"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[EMP'ER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="410" y="374" width="50" height="20" uuid="cc8d652a-10df-4f90-9d3a-e5caff0db68b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="334" width="10" height="20" uuid="c20ac8be-b6af-48eb-a47d-b62e88a697ef"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="354" width="10" height="20" uuid="e3f4c111-edf0-4032-b6b3-3519432c6d69"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="460" y="374" width="10" height="20" uuid="ee9c2faa-ac1f-4f49-8183-2a269143b941"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="490" y="334" width="80" height="20" uuid="dea20638-9711-40e6-9a35-03e82aa18042"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="6f8c6d97-3e2c-441a-b74b-455c2a622859">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employee_year_epf"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="9f843010-1094-4c70-b0d0-9b7c916f86d6"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="490" y="354" width="80" height="20" uuid="0bf4e053-4391-44f7-93c1-5fcc868f9727"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="315ca486-5913-4a40-af69-87c4fbf06e92">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employer_year_epf"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="6a6d2b54-472b-486b-8676-277c8ed46814"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="570" y="354" width="80" height="20" uuid="7c92cae5-f71a-48d2-b307-9f685ee03838"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="6fd99ca5-839a-4bc7-bd81-a70731fd63d4">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employer_year_sosco"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="d09242f0-5e1e-4298-8742-3c1a660cf5f6"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="570" y="334" width="80" height="20" uuid="dff77b66-8c96-4258-a1a5-4fb64e5eb256"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="820a65b8-61ac-43d2-ba09-6a4f0e850d47">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employee_year_sosco"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="80">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="80" height="19" uuid="c7d4c16a-b0cb-4bb6-ac9b-3fd5ed8b76d7"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="650" y="334" width="70" height="20" uuid="e7618865-8f14-40ec-a561-fe1e0577844b"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="92957795-ce26-4d7e-bd94-2a32d48d5c00">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employee_year_eis"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="70">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="1" width="70" height="19" uuid="24299d3c-1224-4928-b6b4-f40028f1deaa"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<componentElement>
+				<reportElement x="650" y="354" width="70" height="20" uuid="138022f4-3848-4054-9f33-0b130a16f397"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+					<datasetRun subDataset="db" uuid="ab06d653-522a-4c85-bbd4-fe95cc81fef3">
+						<datasetParameter name="type">
+							<datasetParameterExpression><![CDATA["employer_year_eis"]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:listContents height="20" width="70">
+						<textField pattern="0.00" isBlankWhenNull="true">
+							<reportElement x="0" y="0" width="70" height="19" uuid="6dfb5a2d-1c19-4a19-a05e-ddedbf43f3fa"/>
+							<box leftPadding="3"/>
+							<textElement textAlignment="Right" verticalAlignment="Middle">
+								<font fontName="courier_regular" size="11"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+						</textField>
+					</jr:listContents>
+				</jr:list>
+			</componentElement>
+			<textField pattern="0.00">
+				<reportElement x="490" y="374" width="80" height="20" uuid="9ed02ac9-6a85-47f6-9f3c-9c8d4062bb3b"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_year_epf}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement x="570" y="374" width="80" height="20" uuid="41e2fb15-021b-4716-9eb5-605b683a6419"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_year_sosco}]]></textFieldExpression>
+			</textField>
+			<textField pattern="0.00">
+				<reportElement x="650" y="374" width="70" height="20" uuid="f5e0d46d-06b5-4b7a-9288-9f44db45a668"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="courier_regular" size="11"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{total_year_eis}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
