@@ -17,5 +17,10 @@ public class WriteResponse {
 		this.data = data;
 	}
 	
-	
+	public static class Status {
+		public static final String SUCCESS = "success";
+		public static final String FAIL = "fail";
+		
+		private Status() {}
+	}
 }

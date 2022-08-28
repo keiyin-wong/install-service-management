@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.keiyin.ism.constant.ViewConstants;
 import com.keiyin.ism.dao.PayslipDAO;
 import com.keiyin.ism.model.Payslip;
+import com.keiyin.ism.model.WriteResponse;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -32,6 +33,9 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 
 @Controller
 @RequestMapping(value = "/payslip")
@@ -57,11 +61,57 @@ public class PayslipController {
 		List<Payslip> payslipList = null;
 		try {
 			payslipList = payslipDAO.getAllPayslip();
-			log.error("Successfully retrieved payslip information");
+			log.info("Successfully retrieved payslip information");
 		} catch (SQLException e) {
 			log.error("Failed to get payslip information", e);
 		}
 		return payslipList;
+	}
+	
+	@RequestMapping(value = "/updatePayslipInformation", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse updatePayslipInformation(
+			@RequestParam String companyName,
+			@RequestParam String payPeriod,
+			@RequestParam String employeeName,
+			@RequestParam String staffId,
+			@RequestParam String department,
+			@RequestParam String ic) {
+		
+		WriteResponse result = new WriteResponse();
+		result.setStatus(WriteResponse.Status.FAIL);
+		try {
+			if(payslipDAO.updatePayslipInformation(companyName, payPeriod, employeeName, staffId, department, ic)) {
+				log.info("Successfully update payslip information");
+				result.setStatus(WriteResponse.Status.SUCCESS);
+			} else {
+				log.info("Failed to update payslip information");
+			}
+		} catch (SQLException e) {
+			log.error("Failed to update payslip information due to SQL exception", e);
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/updatePayslipBillingInformation", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse updatePayslipBillingInformation(
+			@RequestParam String epfId,
+			@RequestParam String taxId,
+			@RequestParam String soscoEisId,
+			@RequestParam String bankId) {
+		
+		WriteResponse result = new WriteResponse();
+		result.setStatus(WriteResponse.Status.FAIL);
+		try {
+			if(payslipDAO.updatePayslipBillingInformation(epfId, taxId, soscoEisId, bankId)) {
+				log.info("Successfully update payslip billing information");
+				result.setStatus(WriteResponse.Status.SUCCESS);
+			} else {
+				log.info("Failed to update payslip billing information");
+			}
+		} catch (SQLException e) {
+			log.error("Failed to update payslip billing information due to SQL exception", e);
+		}
+		return result;
 	}
 
 	@RequestMapping(value="/payslip.do", method = RequestMethod.GET)
@@ -89,6 +139,29 @@ public class PayslipController {
 	         log.info("Retrived payslip"); 
 	         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
 		} catch (JRException e ) {
+			log.info("Jasper report part error",e );
+		} catch (Exception e) {
+			log.info("Unexpected error occur",e );
+		}
+	}
+	
+	@RequestMapping(value="/payslipHtml.do", method = RequestMethod.GET)
+	public void generateOrderInvoiceReportHtml(
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		Map<String, Object> parameterMap = new HashMap<>();
+		
+		try {
+			InputStream inputStream = this.getClass().getResourceAsStream("/report/payslip-db.jrxml");
+			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, payslipDataSource.getConnection());
+			HtmlExporter exporter = new HtmlExporter();
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			OutputStream outputStream = response.getOutputStream();
+			SimpleHtmlExporterOutput htmlExporterOutput = new SimpleHtmlExporterOutput(outputStream);
+			exporter.setExporterOutput(htmlExporterOutput);
+		    exporter.exportReport();
+		} catch (JRException|SQLException e ) {
 			log.info("Jasper report part error",e );
 		} catch (Exception e) {
 			log.info("Unexpected error occur",e );

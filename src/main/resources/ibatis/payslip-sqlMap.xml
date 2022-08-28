@@ -14,4 +14,13 @@
 		FROM
 		payslip_tab
 	</select>
+	
+	<update id="updatePayslipName" parameterClass="java.util.HashMap">
+		UPDATE `payslip_tab`
+		SET
+		name = '$name$'
+		WHERE
+		type = '$type$'
+	</update>
+	
 </sqlMap>
