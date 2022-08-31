@@ -2743,7 +2743,7 @@ tbody tr td {
   color: #868e96;
 }
 tbody tr td:last-child {
-  text-align: right;
+  /* text-align: right; */
 }
 .table > tbody > tr > td,
 .table > tbody > tr > th,

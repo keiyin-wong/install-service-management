@@ -113,6 +113,91 @@ public class PayslipController {
 		}
 		return result;
 	}
+	
+
+	@RequestMapping(value = "/updateCurrentMonthEmployeeEpfSosco", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse updateCurrentMonthEmployeeEpfSosco(
+			@RequestParam double currentMonthEmployeeEpf,
+			@RequestParam double currentMonthEmployeeSosco,
+			@RequestParam double currentMonthEmployeeEis) {
+		
+		WriteResponse result = new WriteResponse();
+		result.setStatus(WriteResponse.Status.FAIL);
+		try {
+			if(payslipDAO.updateCurrentMonthEmployeeEpfSosco(currentMonthEmployeeEpf, currentMonthEmployeeSosco, currentMonthEmployeeEis)) {
+				log.info("Successfully update employee current month epf sosco");
+				result.setStatus(WriteResponse.Status.SUCCESS);
+			} else {
+				log.info("Failed to update employee current month epf sosco");
+			}
+		} catch (SQLException e) {
+			log.error("Failed to update employee current month epf sosco due to SQL exception", e);
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/updateCurrentMonthEmployerEpfSosco", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse updateCurrentMonthEmployerEpfSosco(
+			@RequestParam double currentMonthEmployerEpf,
+			@RequestParam double currentMonthEmployerSosco,
+			@RequestParam double currentMonthEmployerEis) {
+		
+		WriteResponse result = new WriteResponse();
+		result.setStatus(WriteResponse.Status.FAIL);
+		try {
+			if(payslipDAO.updateCurrentMonthEmployerEpfSosco(currentMonthEmployerEpf, currentMonthEmployerSosco, currentMonthEmployerEis)) {
+				log.info("Successfully update employer current month epf sosco");
+				result.setStatus(WriteResponse.Status.SUCCESS);
+			} else {
+				log.info("Failed to update employer current month epf sosco");
+			}
+		} catch (SQLException e) {
+			log.error("Failed to update employer current month epf sosco due to SQL exception", e);
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/updateYearToDateEmployeeEpfSosco", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse updateYearToDateEmployeeEpfSosco(
+			@RequestParam double yearToDateEmployeeEpf,
+			@RequestParam double yearToDateEmployeeSosco,
+			@RequestParam double yearToDateEmployeeEis) {
+		
+		WriteResponse result = new WriteResponse();
+		result.setStatus(WriteResponse.Status.FAIL);
+		try {
+			if(payslipDAO.updateYearToDateEmployeeEpfSosco(yearToDateEmployeeEpf, yearToDateEmployeeSosco, yearToDateEmployeeEis)) {
+				log.info("Successfully update employee year to date epf sosco");
+				result.setStatus(WriteResponse.Status.SUCCESS);
+			} else {
+				log.info("Failed to update employee year to date epf sosco");
+			}
+		} catch (SQLException e) {
+			log.error("Failed to update employee year to date epf sosco due to SQL exception", e);
+		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/updateYearToDateEmployerEpfSosco", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse updateYearToDateEmployerEpfSosco(
+			@RequestParam double yearToDateEmployerEpf,
+			@RequestParam double yearToDateEmployerSosco,
+			@RequestParam double yearToDateEmployerEis) {
+		
+		WriteResponse result = new WriteResponse();
+		result.setStatus(WriteResponse.Status.FAIL);
+		try {
+			if(payslipDAO.updateYearToDateEmployerEpfSosco(yearToDateEmployerEpf, yearToDateEmployerSosco, yearToDateEmployerEis)) {
+				log.info("Successfully update employer year to date epf sosco");
+				result.setStatus(WriteResponse.Status.SUCCESS);
+			} else {
+				log.info("Failed to update employer year to date epf sosco");
+			}
+		} catch (SQLException e) {
+			log.error("Failed to update employer year to date epf sosco due to SQL exception", e);
+		}
+		return result;
+	}
 
 	@RequestMapping(value="/payslip.do", method = RequestMethod.GET)
 	public void generateOrderInvoiceReport(

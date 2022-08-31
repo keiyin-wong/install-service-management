@@ -23,4 +23,12 @@
 		type = '$type$'
 	</update>
 	
+	<update id="updatePayslipAmount" parameterClass="java.util.HashMap">
+		UPDATE `payslip_tab`
+		SET
+		amount = '$amount$'
+		WHERE
+		type = '$type$'
+	</update>
+	
 </sqlMap>

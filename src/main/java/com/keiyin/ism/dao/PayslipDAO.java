@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
@@ -115,6 +116,146 @@ public class PayslipDAO {
 			sqlMapSession.endTransaction();
 			sqlMapSession.close();
 			log.info("Update process payslip billing information transaction has ended.");
+		}
+		return success;
+	}
+	
+	public boolean updateCurrentMonthEmployeeEpfSosco(
+			double currentMonthEmployeeEpf,
+			double currentMonthEmployeeSosco,
+			double currentMonthEmployeeEis) throws SQLException {
+		
+		boolean success = false;
+		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
+		try {
+			sqlMapSession.startTransaction();
+			log.info("Starting transaction to update employee current month epf sosco");
+			Map<String, Object> parameterMap = new HashMap<>();
+			String sqlMapQuery = "Payslip.updatePayslipAmount";
+			
+			parameterMap.put("type", "employee_month_epf");
+			parameterMap.put("amount", currentMonthEmployeeEpf);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employee_month_sosco");
+			parameterMap.put("amount", currentMonthEmployeeSosco);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employee_month_eis");
+			parameterMap.put("amount", currentMonthEmployeeEis);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			log.info("Transaction is completed. All SQL statements are executed and commited into database succesfully.");
+			success = true;
+		} finally {
+			sqlMapSession.endTransaction();
+			sqlMapSession.close();
+			log.info("Update process employee current month epf sosco transaction has ended.");
+		}
+		return success;
+	}
+	
+	public boolean updateCurrentMonthEmployerEpfSosco(
+			double currentMonthEmployerEpf,
+			double currentMonthEmployerSosco,
+			double currentMonthEmployerEis) throws SQLException {
+		
+		boolean success = false;
+		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
+		try {
+			sqlMapSession.startTransaction();
+			log.info("Starting transaction to update employer current month epf sosco");
+			Map<String, Object> parameterMap = new HashMap<>();
+			String sqlMapQuery = "Payslip.updatePayslipAmount";
+			
+			parameterMap.put("type", "employer_month_epf");
+			parameterMap.put("amount", currentMonthEmployerEpf);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employer_month_sosco");
+			parameterMap.put("amount", currentMonthEmployerSosco);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employer_month_eis");
+			parameterMap.put("amount", currentMonthEmployerEis);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			log.info("Transaction is completed. All SQL statements are executed and commited into database succesfully.");
+			success = true;
+		} finally {
+			sqlMapSession.endTransaction();
+			sqlMapSession.close();
+			log.info("Update process employer current month epf sosco transaction has ended.");
+		}
+		return success;
+	}
+	
+	public boolean updateYearToDateEmployeeEpfSosco(
+			double yearToDateEmployeeEpf,
+			double yearToDateEmployeeSosco,
+			double yearToDateEmployeeEis) throws SQLException {
+		
+		boolean success = false;
+		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
+		try {
+			sqlMapSession.startTransaction();
+			log.info("Starting transaction to update employee year to date epf sosco");
+			Map<String, Object> parameterMap = new HashMap<>();
+			String sqlMapQuery = "Payslip.updatePayslipAmount";
+			
+			parameterMap.put("type", "employee_year_epf");
+			parameterMap.put("amount", yearToDateEmployeeEpf);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employee_year_sosco");
+			parameterMap.put("amount", yearToDateEmployeeSosco);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employee_year_eis");
+			parameterMap.put("amount", yearToDateEmployeeEis);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			log.info("Transaction is completed. All SQL statements are executed and commited into database succesfully.");
+			success = true;
+		} finally {
+			sqlMapSession.endTransaction();
+			sqlMapSession.close();
+			log.info("Update process employee year to date epf sosco transaction has ended.");
+		}
+		return success;
+	}
+	
+	public boolean updateYearToDateEmployerEpfSosco(
+			double yearToDateEmployerEpf,
+			double yearToDateEmployerSosco,
+			double yearToDateEmployerEis) throws SQLException {
+		
+		boolean success = false;
+		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
+		try {
+			sqlMapSession.startTransaction();
+			log.info("Starting transaction to update employer year to date epf sosco");
+			Map<String, Object> parameterMap = new HashMap<>();
+			String sqlMapQuery = "Payslip.updatePayslipAmount";
+			
+			parameterMap.put("type", "employer_year_epf");
+			parameterMap.put("amount", yearToDateEmployerEpf);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employer_year_sosco");
+			parameterMap.put("amount", yearToDateEmployerSosco);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			parameterMap.put("type", "employer_year_eis");
+			parameterMap.put("amount", yearToDateEmployerEis);
+			sqlMapSession.update(sqlMapQuery, parameterMap);
+			
+			log.info("Transaction is completed. All SQL statements are executed and commited into database succesfully.");
+			success = true;
+		} finally {
+			sqlMapSession.endTransaction();
+			sqlMapSession.close();
+			log.info("Update process employer year to date epf sosco transaction has ended.");
 		}
 		return success;
 	}
