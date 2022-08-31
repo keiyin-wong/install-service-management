@@ -612,10 +612,10 @@ function getAllPayslip() {
 						<div class="card-body">
 							<form>
 								<table class="table table-borderless" id="earningTable">
-									<thead class="thead-dark">
+									<thead>
 										<tr>
-											<td>Name</td>
-											<td>Amount</td>
+											<th>Name</th>
+											<th>Amount</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -636,6 +636,13 @@ function getAllPayslip() {
 									</tbody>
 								</table>
 							</form>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="d-flex justify-content-center">
+										<button class="btn">Add</button>
+									</div>	
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
