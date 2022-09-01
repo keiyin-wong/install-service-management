@@ -40,13 +40,6 @@ $(document).ready(function(){
 		$("#ic").val(payslipList.find(x => x.type === "ic").name);
 		
 		var trList = $("#earningTable tbody tr");
-		console.log(trList[0].children);
-		$.each(trList, function(index, values) {
-			console.log(index, trList[index]);
-			let inputText = values.children[0];
-			let amount = values.children[1];
-			console.log(inputText, amount);
-		});
 	})
 	$("#informationCard .saveButton").click(function () {
 		let parameter = $("#informationForm").serialize();
@@ -75,6 +68,7 @@ $(document).ready(function(){
 			}
 		});
 	})
+	
 	
 	// ============================================================
 	// Billing information part
@@ -307,6 +301,68 @@ $(document).ready(function(){
 			});
 		}
 	})
+	
+	
+	// ============================================================
+	// Earning part
+	// ============================================================
+	$("#earningCard .editButton").click(function () {
+		earningEditMode();
+	});
+	$("#earningCard .cancelButton").click(function () {
+		earningViewMode();
+	});
+	
+	$("#earningCard .addItemButton").click(function () {
+		$("#earningCard tbody").append(
+			$("<tr>").append(
+				$("<td>").append(
+					$("<input>").prop("type","text").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+				),
+				$("<td>").append(
+					$("<input>").prop("type","number").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+				),
+				$("<td>").append(
+					$("<button>").addClass("btn btn-secondary btn-sm rounded-circle").append(
+						$("<i>").addClass("ti-minus")
+					).click(function() {
+						deleteTableRow(this);
+					})
+				),
+			)
+		);
+	});
+	
+	
+	// ============================================================
+	// Deduction part
+	// ============================================================
+	$("#deductionCard .editButton").click(function () {
+		deductionEditMode();
+	});
+	$("#deductionCard .cancelButton").click(function () {
+		deductionViewMode();
+	});
+	
+	$("#deductionCard .addItemButton").click(function () {
+		$("#deductionCard tbody").append(
+			$("<tr>").append(
+				$("<td>").append(
+					$("<input>").prop("type","text").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+				),
+				$("<td>").append(
+					$("<input>").prop("type","number").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+				),
+				$("<td>").append(
+					$("<button>").addClass("btn btn-secondary btn-sm rounded-circle").append(
+						$("<i>").addClass("ti-minus")
+					).click(function() {
+						deleteTableRow(this);
+					})
+				),
+			)
+		);
+	});
 })
 
 
@@ -457,6 +513,49 @@ function yearToDateEmployerEpfSoscoViewMode() {
 	$("#yearToDateEmployerEis").prop("readonly", true);
 }
 
+// ============================================================
+// Earning part
+// ============================================================
+function earningEditMode() {
+	$("#earningCard .editButton").hide();
+	$("#earningCard .saveEditButtonBox").show();
+
+	// Make all fields editable
+	$("#earningCard input").prop("readonly",false);
+	$("#earningCard .card-body button").show();
+}
+
+function earningViewMode() {
+	$("#earningCard .editButton").show();
+	$("#earningCard .saveEditButtonBox").hide();
+
+	// Make all fields not editable
+	$("#earningCard input").prop("readonly",true);
+	$("#earningCard .card-body button").hide();
+}
+
+// ============================================================
+// Deduction part
+// ============================================================
+function deductionEditMode() {
+	$("#deductionCard .editButton").hide();
+	$("#deductionCard .saveEditButtonBox").show();
+
+	// Make all fields editable
+	$("#deductionCard input").prop("readonly",false);
+	$("#deductionCard .card-body button").show();
+}
+
+function deductionViewMode() {
+	$("#deductionCard .editButton").show();
+	$("#deductionCard .saveEditButtonBox").hide();
+
+	// Make all fields not editable
+	$("#deductionCard input").prop("readonly",true);
+	$("#deductionCard .card-body button").hide();
+}
+	
+
 //============================================================
 // Others part
 //============================================================
@@ -501,6 +600,35 @@ function getAllPayslip() {
 			$("#yearToDateEmployerSosco").val(data.find(x => x.type === "employer_year_sosco").amount);
 			$("#yearToDateEmployerEis").val(data.find(x => x.type === "employer_year_eis").amount);
 			
+			// Deduction
+			let deduction = $.grep(data, function(item, index){
+				return (item.type == "deduction")
+			})
+			
+			$.each(deduction, function(index, item){
+				$("#earningCard tbody").append(
+					$("<tr>").append(
+						$("<td>").append(
+							$("<input>").prop("type","text").addClass("form-control")
+							.css("border", "none").css("border-bottom", "1px solid")
+							.prop("readonly", true).val(item.name)
+						),
+						$("<td>").append(
+							$("<input>").prop("type","number").addClass("form-control")
+							.css("border", "none").css("border-bottom", "1px solid")
+							.prop("readonly", true).val(item.amount)
+						),
+						$("<td>").append(
+							$("<button>").addClass("btn btn-secondary btn-sm rounded-circle hide").append(
+								$("<i>").addClass("ti-minus")
+							).click(function() {
+								deleteTableRow(this);
+							})
+						),
+					)
+				);
+			});
+			
 			payslipList = data;
 			loaderSpinner.hide();
 		},
@@ -508,6 +636,11 @@ function getAllPayslip() {
 			loaderSpinner.hide();
 		}
 	});
+}
+
+
+function deleteTableRow(element) {
+	 $(element).closest("tr").remove();
 }
 	
 
@@ -605,9 +738,17 @@ function getAllPayslip() {
 			</div>
 			<div class="row">
 				<div class="col-md-6">
-					<div class="card">
+					<div class="card" id="earningCard">
 						<div class="card-title">
 							<h4>Earning</h4>
+							<div class="pull-right">
+								<button class="btn btn-link editButton">Edit</button>
+								<span class="pull-right saveEditButtonBox" style="display: none">
+									<a class="btn btn-light cancelButton">Cancel</a>
+									<button class="btn btn-primary saveButton" type="submit">Save
+									</button>
+								</span>
+							</div>
 						</div>
 						<div class="card-body">
 							<form>
@@ -616,40 +757,61 @@ function getAllPayslip() {
 										<tr>
 											<th>Name</th>
 											<th>Amount</th>
+											<th></th>
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td><input type="text"
-												style="border: none; border-bottom: 1px solid;"
-												value="BASIC EARNING"></td>
-											<td><input type="number"
-												style="border: none; border-bottom: 1px solid;" value="3600"></td>
-										</tr>
-										<tr>
-											<td><input type="text"
-												style="border: none; border-bottom: 1px solid;"
-												value="ALLOWANCE"></td>
-											<td><input type="number"
-												style="border: none; border-bottom: 1px solid;" value="200"></td>
-										</tr>
 									</tbody>
 								</table>
 							</form>
 							<div class="row">
 								<div class="col-md-12">
 									<div class="d-flex justify-content-center">
-										<button class="btn">Add</button>
-									</div>	
+										<button class="btn btn-secondary hide addItemButton">
+											<i class="ti-plus m-r-5"></i>Add item
+										</button>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-6">
-					<div class="card">
+					<div class="card" id="deductionCard">
 						<div class="card-title">
 							<h4>Deduction</h4>
+							<div class="pull-right">
+								<button class="btn btn-link editButton">Edit</button>
+								<span class="pull-right saveEditButtonBox" style="display: none">
+									<a class="btn btn-light cancelButton">Cancel</a>
+									<button class="btn btn-primary saveButton" type="submit">Save
+									</button>
+								</span>
+							</div>
+						</div>
+						<div class="card-body">
+							<form>
+								<table class="table table-borderless" id="earningTable">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Amount</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</form>
+							<div class="row">
+								<div class="col-md-12">
+									<div class="d-flex justify-content-center">
+										<button class="btn btn-secondary hide addItemButton">
+											<i class="ti-plus m-r-5"></i>Add item
+										</button>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

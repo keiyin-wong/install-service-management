@@ -98,6 +98,10 @@
 	 margin: auto;
 }
 
+.hide{
+	 display: none;
+}
+
 .icon-name {
   color: #000;
 }
