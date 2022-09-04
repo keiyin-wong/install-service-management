@@ -3,6 +3,7 @@ package com.keiyin.ism.controller;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +23,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.ctc.wstx.shaded.msv_core.verifier.jarv.TheFactoryImpl;
 import com.keiyin.ism.constant.ViewConstants;
 import com.keiyin.ism.dao.PayslipDAO;
 import com.keiyin.ism.model.Payslip;
 import com.keiyin.ism.model.WriteResponse;
+import com.sun.org.apache.xalan.internal.utils.XMLSecurityManager.NameMap;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -196,6 +199,14 @@ public class PayslipController {
 		} catch (SQLException e) {
 			log.error("Failed to update employer year to date epf sosco due to SQL exception", e);
 		}
+		return result;
+	}
+	
+	@RequestMapping(value = "/updateEarnings", method = RequestMethod.POST)
+	public @ResponseBody WriteResponse updateEarnings(@RequestParam(required = false) String[] name, @RequestParam(required = false) double[] amount) {
+		
+		WriteResponse result = new WriteResponse();
+		log.info("The name is {} and the amount is {}",Arrays.toString(name), Arrays.toString(amount));
 		return result;
 	}
 

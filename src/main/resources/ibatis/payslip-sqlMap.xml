@@ -31,4 +31,11 @@
 		type = '$type$'
 	</update>
 	
+	<delete id="deletePayslipByName" parameterClass="String">
+		DELETE FROM
+			`payslip_tab`
+		WHERE
+			`name` = '$name$'
+	</delete>
+	
 </sqlMap>

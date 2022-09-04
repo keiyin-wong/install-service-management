@@ -309,18 +309,65 @@ $(document).ready(function(){
 	$("#earningCard .editButton").click(function () {
 		earningEditMode();
 	});
+	
 	$("#earningCard .cancelButton").click(function () {
 		earningViewMode();
+		
+		// Deduction
+		let deduction = $.grep(payslipList, function(item, index){
+			return (item.type == "deduction")
+		})
+		
+		$("#earningCard tbody").html("");
+		$.each(deduction, function(index, item){
+			$("#earningCard tbody").append(
+				$("<tr>").append(
+					$("<td>").append(
+						$("<input>").prop("name","name").prop("type","text").addClass("form-control")
+						.css("border", "none").css("border-bottom", "1px solid")
+						.prop("readonly", true).val(item.name)
+					),
+					$("<td>").append(
+						$("<input>").prop("name","amount").prop("type","number").addClass("form-control")
+						.css("border", "none").css("border-bottom", "1px solid")
+						.prop("readonly", true).val(item.amount)
+					),
+					$("<td>").append(
+						$("<button>").addClass("btn btn-secondary btn-sm rounded-circle hide").append(
+							$("<i>").addClass("ti-minus")
+						).click(function() {
+							deleteTableRow(this);
+						})
+					),
+				)
+			);
+		});
+	});
+	
+	$("#earningCard .saveButton").click(function () {
+		let parameter = $("#earningForm").serialize();
+		alert(parameter);
+		$.ajax({
+			type: "POST",
+			url: "updateEarnings",
+			data: parameter,
+			cache : false,
+			dataType: "json",
+			success : function(data) {
+			},
+			error: function (data) {
+			}
+		});
 	});
 	
 	$("#earningCard .addItemButton").click(function () {
 		$("#earningCard tbody").append(
 			$("<tr>").append(
 				$("<td>").append(
-					$("<input>").prop("type","text").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+					$("<input>").prop("name","name").prop("type","text").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
 				),
 				$("<td>").append(
-					$("<input>").prop("type","number").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+					$("<input>").prop("name","amount").prop("type","number").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
 				),
 				$("<td>").append(
 					$("<button>").addClass("btn btn-secondary btn-sm rounded-circle").append(
@@ -605,16 +652,18 @@ function getAllPayslip() {
 				return (item.type == "deduction")
 			})
 			
+			$("#earningCard tbody").html("");
+			
 			$.each(deduction, function(index, item){
 				$("#earningCard tbody").append(
 					$("<tr>").append(
 						$("<td>").append(
-							$("<input>").prop("type","text").addClass("form-control")
+							$("<input>").prop("name","name").prop("type","text").addClass("form-control")
 							.css("border", "none").css("border-bottom", "1px solid")
 							.prop("readonly", true).val(item.name)
 						),
 						$("<td>").append(
-							$("<input>").prop("type","number").addClass("form-control")
+							$("<input>").prop("name","amount").prop("type","number").addClass("form-control")
 							.css("border", "none").css("border-bottom", "1px solid")
 							.prop("readonly", true).val(item.amount)
 						),
@@ -751,7 +800,7 @@ function deleteTableRow(element) {
 							</div>
 						</div>
 						<div class="card-body">
-							<form>
+							<form id="earningForm">
 								<table class="table table-borderless" id="earningTable">
 									<thead>
 										<tr>

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -257,6 +258,28 @@ public class PayslipDAO {
 			sqlMapSession.close();
 			log.info("Update process employer year to date epf sosco transaction has ended.");
 		}
+		return success;
+	}
+	
+	public boolean updateEarnings(String[] name, double[] amount) throws SQLException {
+		boolean success = false;
+		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
+		
+		if(name != null && amount !=null && ) {
+			
+		}
+		
+		try {
+			sqlMapSession.startTransaction();
+			log.info("Starting transaction to update earnings");
+			sqlMapSession.delete("deletePayslipByName", "earning");
+			
+		} finally {
+			sqlMapSession.endTransaction();
+			sqlMapSession.close();
+			log.info("Update process update earnings has ended.");
+		}
+		
 		return success;
 	}
 }
