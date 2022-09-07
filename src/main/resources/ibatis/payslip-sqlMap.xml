@@ -15,6 +15,22 @@
 		payslip_tab
 	</select>
 	
+	<insert id="insertPayslip" parameterClass="java.util.Map">
+		INSERT INTO
+		`payslip_tab`
+		(
+			`type`,
+			`name`,
+			`amount`
+		)
+		VALUES
+		(
+			#type#,
+			#name#,
+			#amount#
+		)
+	</insert>
+	
 	<update id="updatePayslipName" parameterClass="java.util.HashMap">
 		UPDATE `payslip_tab`
 		SET
@@ -31,11 +47,11 @@
 		type = '$type$'
 	</update>
 	
-	<delete id="deletePayslipByName" parameterClass="String">
+	<delete id="deletePayslipByType" parameterClass="String">
 		DELETE FROM
 			`payslip_tab`
 		WHERE
-			`name` = '$name$'
+			`type` = #type#
 	</delete>
 	
 </sqlMap>

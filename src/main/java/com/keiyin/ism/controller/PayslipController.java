@@ -206,7 +206,20 @@ public class PayslipController {
 	public @ResponseBody WriteResponse updateEarnings(@RequestParam(required = false) String[] name, @RequestParam(required = false) double[] amount) {
 		
 		WriteResponse result = new WriteResponse();
+		result.setStatus(WriteResponse.Status.FAIL);
+		
 		log.info("The name is {} and the amount is {}",Arrays.toString(name), Arrays.toString(amount));
+		
+		try {
+			if(payslipDAO.updateEarnings(name, amount)) {
+				log.info("Successfully update earnings");
+				result.setStatus(WriteResponse.Status.SUCCESS);
+			}else {
+				log.info("Failed to update earnings");
+			}
+		} catch (SQLException e) {
+			log.error("Failed to update earnings due to SQL exception", e);
+		}
 		return result;
 	}
 

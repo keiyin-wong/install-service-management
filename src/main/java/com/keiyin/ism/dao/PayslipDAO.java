@@ -10,12 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.web.firewall.FirewalledRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapSession;
 import com.keiyin.ism.model.Payslip;
+import com.lowagie.text.Paragraph;
 
 @Service(value = "payslipDAO")
 public class PayslipDAO {
@@ -263,17 +265,32 @@ public class PayslipDAO {
 	
 	public boolean updateEarnings(String[] name, double[] amount) throws SQLException {
 		boolean success = false;
-		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
+		String earning = "earning";
 		
-		if(name != null && amount !=null && ) {
-			
+		if(name == null || amount ==null || (name.length != amount.length)) {
+			return false;
 		}
 		
+		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
+		
 		try {
-			sqlMapSession.startTransaction();
 			log.info("Starting transaction to update earnings");
-			sqlMapSession.delete("deletePayslipByName", "earning");
+			sqlMapSession.startTransaction();
+			sqlMapSession.getCurrentConnection().setAutoCommit(false);
 			
+			sqlMapSession.delete("Payslip.deletePayslipByType", earning);
+			
+			for(int i = 0; i < name.length; i++) {
+				Map<String, Object> parameterMap = new HashMap<>();
+				parameterMap.put("name", name[i]);
+				parameterMap.put("amount", amount[i]);
+				parameterMap.put("type", earning);
+				sqlMapSession.insert("Payslip.insertPayslip", parameterMap);
+			}
+			
+			sqlMapSession.getCurrentConnection().commit();
+			sqlMapSession.commitTransaction();
+			success = true;
 		} finally {
 			sqlMapSession.endTransaction();
 			sqlMapSession.close();

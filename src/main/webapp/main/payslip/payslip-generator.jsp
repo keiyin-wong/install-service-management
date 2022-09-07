@@ -314,12 +314,12 @@ $(document).ready(function(){
 		earningViewMode();
 		
 		// Deduction
-		let deduction = $.grep(payslipList, function(item, index){
-			return (item.type == "deduction")
+		let earning = $.grep(payslipList, function(item, index){
+			return (item.type == "earning")
 		})
 		
 		$("#earningCard tbody").html("");
-		$.each(deduction, function(index, item){
+		$.each(earning, function(index, item){
 			$("#earningCard tbody").append(
 				$("<tr>").append(
 					$("<td>").append(
@@ -648,13 +648,13 @@ function getAllPayslip() {
 			$("#yearToDateEmployerEis").val(data.find(x => x.type === "employer_year_eis").amount);
 			
 			// Deduction
-			let deduction = $.grep(data, function(item, index){
-				return (item.type == "deduction")
+			let earning = $.grep(data, function(item, index){
+				return (item.type == "earning")
 			})
 			
 			$("#earningCard tbody").html("");
 			
-			$.each(deduction, function(index, item){
+			$.each(earning, function(index, item){
 				$("#earningCard tbody").append(
 					$("<tr>").append(
 						$("<td>").append(
