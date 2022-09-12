@@ -306,11 +306,13 @@ $(document).ready(function(){
 	// ============================================================
 	// Earning part
 	// ============================================================
-	$("#earningCard .editButton").click(function () {
+	$("#earningCard .editButton").click(function (event) {
+		event.preventDefault();
 		earningEditMode();
 	});
 	
-	$("#earningCard .cancelButton").click(function () {
+	$("#earningCard .cancelButton").click(function (event) {
+		event.preventDefault();
 		earningViewMode();
 		
 		// Deduction
@@ -344,30 +346,68 @@ $(document).ready(function(){
 		});
 	});
 	
-	$("#earningCard .saveButton").click(function () {
-		let parameter = $("#earningForm").serialize();
-		alert(parameter);
-		$.ajax({
-			type: "POST",
-			url: "updateEarnings",
-			data: parameter,
-			cache : false,
-			dataType: "json",
-			success : function(data) {
-			},
-			error: function (data) {
+	$.validator.addMethod("returnFalseIfEmptyName",function(value,element,params){
+		let inputName = $("#earningForm input[name=name]");
+		for(let i = 0; i < inputName.length; i++) {
+			if(inputName[i].value == "")
+				return false;
+		}
+		return true;
+	}, "Please enter name");
+	
+	
+	$("#earningForm").validate({
+		rules : {
+			name: {
+				returnFalseIfEmptyName: true,
 			}
-		});
+		}
 	});
 	
-	$("#earningCard .addItemButton").click(function () {
+	
+	$("#earningCard .saveButton").click(function (event) {
+		event.preventDefault();
+		let parameter = $("#earningForm").serialize();
+		if($("#earningForm").valid()) {
+			loaderSpinner.show();
+			$.ajax({
+				type: "POST",
+				url: "updateEarnings",
+				data: parameter,
+				cache : false,
+				dataType: "json",
+				success : function(data) {
+					if(data.status == "success") {
+						popSuccessToastr("Success", 'Successfully update earnings');
+					}else {
+						popErrorToastr("Failed", "Failed to update earnings");
+					}
+					loaderSpinner.hide();
+					earningViewMode();
+					getAllPayslip();
+				},
+				error: function (data) {
+					popErrorToastr("Failed", "Failed to update earnings");
+					loaderSpinner.hide();
+					earningViewMode();
+					getAllPayslip();
+				}
+			});
+		}
+	});
+	
+	$("#earningCard .addItemButton").click(function (event) {
+		event.preventDefault();
 		$("#earningCard tbody").append(
 			$("<tr>").append(
 				$("<td>").append(
-					$("<input>").prop("name","name").prop("type","text").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+					$("<input>").prop("name","name").prop("type","text")
+					.addClass("form-control").css("border", "none")
+					.css("border-bottom", "1px solid").prop("required", true)
 				),
 				$("<td>").append(
-					$("<input>").prop("name","amount").prop("type","number").addClass("form-control").css("border", "none").css("border-bottom", "1px solid")
+					$("<input>").prop("name","amount").prop("type","number").addClass("form-control")
+					.css("border", "none").css("border-bottom", "1px solid").prop("required", true)
 				),
 				$("<td>").append(
 					$("<button>").addClass("btn btn-secondary btn-sm rounded-circle").append(
@@ -659,12 +699,12 @@ function getAllPayslip() {
 					$("<tr>").append(
 						$("<td>").append(
 							$("<input>").prop("name","name").prop("type","text").addClass("form-control")
-							.css("border", "none").css("border-bottom", "1px solid")
+							.css("border", "none").css("border-bottom", "1px solid").prop("required", true) 
 							.prop("readonly", true).val(item.name)
 						),
 						$("<td>").append(
 							$("<input>").prop("name","amount").prop("type","number").addClass("form-control")
-							.css("border", "none").css("border-bottom", "1px solid")
+							.css("border", "none").css("border-bottom", "1px solid").prop("required", true) 
 							.prop("readonly", true).val(item.amount)
 						),
 						$("<td>").append(
@@ -787,6 +827,7 @@ function deleteTableRow(element) {
 			</div>
 			<div class="row">
 				<div class="col-md-6">
+
 					<div class="card" id="earningCard">
 						<div class="card-title">
 							<h4>Earning</h4>
@@ -812,16 +853,16 @@ function deleteTableRow(element) {
 									<tbody>
 									</tbody>
 								</table>
-							</form>
-							<div class="row">
-								<div class="col-md-12">
-									<div class="d-flex justify-content-center">
-										<button class="btn btn-secondary hide addItemButton">
-											<i class="ti-plus m-r-5"></i>Add item
-										</button>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="d-flex justify-content-center">
+											<button class="btn btn-secondary hide addItemButton">
+												<i class="ti-plus m-r-5"></i>Add item
+											</button>
+										</div>
 									</div>
 								</div>
-							</div>
+							</form>
 						</div>
 					</div>
 				</div>

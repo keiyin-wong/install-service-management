@@ -267,10 +267,6 @@ public class PayslipDAO {
 		boolean success = false;
 		String earning = "earning";
 		
-		if(name == null || amount ==null || (name.length != amount.length)) {
-			return false;
-		}
-		
 		SqlMapSession sqlMapSession = sqlMapPaySlipClient.openSession();
 		
 		try {
@@ -280,12 +276,14 @@ public class PayslipDAO {
 			
 			sqlMapSession.delete("Payslip.deletePayslipByType", earning);
 			
-			for(int i = 0; i < name.length; i++) {
-				Map<String, Object> parameterMap = new HashMap<>();
-				parameterMap.put("name", name[i]);
-				parameterMap.put("amount", amount[i]);
-				parameterMap.put("type", earning);
-				sqlMapSession.insert("Payslip.insertPayslip", parameterMap);
+			if(name!=null && amount!= null) {
+				for(int i = 0; i < name.length; i++) {
+					Map<String, Object> parameterMap = new HashMap<>();
+					parameterMap.put("name", name[i]);
+					parameterMap.put("amount", amount[i]);
+					parameterMap.put("type", earning);
+					sqlMapSession.insert("Payslip.insertPayslip", parameterMap);
+				}
 			}
 			
 			sqlMapSession.getCurrentConnection().commit();
