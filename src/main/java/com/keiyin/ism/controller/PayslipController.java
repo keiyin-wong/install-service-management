@@ -23,12 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.ctc.wstx.shaded.msv_core.verifier.jarv.TheFactoryImpl;
 import com.keiyin.ism.constant.ViewConstants;
 import com.keiyin.ism.dao.PayslipDAO;
 import com.keiyin.ism.model.Payslip;
 import com.keiyin.ism.model.WriteResponse;
-import com.sun.org.apache.xalan.internal.utils.XMLSecurityManager.NameMap;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
