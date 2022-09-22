@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2022-07-09T00:11:30 -->
+<!-- 2022-09-22T15:44:20 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -43,7 +43,7 @@ od.width AS width,
 od.height AS height,
 od.quantity AS quantity,
 od.final_price AS final_price,
-s.use_quantity AS use_quantity, 
+s.calculation_type AS calculation_type, 
 ROUND((od.width/304.8),2) AS ft,
 (CASE
 	WHEN (s.description_english IS NOT NULL AND s.description_english !="") AND (s.description_chinese IS NOT NULL AND s.description_chinese != "")
@@ -58,7 +58,8 @@ ROUND((od.width/304.8),2) AS ft,
 ) AS service_name,
 (
 CASE
-	WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+	WHEN s.calculation_type=1 THEN od.final_price * od.quantity
+	WHEN s.calculation_type=2 THEN TRUNCATE(ROUND((od.width/304.8),2) * ROUND((od.`height`/304.8),2) * od.final_price, 0)
 	ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
 	END
 ) AS total_price
@@ -77,7 +78,7 @@ ORDER BY order_id, line_number ASC;]]>
 	<field name="height" class="java.lang.Double"/>
 	<field name="quantity" class="java.lang.Long"/>
 	<field name="final_price" class="java.lang.Long"/>
-	<field name="use_quantity" class="java.lang.Boolean"/>
+	<field name="calculation_type" class="java.lang.Integer"/>
 	<field name="ft" class="java.lang.Double"/>
 	<field name="service_name" class="java.lang.String"/>
 	<field name="total_price" class="java.lang.Long"/>
@@ -379,7 +380,7 @@ Tel: 03-5886 2985]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{use_quantity} == true ? "N/A" : $F{width}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{calculation_type} == 1 ? "N/A" : $F{width}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#0.##">
 				<reportElement key="" style="Row" stretchType="RelativeToTallestObject" x="320" y="0" width="49" height="30" uuid="19a5408b-5d2f-4e35-b124-816f0e0af1ad"/>
@@ -392,7 +393,7 @@ Tel: 03-5886 2985]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{use_quantity} == true ? "N/A" : $F{ft}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{calculation_type} == 1 ? "N/A" : $F{ft}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#0.#####">
 				<reportElement key="" style="Row" stretchType="RelativeToTallestObject" x="269" y="0" width="51" height="30" uuid="dbcadd30-3325-4aeb-9895-c6c21262bdd6"/>
@@ -405,7 +406,7 @@ Tel: 03-5886 2985]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{use_quantity} == true ? "N/A" : $F{height}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{calculation_type} == 1 ? "N/A" : $F{height}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="0.00">
 				<reportElement key="" style="Row" stretchType="RelativeToTallestObject" x="429" y="0" width="60" height="30" uuid="fb222d40-2fe8-413a-a682-737c8dd76dfb"/>
@@ -457,7 +458,7 @@ Tel: 03-5886 2985]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="SansSerif"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{use_quantity} == true ?$F{quantity}: "N/A"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{calculation_type} == 1 ?$F{quantity}: "N/A"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

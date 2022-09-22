@@ -6,7 +6,7 @@ public class Service {
 	String descriptionChinese;
 	boolean differentPrice;
 	int price;
-	boolean useQuantity;
+	int calculationType;
 	
 	public int getId() {
 		return id;
@@ -32,11 +32,11 @@ public class Service {
 	public void setDifferentPrice(boolean differentPrice) {
 		this.differentPrice = differentPrice;
 	}
-	public boolean isUseQuantity() {
-		return useQuantity;
+	public int getCalculationType() {
+		return calculationType;
 	}
-	public void setUseQuantity(boolean useQuantity) {
-		this.useQuantity = useQuantity;
+	public void setCalculationType(int calculationType) {
+		this.calculationType = calculationType;
 	}
 	public int getPrice() {
 		return price;

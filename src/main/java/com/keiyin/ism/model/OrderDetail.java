@@ -12,7 +12,7 @@ public class OrderDetail {
 	int quantity;
 	int finalPrice;
 	int totalPrice;
-	boolean useQuantity;
+	int calculationType;
 	
 	
 	public String getOrderId() {
@@ -69,11 +69,11 @@ public class OrderDetail {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public boolean isUseQuantity() {
-		return useQuantity;
+	public int getCalculationType() {
+		return calculationType;
 	}
-	public void setUseQuantity(boolean useQuantity) {
-		this.useQuantity = useQuantity;
+	public void setCalculationType(int calculationType) {
+		this.calculationType = calculationType;
 	}
 	public int getTotalPrice() {
 		return totalPrice;
@@ -94,7 +94,7 @@ public class OrderDetail {
 				+ "quantity=" + quantity + ", "
 				+ "finalPrice=" + finalPrice + ", "
 				+ "totalPrice=" + totalPrice + ", "
-				+ "useQuantity=" + useQuantity
+				+ "calculationType=" + calculationType
 				+ "]";
 	}
 }

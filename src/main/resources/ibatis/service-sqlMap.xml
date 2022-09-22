@@ -8,7 +8,7 @@
 		<result property="descriptionChinese" column="description_chinese" javaType="String"/>
 		<result property="differentPrice" column="is_different_price" javaType="boolean"/>
 		<result property="price" column="price" javaType="int"/>
-		<result property="useQuantity" column="use_quantity" javaType="boolean"/>
+		<result property="calculationType" column="calculation_type" javaType="int"/>
 	</resultMap>
 	
 	<resultMap id="serviceDiffPriceResultMap" class="com.keiyin.ism.model.ServiceDiffPrice">

@@ -30,7 +30,7 @@
 		<result property="quantity" column="quantity" javaType="int"/>
 		<result property="finalPrice" column="final_price" javaType="int"/>
 		<result property="totalPrice" column="total_price" javaType="int"/>
-		<result property="useQuantity" column="use_quantity" javaType="boolean"/>
+		<result property="calculationType" column="calculation_type" javaType="int"/>
 	</resultMap>
 
 	<select id="datatableOrderList" resultMap="orderAndTotalResultMap">
@@ -42,7 +42,8 @@
 		o.date AS `date`,
 		COALESCE(SUM(
 			CASE
-			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=2 THEN TRUNCATE(ROUND((od.width/304.8),2) * ROUND((od.`height`/304.8),2) * od.final_price, 0)
 			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
 			END
 		),0) AS total_price
@@ -127,7 +128,8 @@
 		MONTH(o.date) AS `month`,
 		COALESCE(SUM(
 			CASE
-			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=2 THEN TRUNCATE(ROUND((od.width/304.8),2) * ROUND((od.`height`/304.8),2) * od.final_price, 0)
 			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
 			END
 		),0) AS total
@@ -150,7 +152,7 @@
 		od.height AS height,
 		od.quantity AS quantity,
 		od.final_price AS final_price,
-		s.use_quantity AS use_quantity, 
+		s.calculation_type AS calculation_type, 
 		ROUND((od.width/304.8),2) AS ft,
 		(
 		CASE
@@ -166,7 +168,8 @@
 		) AS service_name,
 		(
 		CASE
-			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=2 THEN TRUNCATE(ROUND((od.width/304.8),2) * ROUND((od.`height`/304.8),2) * od.final_price, 0)
 			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
 			END
 		) AS total_price
@@ -187,7 +190,7 @@
 		od.height AS height,
 		od.quantity AS quantity,
 		od.final_price AS final_price,
-		s.use_quantity AS use_quantity, 
+		s.calculation_type AS calculation_type, 
 		ROUND((od.width/304.8),2) AS ft,
 		(
 		CASE
@@ -203,7 +206,8 @@
 		) AS service_name,
 		(
 		CASE
-			WHEN s.use_quantity=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=1 THEN od.final_price * od.quantity
+			WHEN s.calculation_type=2 THEN TRUNCATE(ROUND((od.width/304.8),2) * ROUND((od.`height`/304.8),2) * od.final_price, 0)
 			ELSE TRUNCATE(ROUND((od.width/304.8),2) * od.final_price, 0)
 			END
 		) AS total_price

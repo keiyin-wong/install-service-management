@@ -64,7 +64,7 @@ $(document).ready(function(){
 				data: "width", 
 				name:"id",
 				render: function (data, type, row) {
-					if(!row.useQuantity){
+					if(row.calculationType != 1){
 						return data;
 					}else{
 						return "N/A";
@@ -76,7 +76,7 @@ $(document).ready(function(){
 				data: "height", 
 				name:"id", 
 				render: function (data, type, row) {
-					if(!row.useQuantity){
+					if(row.calculationType != 1){
 						return data;
 					}else{
 						return "N/A";
@@ -89,7 +89,7 @@ $(document).ready(function(){
 				data: "quantity", 
 				name:"id",
 				render: function (data, type, row) {
-					if(row.useQuantity){
+					if(row.calculationType == 1){
 						return data;
 					}else{
 						return "N/A";
@@ -125,7 +125,7 @@ $(document).ready(function(){
 			{
 				targets: 5, // FT
 				render: function (data, type, row) {
-					if(data.useQuantity){
+					if(data.calculationType == 1){
 						return "N/A";
 					}
 					let ft = Math.round(((data.width)/304.8) * 100) / 100;
@@ -199,7 +199,7 @@ $(document).ready(function(){
 	// Add new order detail drop -> drop down on change
 	$('#createService').on('change', function(e){
 		let selectedOption = $(this).find(':selected');
-		if(selectedOption.attr('use-quantity') == "true"){
+		if(selectedOption.attr('cal-type') == "1"){
 			$("#createWidthDiv").hide();
 			$("#createWidth").attr("disabled", true);
 			$("#createHeightDiv").hide();
@@ -236,7 +236,7 @@ $(document).ready(function(){
 		rules : {
 			createWidth: {
 				required: function(){
-					if($('#createService').find('option:selected').attr('use-quantity') == "true"){
+					if($('#createService').find('option:selected').attr('cal-type') == "1"){
 						return false;
 					}else
 						return true;
@@ -244,7 +244,7 @@ $(document).ready(function(){
 			},
 			createHeight: {
 				required: function(){
-					if($('#createService').find('option:selected').attr('use-quantity') == "true"){
+					if($('#createService').find('option:selected').attr('cal-type') == "1"){
 						return false;
 					}else
 						return true;
@@ -252,7 +252,7 @@ $(document).ready(function(){
 			},
 			createQuantity: {
 				required: function(){
-					if($('#createService').find('option:selected').attr('use-quantity') == "true"){
+					if($('#createService').find('option:selected').attr('cal-type') == "1"){
 						return true;
 					}else
 						return false;
@@ -269,7 +269,7 @@ $(document).ready(function(){
 		rules : {
 			createWidth: {
 				required: function(){
-					if($('#editService').find('option:selected').attr('use-quantity') == "true"){
+					if($('#editService').find('option:selected').attr('cal-type') == "1"){
 						return false;
 					}else
 						return true;
@@ -277,7 +277,7 @@ $(document).ready(function(){
 			},
 			createHeight: {
 				required: function(){
-					if($('#editService').find('option:selected').attr('use-quantity') == "true"){
+					if($('#editService').find('option:selected').attr('cal-type') == "1"){
 						return false;
 					}else
 						return true;
@@ -285,7 +285,7 @@ $(document).ready(function(){
 			},
 			createQuantity: {
 				required: function(){
-					if($('#editService').find('option:selected').attr('use-quantity') == "true"){
+					if($('#editService').find('option:selected').attr('cal-type') == "1"){
 						return true;
 					}else
 						return false;
@@ -296,7 +296,7 @@ $(document).ready(function(){
 	
 	$('#editService').on('change', function(e){
 		let selectedOption = $(this).find(':selected');
-		if(selectedOption.attr('use-quantity') == "true"){
+		if(selectedOption.attr('cal-type') == "1"){
 			$("#editWidthDiv").hide();
 			$("#editWidth").attr("disabled", true);
 			$("#editHeightDiv").hide();
@@ -465,7 +465,7 @@ function getEditOrderDetail(lineNumber){
 			$("#editHeight").val(data.height);
 			$("#editQuantity").val(data.quantity);
 			$("#editPrice").val((data.finalPrice/100).toFixed(2));
-			if(data.useQuantity){
+			if(data.calculationType == 1){
 				$("#editWidthDiv").hide();
 				$("#editHeightDiv").hide();
 				$("#editQuantityDiv").show();
@@ -702,7 +702,7 @@ function changeEditPriveValueBasedOnHeight(){
 						<div class="col-sm-9">
 							<select class="form-control selectpicker" data-live-search="true" id="createService" name="createService" required>
 								<c:forEach var="item" items="${serviceList}">
-								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" use-quantity="${item.useQuantity}">${item.descriptionEnglish}
+								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" cal-type="${item.calculationType}">${item.descriptionEnglish}
 								    	<c:if test="${not empty item.descriptionChinese}">
 											 (${item.descriptionChinese})
 										</c:if>
@@ -769,7 +769,7 @@ function changeEditPriveValueBasedOnHeight(){
 						<div class="col-sm-9">
 							<select class="form-control" data-live-search="true" id="editService" name="editService" required>
 								<c:forEach var="item" items="${serviceList}">
-								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" use-quantity="${item.useQuantity}">${item.descriptionEnglish}
+								    <option value="${item.id}" data-price=${item.price} diff-price="${item.differentPrice}" cal-type="${item.calculationType}">${item.descriptionEnglish}
 								    	<c:if test="${not empty item.descriptionChinese}">
 											 (${item.descriptionChinese})
 										</c:if>
