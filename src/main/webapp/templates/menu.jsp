@@ -12,12 +12,12 @@
 					<span>System</span></a>
 				</div>
 				<li class="label">Main</li>
-				<li><a href="${contextUrl}/install-service-management/dashboard/dashboard.html"><i class="ti-home"></i> Dashboard </a></li>
+				<li><a href="${pageContext.request.contextPath}/dashboard/dashboard.html"><i class="ti-home"></i> Dashboard </a></li>
 				<li class="label">Order</li>
-				<li><a href="${contextUrl}/install-service-management/order/order.html"><i class="ti-layout-grid2"></i> Orders </a></li>
-				<li><a href="${contextUrl}/install-service-management/order/order-invoice.html"><i class="ti-files"></i> Invoices </a></li>
+				<li><a href="${pageContext.request.contextPath}/order/order.html"><i class="ti-layout-grid2"></i> Orders </a></li>
+				<li><a href="${pageContext.request.contextPath}/order/order-invoice.html"><i class="ti-files"></i> Invoices </a></li>
 				<li class="label">Payslip</li>
-				<li><a href="${contextUrl}/install-service-management/payslip/payslip-generator.html"><i class="ti-files"></i> Generator </a></li>
+				<li><a href="${pageContext.request.contextPath}/payslip/payslip-generator.html"><i class="ti-files"></i> Generator </a></li>
 				<!-- <li class="label">Services</li>
 				<li><a href="app-event-calender.html"><i class="ti-package"></i> Service Type </a></li> -->
 			</ul>

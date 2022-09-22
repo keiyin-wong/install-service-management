@@ -747,7 +747,7 @@ function deleteTableRow(element) {
 						<div class="page-title">
 							<ol class="breadcrumb">
 								<li class="breadcrumb-item"><a
-									href="${contextUrl}/install-service-management/order/order.html">Payslip
+									href="${pageContext.request.contextPath}/order/order.html">Payslip
 										generator</a></li>
 							</ol>
 						</div>
