@@ -3,6 +3,10 @@ package com.keiyin.ism.controller;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.CRC32;
@@ -19,21 +24,31 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.DefaultEditorKit.CopyAction;
 
+import org.bouncycastle.crypto.ec.ECNewPublicKeyTransform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfCopy;
+import com.itextpdf.text.pdf.PdfImportedPage;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.keiyin.ism.constant.ViewConstants;
 import com.keiyin.ism.dao.OrderDAO;
 import com.keiyin.ism.dao.ServiceDAO;
@@ -71,6 +86,9 @@ public class OrderController {
 	@Autowired
 	@Qualifier("springJdbcDataSources")
 	DriverManagerDataSource springJdbcDataSources;
+	
+	@Value("${sketch.basepath}")
+	private String sketchBasePath;
 	
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 	
@@ -414,6 +432,93 @@ public class OrderController {
 		}
 	}
 	
+	@RequestMapping(value = "/sketch", method = RequestMethod.GET)
+	public void getOrderPdf(@RequestParam String orderId,
+			@RequestParam(required = false, defaultValue = "1") int inline, HttpServletRequest request,
+			HttpServletResponse response) {
+		String filename = orderId + ".pdf";
+		FileInputStream fileInputStream = null;
+
+		File file = new File(sketchBasePath + filename);
+		try {
+			fileInputStream = new FileInputStream(file);
+			if (inline == 1) {
+				response.addHeader("Content-disposition", "inline; filename=" + filename);
+			} else {
+				response.addHeader("Content-disposition", "attachment; filename=" + filename);
+			}
+			FileCopyUtils.copy(fileInputStream, response.getOutputStream());
+			log.info("Successfully retrieved order draft pdf for order id {}", orderId);
+		} catch (IOException e) {
+			log.error("Failed to get order draft for order id {}", orderId, e);
+		} finally {
+			try {
+				if (fileInputStream != null) {
+		            fileInputStream.close();
+		        }   
+			} catch (IOException e) { }
+		}
+
+	}
+	
+	@RequestMapping(value="/invoice-merge-sketch", method = RequestMethod.GET)
+	public void generateOrderInvoiceMergeReport(
+			@RequestParam String orderId, 
+			@RequestParam(required=false, defaultValue = "1")int inline, 
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		Map<String, Object> parameterMap = new HashMap<>();
+		String filename = "Invoice_" + orderId + ".pdf";
+		
+		String sketchFileName = orderId + ".pdf";
+		FileInputStream sketchFileInputsFileInputStream = null;
+		
+		parameterMap.put("orderId", orderId);
+		try {
+			InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
+			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
+			
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			JasperExportManager.exportReportToPdfStream(jasperPrint, os);
+			ByteArrayInputStream jasperReportInputStream = new ByteArrayInputStream(os.toByteArray());
+			
+			List<InputStream> inputPdfList = new ArrayList<>();
+			inputPdfList.add(jasperReportInputStream);
+			
+			File sketchFile = new File(sketchBasePath + sketchFileName);
+			if(sketchFile.exists()) {
+				sketchFileInputsFileInputStream = new FileInputStream(sketchBasePath + sketchFileName);
+				inputPdfList.add(sketchFileInputsFileInputStream);
+			}else {
+				log.info("Order {} sketch pdf file not exists.", orderId);
+			}
+			
+			response.setContentType("application/pdf");
+			 if(inline == 1) {
+				 response.addHeader("Content-disposition", "inline; filename=" +filename);
+			 }else {
+				 response.addHeader("Content-disposition", "attachment; filename=" +filename);
+			 }
+			 
+			 mergePdfFiles(inputPdfList, response.getOutputStream());
+		} catch (JRException|SQLException e ) {
+			log.info("Jasper report part error",e );
+		} catch (Exception e) {
+			log.info("Unexpected error occur",e );
+		}finally {
+			try {
+				if (sketchFileInputsFileInputStream != null) {
+					sketchFileInputsFileInputStream.close();
+		        }   
+			} catch (IOException e) { }
+		}
+	}
+
+	
+
+	
+	
 	/**
 	 * Get multiple report
 	 * 
@@ -446,7 +551,7 @@ public class OrderController {
         try {
         	os = response.getOutputStream();
         	response.setContentType("application/octet-stream;charset=UTF-8");
-            response.setHeader("Content-Disposition", "attachment;filename=reportTesting.zip");
+            response.setHeader("Content-Disposition", "attachment;filename=Invoices.zip");
             // 对输出文件做CRC32校验
             cos = new CheckedOutputStream(os, new CRC32());
             zipOut = new ZipOutputStream(cos);
@@ -463,7 +568,7 @@ public class OrderController {
 		
 	}
 	
-	public OutputStream getReport(String orderId) throws JRException, SQLException, IOException {
+	public OutputStream getReport(String orderId) throws Exception {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		JasperPrint jasperPrint = null;
 		
@@ -472,8 +577,26 @@ public class OrderController {
 		InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
 		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
 		jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
-		JasperExportManager.exportReportToPdfStream(jasperPrint, os);
 		
+		ByteArrayOutputStream jasperReportOs = new ByteArrayOutputStream();
+		JasperExportManager.exportReportToPdfStream(jasperPrint, jasperReportOs);
+		ByteArrayInputStream jasperReportInputStream = new ByteArrayInputStream(jasperReportOs.toByteArray());
+		
+		// Append sketch pdf
+		List<InputStream> inputPdfList = new ArrayList<>();
+		inputPdfList.add(jasperReportInputStream);
+		
+		String sketchFileName = orderId + ".pdf";
+		File sketchFile = new File(sketchBasePath + sketchFileName);
+		
+		if(sketchFile.exists()) {
+			FileInputStream sketchFileInputsFileInputStream = new FileInputStream(sketchBasePath + sketchFileName);
+			inputPdfList.add(sketchFileInputsFileInputStream);
+		}else {
+			log.info("Order {} sketch pdf file not exists.", orderId);
+		}
+		
+		mergePdfFiles(inputPdfList, os);		
 		return os;
 	}
 	
@@ -493,6 +616,56 @@ public class OrderController {
         bis.close();
     }
 	
+	
+	// Other functions
+	
+	
+	private void mergePdfFiles(List<InputStream> inputPdfList, OutputStream outputStream) throws Exception {
+
+		// Create document and pdfReader objects.
+		Document document = new Document();
+		List<PdfReader> readers = new ArrayList<>();
+		int totalPages = 0;
+
+		// Create pdf Iterator object using inputPdfList.
+		Iterator<InputStream> pdfIterator = inputPdfList.iterator();
+
+		// Create reader list for the input pdf files.
+		while (pdfIterator.hasNext()) {
+			InputStream pdf = pdfIterator.next();
+			PdfReader pdfReader = new PdfReader(pdf);
+			readers.add(pdfReader);
+			totalPages = totalPages + pdfReader.getNumberOfPages();
+		}
+
+		// Create writer for the outputStream
+		PdfCopy copy = new PdfCopy(document, outputStream);
+
+		// Open document.
+		document.open();
+
+		int currentPdfReaderPage = 1;
+		Iterator<PdfReader> iteratorPDFReader = readers.iterator();
+
+		// Iterate and process the reader list.
+		while (iteratorPDFReader.hasNext()) {
+			PdfReader pdfReader = iteratorPDFReader.next();
+			// Create page and add content.
+			while (currentPdfReaderPage <= pdfReader.getNumberOfPages()) {
+				document.newPage();
+				copy.addPage(copy.getImportedPage(pdfReader, currentPdfReaderPage));
+				currentPdfReaderPage++;
+			}
+			currentPdfReaderPage = 1;
+		}
+
+		// Close document and outputStream.
+		outputStream.flush();
+		document.close();
+		outputStream.close();
+
+		log.info("Pdf files merged successfully.");
+	}
 	
 	// -------------------------------------------------------------------------------------
 	// Service Type
