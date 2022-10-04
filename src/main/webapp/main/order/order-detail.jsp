@@ -164,7 +164,7 @@ $(document).ready(function(){
 	// $('#orderDetailTable').DataTable().ajax.reload();
 	
 	$("#printInvoiceButton").click(function(){
-		window.open("orderReport.do?inline=1&orderId=" + urlParams.get("orderId"), '_blank');
+		window.open("invoice-merge-sketch?orderId=" + urlParams.get("orderId"), '_blank');
 	})
 
 	// Order date data on change and update order

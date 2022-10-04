@@ -178,11 +178,13 @@ $(document).ready(function(){
 // ===========================================================
 	
 function showInvoiceModal (orderId){
-	$("#showInvoiceModal .modal-body").html("");
+/* 	$("#showInvoiceModal .modal-body").html("");
 	$('#showInvoiceModal .modal-title').html("Invoice " + orderId);
 	$("#showInvoiceModelOrderId").val(orderId);
 	$('#showInvoiceModal').modal();
-	fillInvoiceToModal(orderId);
+	fillInvoiceToModal(orderId); */
+	
+	window.open("invoice-merge-sketch?orderId=" + orderId, '_blank');
 }
 
 function fillInvoiceToModal(orderId) {
