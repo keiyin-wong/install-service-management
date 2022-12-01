@@ -5,8 +5,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,9 +22,7 @@ import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.DefaultEditorKit.CopyAction;
 
-import org.bouncycastle.crypto.ec.ECNewPublicKeyTransform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,11 +40,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfCopy;
-import com.itextpdf.text.pdf.PdfImportedPage;
 import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.keiyin.ism.constant.ViewConstants;
 import com.keiyin.ism.dao.OrderDAO;
 import com.keiyin.ism.dao.ServiceDAO;
@@ -556,6 +549,7 @@ public class OrderController {
             cos = new CheckedOutputStream(os, new CRC32());
             zipOut = new ZipOutputStream(cos);
             // 将单个文件的流添加到压缩文件中
+            // Compress all stream to the zip
             for (int i = 0; i < oss.size(); i++) {
                 compressFile(oss.get(i), zipOut, "Invoice_" + selectedOrderIds[i] + ".pdf");
             }
@@ -580,6 +574,8 @@ public class OrderController {
 		
 		ByteArrayOutputStream jasperReportOs = new ByteArrayOutputStream();
 		JasperExportManager.exportReportToPdfStream(jasperPrint, jasperReportOs);
+		
+		// Convert the jasper report from ByteArrayOutputStream to Input stream 
 		ByteArrayInputStream jasperReportInputStream = new ByteArrayInputStream(jasperReportOs.toByteArray());
 		
 		// Append sketch pdf
@@ -587,8 +583,11 @@ public class OrderController {
 		inputPdfList.add(jasperReportInputStream);
 		
 		String sketchFileName = orderId + ".pdf";
+		
+		// Get the invoice sketch file from the path
 		File sketchFile = new File(sketchBasePath + sketchFileName);
 		
+		// If exists, add to the list and ready to merge it to one pdf
 		if(sketchFile.exists()) {
 			FileInputStream sketchFileInputsFileInputStream = new FileInputStream(sketchBasePath + sketchFileName);
 			inputPdfList.add(sketchFileInputsFileInputStream);

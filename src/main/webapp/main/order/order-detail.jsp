@@ -646,7 +646,7 @@ function changeEditPriveValueBasedOnHeight(){
 										<div class='row'>
 											<div class="col-lg-12">
 												<div class="bootstrap-data-table-panel">
-													<table id="orderDetailTable" class="table <%-- table-bordered--%> hover"  width="100%"> <!-- table-striped table-bordered  -->
+													<table id="orderDetailTable" class="table hover" style="width:100%;"> <!--table-bordered table-striped table-bordered  -->
 														<thead>
 															<tr>
 																<th>#</th>

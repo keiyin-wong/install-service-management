@@ -335,7 +335,7 @@ function deleteMultipleOrders(){
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
-										<table id="orderTable" class="table"> <!-- table-striped -->
+										<table id="orderTable" class="table table-hover"> <!-- table-striped -->
 											<thead>
 												<tr>
 													<th>#</th>

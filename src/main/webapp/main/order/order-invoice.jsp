@@ -63,7 +63,7 @@ $(document).ready(function(){
 				orderable: false,
 				defaultContent: "",
 				render: function (data, type, row) {
-					return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '"/>';
+					return '<input type="checkbox" name="selectedOrderIds" value="' + data.id + '" data-total="' + data.total + '"  />';
 				},
 				createdCell: cell => $(cell).addClass("datatable-skip-click").click(function(event){
 					var $target = $(event.target);
@@ -75,10 +75,18 @@ $(document).ready(function(){
 					}
 					if($("input[type=checkbox][name=selectedOrderIds]:checked").length == 0){
 						$(".checkbox-options").hide();
+						$("#selected-order-income-total").text("Total: " + "RM 0");
 					}else{
+						// Calculate the total and show it
+						var total = 0;
+						$.each($("input[type=checkbox][name=selectedOrderIds]:checked"), function(index, values){
+							total = total + Number($(values).attr("data-total"));
+						});
+						let totalDisplay = 'RM ' + (total/100).toFixed(2);
+						$("#selected-order-income-total").text("Total: " + totalDisplay);
 						$(".checkbox-options").show();
 					}
-					//console.log($("input[type=checkbox][name=selectedOrderIds]:checked").length);
+					//console.log($("input[type=checkbox][name=selectedOrderIds]:checked"));
 				})
 			},
 			{
@@ -154,7 +162,14 @@ $(document).ready(function(){
 	orderTable.on( 'draw', function () {
 		if($("input[type=checkbox][name=selectedOrderIds]:checked").length == 0){
 			$(".checkbox-options").hide();
+			$("#selected-order-income-total").text("Total: " + "RM 0");
 		}else{
+			var total = 0;
+			$.each($("input[type=checkbox][name=selectedOrderIds]:checked"), function(index, values){
+				total = total + Number($(values).attr("data-total"));
+			});
+			let totalDisplay = 'RM ' + (total/100).toFixed(2);
+			$("#selected-order-income-total").text("Total: " + totalDisplay);
 			$(".checkbox-options").show();
 		}
 	});
@@ -253,6 +268,23 @@ function downloadMultipleInvoices() {
 			</div>
 			<section id="main-content">
 				<div class="row">
+					<div class="col-lg-3">
+						<div class="card">
+							<div class="stat-widget-four">
+								<div class="stat-icon">
+									<i class="ti-stats-up"></i>
+								</div>
+								<div class="stat-content">
+									<div class="text-left dib">
+										<div class="stat-heading">Selected Order Income</div>
+										<div class="stat-text" id="selected-order-income-total">Total: RM0</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-lg-12">
 						<div class="card">
 							<div class='row'>
@@ -261,7 +293,7 @@ function downloadMultipleInvoices() {
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
-										<table id="orderTable" class="table hover"> <!-- table-striped -->
+										<table id="orderTable" class="table table-hover compact"> <!-- table-striped -->
 											<thead>
 												<tr>
 													<th>#</th>
