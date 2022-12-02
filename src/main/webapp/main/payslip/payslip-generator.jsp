@@ -315,7 +315,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		earningViewMode();
 		
-		// Deduction
+		// Cancel, populate the original earning to the field
 		let earning = $.grep(payslipList, function(item, index){
 			return (item.type == "earning")
 		})
@@ -346,20 +346,23 @@ $(document).ready(function(){
 		});
 	});
 	
-	$.validator.addMethod("returnFalseIfEmptyName",function(value,element,params){
-		let inputName = $("#earningForm input[name=name]");
-		for(let i = 0; i < inputName.length; i++) {
-			if(inputName[i].value == "")
-				return false;
-		}
-		return true;
-	}, "Please enter name");
+	$.validator.addMethod(
+			"valueNotBlankAndNull", 
+			function(value, elements, params){
+				if(params) {
+					if (value == null || value.trim().length === 0) {  
+					    return false;
+					}
+				}
+				return true;
+			},
+			"This field can not be blank"
+	);
 	
 	
 	$("#earningForm").validate({
 		rules : {
 			name: {
-				returnFalseIfEmptyName: true,
 			}
 		}
 	});
@@ -367,6 +370,7 @@ $(document).ready(function(){
 	
 	$("#earningCard .saveButton").click(function (event) {
 		event.preventDefault();
+		fillEarningInputFieldName();
 		let parameter = $("#earningForm").serialize();
 		if($("#earningForm").valid()) {
 			loaderSpinner.show();
@@ -621,6 +625,28 @@ function earningViewMode() {
 	$("#earningCard .card-body button").hide();
 }
 
+function fillEarningInputFieldName() {
+	// Get the first child and second child
+	var nameInputFieldList = $("#earningTable tbody tr td:first-child input");
+	var amountInputFieldList = $("#earningTable tbody tr td:nth-child(2) input");
+	
+	// Add rules to the tag field, ensure it is not blank
+	$.each(nameInputFieldList, function(index, value) {
+		let inputField = $(value);
+		inputField.prop("name", "earning[" + index + "][name]").rules("add", {
+			valueNotBlankAndNull: true,
+			maxlength: 100,
+		});
+	});
+	$.each(amountInputFieldList, function(index, value) {
+		let inputField = $(value);
+		inputField.prop("name", "earning[" + index + "][amount]").rules("add", {
+			valueNotBlankAndNull: true,
+			maxlength: 100,
+		});
+	});
+}
+
 // ============================================================
 // Deduction part
 // ============================================================
@@ -687,7 +713,6 @@ function getAllPayslip() {
 			$("#yearToDateEmployerSosco").val(data.find(x => x.type === "employer_year_sosco").amount);
 			$("#yearToDateEmployerEis").val(data.find(x => x.type === "employer_year_eis").amount);
 			
-			// Deduction
 			let earning = $.grep(data, function(item, index){
 				return (item.type == "earning")
 			})

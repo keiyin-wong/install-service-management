@@ -137,15 +137,6 @@ $(document).ready(function(){
 			}); 
 		},
 		columnDefs: [
-/* 			{
-				targets: 4,
-				render: function (data, type, row) {
-                    return ""
-                    + '<a href="order-detail.html?orderId=' + data.id + '" class="btn btn-sm btn-primary m-l-5">Edit</a>' 
-                    + '<a onclick="showDeleteModal(\'' + data.id + '\')" class="btn btn-sm btn-danger m-l-5" data-toggle="modal" data-target="#deleteOrderModal">Delete</a>'
-                    + '<a target="_blank" href="orderReport.do?inline=0&orderId='+data.id+'" class="btn btn-sm btn-info m-l-5">Invoice</a>'
-                },
-			}, */
 		 	{
 				width: "5%", 
 				targets: 0
@@ -268,7 +259,7 @@ function downloadMultipleInvoices() {
 			</div>
 			<section id="main-content">
 				<div class="row">
-					<div class="col-lg-3">
+					<div class="col-lg-6">
 						<div class="card">
 							<div class="stat-widget-four">
 								<div class="stat-icon">
@@ -276,8 +267,8 @@ function downloadMultipleInvoices() {
 								</div>
 								<div class="stat-content">
 									<div class="text-left dib">
-										<div class="stat-heading">Selected Order Income</div>
-										<div class="stat-text" id="selected-order-income-total">Total: RM0</div>
+										<div class="stat-heading">Selected Order Total</div>
+										<div class="stat-text" id="selected-order-income-total">Total: RM 0</div>
 									</div>
 								</div>
 							</div>
