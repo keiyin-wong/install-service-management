@@ -21,7 +21,6 @@ $(document).ready(function(){
 	loaderSpinner = $('#loader');
 	$(".checkbox-options").hide();
 	
-	
 	// ============================================================
 	// Datatable
 	// ============================================================
@@ -173,10 +172,6 @@ $(document).ready(function(){
 		downloadInvoice($("#showInvoiceModelOrderId").val());
 	});
 	
-	$("#showDownloadMultipleModalButton").on("click", function(){
-		showDownloadMultipleModal();
-	});
-	
 });
 
 //============================================================
@@ -218,9 +213,9 @@ function downloadInvoice(orderId) {
 }
 
 
-//============================================================
-//Download multiple model functions
-//===========================================================
+// ============================================================
+// Download multiple model functions
+// ===========================================================
 function showDownloadMultipleModal(){
 	$('#downloadMultipleModal .modal-title').html('Download selected invoices');
 	$('#downloadMultipleModal').modal();
@@ -237,6 +232,29 @@ function downloadMultipleInvoices() {
 	$(".checkbox-options").hide();
 	orderTable.DataTable().ajax.reload();
 }
+
+
+// ============================================================
+// Download multiple invoices with sketch functions
+// ===========================================================
+
+function showDownloadMultipleInvoicesWithSketchModal() {
+	$('#downloadMultipleModal .modal-title').html('Download selected invoices');
+	$('#downloadMultipleModal').modal();
+	$('#downloadMultipleModalButton').html(
+			'<button type="button" class="btn btn-primary" onClick="downloadMultipleInvoicesWithSketch()">Download</button>'
+	);
+}
+
+function downloadMultipleInvoicesWithSketch() {
+	$('#downloadMultipleModal').modal('hide');
+	let data = $("input[type=checkbox][name=selectedOrderIds]:checked").serialize();
+	window.open("multipleOrderReport.do?isMergeWithSketch=1&"+ data );
+	$("input[type=checkbox][name=selectedOrderIds]:checked").prop("checked", false);
+	$(".checkbox-options").hide();
+	orderTable.DataTable().ajax.reload();
+}
+
 
 </script>
 
@@ -279,8 +297,11 @@ function downloadMultipleInvoices() {
 					<div class="col-lg-12">
 						<div class="card">
 							<div class='row'>
-								<div class="col-lg-12 checkbox-options">
-									<button id="showDownloadMultipleModalButton" class="btn btn-sm btn-primary m-l-5">Download</button>
+								<div class="col-lg-12 checkbox-options hidden">
+									<button id="show-download-multiple-invoice-modal-button" class="btn btn-sm btn-primary m-l-5"
+										onclick="javascript:showDownloadMultipleModal()">Download</button>
+									<button id="show-download-multiple-invoice-sketch-modal-button" class="btn btn-sm btn-primary m-l-5" 
+										onclick="javascript:showDownloadMultipleInvoicesWithSketchModal()">Download with sketch</button>
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">

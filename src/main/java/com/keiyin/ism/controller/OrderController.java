@@ -361,15 +361,35 @@ public class OrderController {
 		 return new ModelAndView(ViewConstants.ORDER_INVOICE);
 	}
 	
-	/**
-	 * Get a report
-	 * 
-	 * @param orderId
-	 * @param inline
-	 * @param request
-	 * @param response
-	 */
-	@RequestMapping(value="/orderReport.do", method = RequestMethod.GET)
+	@RequestMapping(value="/orderReportHtml.do", method = RequestMethod.GET)
+	public void generateOrderInvoiceReportHtml(
+			@RequestParam String orderId, 
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		Map<String, Object> parameterMap = new HashMap<>();
+		
+		parameterMap.put("orderId", orderId);
+		try {
+			InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
+			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
+			HtmlExporter exporter = new HtmlExporter();
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+			OutputStream outputStream = response.getOutputStream();
+			SimpleHtmlExporterOutput htmlExporterOutput = new SimpleHtmlExporterOutput(outputStream);
+			exporter.setExporterOutput(htmlExporterOutput);
+		    exporter.exportReport();
+		    log.info("Retrived report html for order {}", orderId);
+		} catch (JRException|SQLException e ) {
+			log.info("Jasper report part error",e );
+		} catch (Exception e) {
+			log.info("Unexpected error occur",e );
+		}
+	}
+
+
+	// Only invoice
+	@RequestMapping(value="/invoice", method = RequestMethod.GET)
 	public void generateOrderInvoiceReport(
 			@RequestParam String orderId, 
 			@RequestParam(required=false, defaultValue = "1")int inline, 
@@ -399,32 +419,7 @@ public class OrderController {
 		}
 	}
 	
-	@RequestMapping(value="/orderReportHtml.do", method = RequestMethod.GET)
-	public void generateOrderInvoiceReportHtml(
-			@RequestParam String orderId, 
-			HttpServletRequest request, 
-			HttpServletResponse response) {
-		Map<String, Object> parameterMap = new HashMap<>();
-		
-		parameterMap.put("orderId", orderId);
-		try {
-			InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
-			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
-			HtmlExporter exporter = new HtmlExporter();
-			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-			OutputStream outputStream = response.getOutputStream();
-			SimpleHtmlExporterOutput htmlExporterOutput = new SimpleHtmlExporterOutput(outputStream);
-			exporter.setExporterOutput(htmlExporterOutput);
-		    exporter.exportReport();
-		    log.info("Retrived report html for order {}", orderId);
-		} catch (JRException|SQLException e ) {
-			log.info("Jasper report part error",e );
-		} catch (Exception e) {
-			log.info("Unexpected error occur",e );
-		}
-	}
-	
+	// Only invoice sketch
 	@RequestMapping(value = "/sketch", method = RequestMethod.GET)
 	public void getOrderPdf(@RequestParam String orderId,
 			@RequestParam(required = false, defaultValue = "1") int inline, HttpServletRequest request,
@@ -454,8 +449,9 @@ public class OrderController {
 
 	}
 	
+	// Invoice with the sketch
 	@RequestMapping(value="/invoice-merge-sketch", method = RequestMethod.GET)
-	public void generateOrderInvoiceMergeReport(
+	public void generateOrderInvoiceMergeSketch(
 			@RequestParam String orderId, 
 			@RequestParam(required=false, defaultValue = "1")int inline, 
 			HttpServletRequest request, 
@@ -509,11 +505,9 @@ public class OrderController {
 	}
 
 	
-
-	
 	
 	/**
-	 * Get multiple report
+	 * Get multiple invoices and zip it
 	 * 
 	 * @param request
 	 * @param response
@@ -521,13 +515,14 @@ public class OrderController {
 	@RequestMapping(value="/multipleOrderReport.do", method = RequestMethod.GET)
 	public void generateMultipleOrderInvoiceReport(HttpServletRequest request, 
 			HttpServletResponse response,
-			@RequestParam String[] selectedOrderIds) {
+			@RequestParam String[] selectedOrderIds,
+			@RequestParam(required=false, defaultValue = "0") boolean isMergeWithSketch) {
 		log.info("Generating multiple order invoices, {}", Arrays.toString(selectedOrderIds));
 		List<OutputStream> oss = new ArrayList<>();
 		
 		try {
 			for (String i : selectedOrderIds) {
-				OutputStream os = getReport(i);
+				OutputStream os = getReport(i,isMergeWithSketch);
 				oss.add(os);
 			}
 		} catch (Exception e) {
@@ -543,7 +538,8 @@ public class OrderController {
         
         try {
         	os = response.getOutputStream();
-        	response.setContentType("application/octet-stream;charset=UTF-8");
+        	response.setContentType("application/zip;charset=UTF-8");
+        	//response.setContentType("application/octet-stream;charset=UTF-8");
             response.setHeader("Content-Disposition", "attachment;filename=Invoices.zip");
             // 对输出文件做CRC32校验
             cos = new CheckedOutputStream(os, new CRC32());
@@ -562,7 +558,9 @@ public class OrderController {
 		
 	}
 	
-	public OutputStream getReport(String orderId) throws Exception {
+	
+	// Get a list of invoice output stream
+	public OutputStream getReport(String orderId, boolean isMergeWithSketch) throws Exception {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		JasperPrint jasperPrint = null;
 		
@@ -575,28 +573,33 @@ public class OrderController {
 		ByteArrayOutputStream jasperReportOs = new ByteArrayOutputStream();
 		JasperExportManager.exportReportToPdfStream(jasperPrint, jasperReportOs);
 		
-		// Convert the jasper report from ByteArrayOutputStream to Input stream 
-		ByteArrayInputStream jasperReportInputStream = new ByteArrayInputStream(jasperReportOs.toByteArray());
-		
-		// Append sketch pdf
-		List<InputStream> inputPdfList = new ArrayList<>();
-		inputPdfList.add(jasperReportInputStream);
-		
-		String sketchFileName = orderId + ".pdf";
-		
-		// Get the invoice sketch file from the path
-		File sketchFile = new File(sketchBasePath + sketchFileName);
-		
-		// If exists, add to the list and ready to merge it to one pdf
-		if(sketchFile.exists()) {
-			FileInputStream sketchFileInputsFileInputStream = new FileInputStream(sketchBasePath + sketchFileName);
-			inputPdfList.add(sketchFileInputsFileInputStream);
-		}else {
-			log.info("Order {} sketch pdf file not exists.", orderId);
-		}
-		
-		mergePdfFiles(inputPdfList, os);		
-		return os;
+		if(isMergeWithSketch) {
+			// Convert the jasper report from ByteArrayOutputStream to Input stream 
+			ByteArrayInputStream jasperReportInputStream = new ByteArrayInputStream(jasperReportOs.toByteArray());
+			
+			// Append sketch pdf
+			// Append the jasper report pdf stream
+			List<InputStream> inputPdfList = new ArrayList<>();
+			inputPdfList.add(jasperReportInputStream);
+			
+			String sketchFileName = orderId + ".pdf";
+			
+			// Get the invoice sketch file from the path
+			File sketchFile = new File(sketchBasePath + sketchFileName);
+			
+			// If exists, add to the list and ready to merge it to one pdf
+			if(sketchFile.exists()) {
+				FileInputStream sketchFileInputsFileInputStream = new FileInputStream(sketchBasePath + sketchFileName);
+				inputPdfList.add(sketchFileInputsFileInputStream);
+			}else {
+				log.info("Order {} sketch pdf file not exists.", orderId);
+			}
+			
+			// Merge a list of pdf byte array input stream, and write it to the byte array output stream
+			mergePdfFiles(inputPdfList, os);
+			return os;
+		} 
+		return jasperReportOs;
 	}
 	
 	public void compressFile(OutputStream os, ZipOutputStream out, String fileName) throws IOException {
