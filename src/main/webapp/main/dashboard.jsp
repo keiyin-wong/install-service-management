@@ -134,8 +134,8 @@ function removeData(chart) {
 </script>
 
 
-<div id="loader"></div>
-<div id="pop-message"></div>
+<!-- <div id="loader"></div>
+<div id="pop-message"></div> -->
 
 <div class="content-wrap">
 	<div class="main">

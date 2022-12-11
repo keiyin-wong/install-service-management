@@ -8,4 +8,5 @@
 	<sqlMap resource="ibatis/order-sqlMap.xml" />
 	<sqlMap resource="ibatis/service-sqlMap.xml" />
 	<sqlMap resource="ibatis/payslip-sqlMap.xml" />
+	<sqlMap resource="ibatis/system-parameter-sqlMap.xml" />
 </sqlMapConfig>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2022-12-02T13:59:56 -->
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -32,6 +31,9 @@
 	<parameter name="orderId" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
+	<parameter name="companyName" class="java.lang.String"/>
+	<parameter name="companyAddress" class="java.lang.String"/>
+	<parameter name="companyPhone" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 
 od.order_id AS order_id,
@@ -135,27 +137,6 @@ ORDER BY order_id, line_number ASC;]]>
 				<textElement verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$F{order_id}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="373" y="0" width="182" height="15" uuid="e622555d-198b-4ccd-a4a1-c59c53304058">
-					<property name="local_mesure_unitheight" value="pixel"/>
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Right">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[WAH SHOON ENTERPRISE]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="373" y="14" width="182" height="66" uuid="7289b555-fabf-45a4-88f5-a75b2a66643f"/>
-				<textElement textAlignment="Right">
-					<font size="9"/>
-				</textElement>
-				<text><![CDATA[1C-00-13, Jalan Wawasan 5/4, 
-Pusat Bandar Puchong, 
-47160 Puchong, 
-Selangor
-Tel: +60162028010]]></text>
-			</staticText>
 			<textField>
 				<reportElement x="0" y="114" width="170" height="80" uuid="5e4d4893-839d-49ab-91a3-411d4d58608e"/>
 				<textElement>
@@ -199,6 +180,20 @@ Tel: +60162028010]]></text>
 					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{subTotal} / 100]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="373" y="0" width="182" height="14" uuid="24822009-8b14-46c7-8812-1840abeac11c"/>
+				<textElement textAlignment="Right">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{companyName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="373" y="14" width="182" height="66" uuid="430842ec-fd25-4beb-87e4-e2f22b735f98"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{companyAddress} + "\nTel: " + $P{companyPhone}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

@@ -6,6 +6,8 @@
 	<c:set var="contextUrl" value="${pageContext.request.contextPath}"/>
 </c:if> 
 
+<tiles:useAttribute name="title" id="titleName" />
+
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -70,6 +72,8 @@
 		
 		<tiles:insertAttribute name="header" />
 		
+		<div id="loader"></div>
+		<div id="pop-message"></div>
 		<tiles:insertAttribute name="body" />
 		
 		

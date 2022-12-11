@@ -45,6 +45,7 @@ import com.itextpdf.text.pdf.PdfReader;
 import com.keiyin.ism.constant.ViewConstants;
 import com.keiyin.ism.dao.OrderDAO;
 import com.keiyin.ism.dao.ServiceDAO;
+import com.keiyin.ism.dao.SystemParameterDAO;
 import com.keiyin.ism.datatable.DatatableRequest;
 import com.keiyin.ism.datatable.JsonDatableQueryResponse;
 import com.keiyin.ism.datatable.PaginationCriteria;
@@ -53,6 +54,7 @@ import com.keiyin.ism.model.OrderDetail;
 import com.keiyin.ism.model.Service;
 import com.keiyin.ism.model.ServiceDiffPrice;
 import com.keiyin.ism.model.WriteResponse;
+import com.keiyin.ism.model.system.parameter.SystemParameterConstants;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -75,6 +77,10 @@ public class OrderController {
 	@Autowired
 	@Qualifier("serviceDAO")
 	ServiceDAO serviceDAO;
+	
+	@Autowired
+	SystemParameterDAO systemParameterDAO;
+	
 	
 	@Autowired
 	@Qualifier("springJdbcDataSources")
@@ -386,6 +392,7 @@ public class OrderController {
 			log.info("Unexpected error occur",e );
 		}
 	}
+	
 
 
 	// Only invoice
@@ -400,18 +407,14 @@ public class OrderController {
 		
 		parameterMap.put("orderId", orderId);
 		try {
-			InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
-			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
 			response.setContentType("application/pdf");
 			 if(inline == 1) {
 				 response.addHeader("Content-disposition", "inline; filename=" +filename);
 			 }else {
 				 response.addHeader("Content-disposition", "attachment; filename=" +filename);
 			 }
-	         OutputStream outputStream = response.getOutputStream();
+			 fillPdfInvoiceOutputStream(orderId, response.getOutputStream(), false);
 	         log.info("Retrived report for order {}", orderId);
-	         JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
 		} catch (JRException|SQLException e ) {
 			log.info("Jasper report part error",e );
 		} catch (Exception e) {
@@ -459,52 +462,21 @@ public class OrderController {
 		Map<String, Object> parameterMap = new HashMap<>();
 		String filename = "Invoice_" + orderId + ".pdf";
 		
-		String sketchFileName = orderId + ".pdf";
-		FileInputStream sketchFileInputsFileInputStream = null;
-		
 		parameterMap.put("orderId", orderId);
 		try {
-			InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
-			JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
-			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
-			
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			JasperExportManager.exportReportToPdfStream(jasperPrint, os);
-			ByteArrayInputStream jasperReportInputStream = new ByteArrayInputStream(os.toByteArray());
-			
-			List<InputStream> inputPdfList = new ArrayList<>();
-			inputPdfList.add(jasperReportInputStream);
-			
-			File sketchFile = new File(sketchBasePath + sketchFileName);
-			if(sketchFile.exists()) {
-				sketchFileInputsFileInputStream = new FileInputStream(sketchBasePath + sketchFileName);
-				inputPdfList.add(sketchFileInputsFileInputStream);
-			}else {
-				log.info("Order {} sketch pdf file not exists.", orderId);
-			}
-			
 			response.setContentType("application/pdf");
 			 if(inline == 1) {
 				 response.addHeader("Content-disposition", "inline; filename=" +filename);
 			 }else {
 				 response.addHeader("Content-disposition", "attachment; filename=" +filename);
 			 }
-			 
-			 mergePdfFiles(inputPdfList, response.getOutputStream());
+			 fillPdfInvoiceOutputStream(orderId, response.getOutputStream(), true);
 		} catch (JRException|SQLException e ) {
 			log.info("Jasper report part error",e );
 		} catch (Exception e) {
 			log.info("Unexpected error occur",e );
-		}finally {
-			try {
-				if (sketchFileInputsFileInputStream != null) {
-					sketchFileInputsFileInputStream.close();
-		        }   
-			} catch (IOException e) { }
 		}
 	}
-
-	
 	
 	/**
 	 * Get multiple invoices and zip it
@@ -522,7 +494,8 @@ public class OrderController {
 		
 		try {
 			for (String i : selectedOrderIds) {
-				OutputStream os = getReport(i,isMergeWithSketch);
+				OutputStream os = new ByteArrayOutputStream();
+				fillPdfInvoiceOutputStream(i, os, isMergeWithSketch);
 				oss.add(os);
 			}
 		} catch (Exception e) {
@@ -539,7 +512,6 @@ public class OrderController {
         try {
         	os = response.getOutputStream();
         	response.setContentType("application/zip;charset=UTF-8");
-        	//response.setContentType("application/octet-stream;charset=UTF-8");
             response.setHeader("Content-Disposition", "attachment;filename=Invoices.zip");
             // 对输出文件做CRC32校验
             cos = new CheckedOutputStream(os, new CRC32());
@@ -558,20 +530,23 @@ public class OrderController {
 		
 	}
 	
+	protected void fillPdfInvoiceOutputStream(Map<String, Object> parameterMap ,OutputStream os) throws JRException, SQLException {
+		InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
+		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());	
+		JasperExportManager.exportReportToPdfStream(jasperPrint, os);
+	}
+	
 	
 	// Get a list of invoice output stream
 	public OutputStream getReport(String orderId, boolean isMergeWithSketch) throws Exception {
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		JasperPrint jasperPrint = null;
 		
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
-		InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
-		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
-		jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
-		
 		ByteArrayOutputStream jasperReportOs = new ByteArrayOutputStream();
-		JasperExportManager.exportReportToPdfStream(jasperPrint, jasperReportOs);
+		
+		fillPdfInvoiceOutputStream(parameterMap, jasperReportOs);
 		
 		if(isMergeWithSketch) {
 			// Convert the jasper report from ByteArrayOutputStream to Input stream 
@@ -599,8 +574,62 @@ public class OrderController {
 			mergePdfFiles(inputPdfList, os);
 			return os;
 		} 
+		
+		
+		// If not, only return jasper report pdf os
 		return jasperReportOs;
 	}
+	
+	// Get a list of invoice output stream
+	protected void fillPdfInvoiceOutputStream(String orderId, 
+			OutputStream outputStream, boolean isMergeWithSketch) throws Exception {
+		
+		Map<String, Object> parameterMap = new HashMap<>();
+		String companyName = systemParameterDAO.getSystemParameterValueByNameEmptyIfNull(
+				SystemParameterConstants.COMPANY_NAME);
+		String companyAddress = systemParameterDAO.getSystemParameterValueByNameEmptyIfNull(
+				SystemParameterConstants.COMPANY_ADDRESS);
+		String companyPhone = systemParameterDAO.getSystemParameterValueByNameEmptyIfNull(
+				SystemParameterConstants.COMPANY_PHONE);
+
+
+		parameterMap.put("orderId", orderId);
+		parameterMap.put("companyName", companyName);
+		parameterMap.put("companyAddress", companyAddress);
+		parameterMap.put("companyPhone", companyPhone);
+		
+		if(isMergeWithSketch) {
+			ByteArrayOutputStream jasperReportOs = new ByteArrayOutputStream();
+			fillPdfInvoiceOutputStream(parameterMap, jasperReportOs);
+			
+			// Convert the jasper report from ByteArrayOutputStream to Input stream 
+			ByteArrayInputStream jasperReportInputStream = new ByteArrayInputStream(jasperReportOs.toByteArray());
+			
+			// Append sketch pdf
+			// Append the jasper report pdf stream
+			List<InputStream> inputPdfList = new ArrayList<>();
+			inputPdfList.add(jasperReportInputStream);
+			
+			String sketchFileName = orderId + ".pdf";
+			
+			// Get the invoice sketch file from the path
+			File sketchFile = new File(sketchBasePath + sketchFileName);
+			
+			// If exists, add to the list and ready to merge it to one pdf
+			if(sketchFile.exists()) {
+				FileInputStream sketchFileInputsFileInputStream = new FileInputStream(sketchBasePath + sketchFileName);
+				inputPdfList.add(sketchFileInputsFileInputStream);
+			}else {
+				log.info("Order {} sketch pdf file not exists.", orderId);
+			}
+			
+			// Merge a list of pdf byte array input stream, and write it to the byte array output stream
+			mergePdfFiles(inputPdfList, outputStream);
+		} else {
+			fillPdfInvoiceOutputStream(parameterMap, outputStream);
+		}
+	}
+	
 	
 	public void compressFile(OutputStream os, ZipOutputStream out, String fileName) throws IOException {
         int buffer = 1024 * 2;

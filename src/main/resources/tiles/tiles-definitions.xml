@@ -46,4 +46,8 @@
         <put-attribute name="body" value="/main/payslip/payslip-generator.jsp" />
     </definition>
 
+    <definition name="system-parameter" extends="mainTemplate">
+    	<put-attribute name="title" value="System parameter" type="string" />
+        <put-attribute name="body" value="/main/system/system-parameter.jsp" />
+    </definition>
 </tiles-definitions>
