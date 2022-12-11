@@ -597,6 +597,7 @@ public class OrderController {
 		parameterMap.put("companyName", companyName);
 		parameterMap.put("companyAddress", companyAddress);
 		parameterMap.put("companyPhone", companyPhone);
+		parameterMap.put("termAndCondition", systemParameterDAO.getSystemParameterValueByNameEmptyIfNull( SystemParameterConstants.TERMS_AND_CONDITIONS));
 		
 		if(isMergeWithSketch) {
 			ByteArrayOutputStream jasperReportOs = new ByteArrayOutputStream();

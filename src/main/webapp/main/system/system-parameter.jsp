@@ -5,6 +5,13 @@
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
 
+
+<style>
+td a {
+	color: white !important;
+}
+</style>
+
 <script type="text/javascript">
 var systemParameterDatatable;
 var loaderSpinner = $('#loader');
@@ -239,7 +246,7 @@ function clearAddEditSystemParameterForm() {
 					<div class="form-group row">
 						<label for="recipient-name" class="col-sm-3 col-form-label">Name</label>
 						<div class="col-sm-9">
-							<input type="text" class="form-control" name="name" />
+							<input type="text" class="form-control" name="name" readonly />
 						</div>
 					</div>
 					<div class="form-group row">

@@ -11,6 +11,8 @@ public class ViewConstants {
 	
 	public static final String SYSTEM_PARAMETER_VIEW = "system-parameter";
 	
+	public static final String SERVICE_VIEW = "service";
+	
 	public static final String PAYSLIP_GENERATOR = "payslip-generator";
 	
 	private ViewConstants() {}

@@ -1,5 +1,8 @@
 package com.keiyin.ism.model;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 public class Service {
 	int id;
 	String descriptionEnglish;
@@ -43,5 +46,10 @@ public class Service {
 	}
 	public void setPrice(int price) {
 		this.price = price;
+	}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }

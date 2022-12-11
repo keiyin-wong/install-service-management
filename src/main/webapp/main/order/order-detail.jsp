@@ -4,6 +4,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
+<style>
+td a {
+	color: white !important;
+}
+</style>
+
+
 <script>
 var orderDetailTable;
 const queryString = window.location.search;

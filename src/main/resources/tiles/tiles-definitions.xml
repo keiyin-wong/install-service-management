@@ -50,4 +50,9 @@
     	<put-attribute name="title" value="System parameter" type="string" />
         <put-attribute name="body" value="/main/system/system-parameter.jsp" />
     </definition>
+
+    <definition name="service" extends="mainTemplate">
+    	<put-attribute name="title" value="System parameter" type="string" />
+        <put-attribute name="body" value="/main/service/service.jsp" />
+    </definition>
 </tiles-definitions>

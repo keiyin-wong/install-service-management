@@ -34,6 +34,7 @@
 	<parameter name="companyName" class="java.lang.String"/>
 	<parameter name="companyAddress" class="java.lang.String"/>
 	<parameter name="companyPhone" class="java.lang.String"/>
+	<parameter name="termAndCondition" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 
 od.order_id AS order_id,
@@ -483,21 +484,22 @@ ORDER BY order_id, line_number ASC;]]>
 		</band>
 	</detail>
 	<lastPageFooter>
-		<band height="44">
+		<band height="80">
 			<staticText>
-				<reportElement x="0" y="0" width="160" height="14" forecolor="#3300CC" uuid="3c96fad9-f4b3-4edd-a213-65dd81681d8a">
+				<reportElement x="0" y="0" width="270" height="14" forecolor="#3300CC" uuid="3c96fad9-f4b3-4edd-a213-65dd81681d8a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box rightPadding="4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Notes]]></text>
+				<text><![CDATA[Terms & Conditions]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="14" width="160" height="30" uuid="e322b464-8bb1-44d3-974c-5160ee45530e"/>
-				<text><![CDATA[Thank you for your business!]]></text>
-			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="14" width="428" height="66" uuid="fe1acfd0-0ef8-40de-bf5f-7c623f7817e4"/>
+				<box topPadding="1"/>
+				<textFieldExpression><![CDATA[$P{termAndCondition}]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 	<summary>
@@ -591,6 +593,21 @@ ORDER BY order_id, line_number ASC;]]>
 					<font size="10" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[0]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="10" width="270" height="14" forecolor="#3300CC" uuid="de192079-3ac0-4c82-bea6-95c12b8ca5ce">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="SansSerif" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Customer notes]]></text>
+			</staticText>
+			<textField textAdjust="StretchHeight">
+				<reportElement x="0" y="24" width="270" height="74" uuid="13416b84-2d62-483f-aed7-c2c825f23662"/>
+				<box topPadding="1" rightPadding="2"/>
+				<textFieldExpression><![CDATA["Thank you for your business"]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>
