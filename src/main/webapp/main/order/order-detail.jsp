@@ -180,7 +180,7 @@ $(document).ready(function(){
 		$.ajax({
 			type : "POST",
 			url : "updateOrder",
-			data: $('#orderForm').serialize(),
+			data: $('.order-form-data').serialize(),
 			success: function(data){
 				if(data.status == "success"){
 					popSuccessToastr("Success", 'Successfully update order date');
@@ -347,10 +347,16 @@ function getOrder(){
 		    const year = date.toLocaleString('default', { year: 'numeric' });
 			$('#orderId').val(data.id);
 			$('#orderDate').val(year + '-' + month + '-' + day);
+			
+			// Populate the order other columns to the other details tab
+			$("#order-remarks").val(data.remarks);
+			$("#order-comments").val(data.comments);
 		},
 		error: function(data){
 			$('#orderId').val("");
 			$('#orderDate').val("");
+			$("#order-remarks").val("");
+			$("#order-comments").val("");
 			loaderSpinner.hide();
 		}
 	}).done(function(){
@@ -613,84 +619,117 @@ function changeEditPriveValueBasedOnHeight(){
 				</div>
 				<!-- /# column -->
 			</div>
+			<div class="row">
+				<div class="col-lg-12 p-r-0">
+					<ul class="nav nav-pills customtab2" role="tablist">
+						<li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#main-details-tab" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Main Details</span></a> </li>
+						<li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#other-details-tab" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Other Details</span></a> </li>
+					</ul>
+				</div>
+			</div>
 			<section id="main-content">
-				<div class="row">
-					<div class="col-lg-12">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-sm-5">
-								 		<form id="orderForm" class="form-horizontal">
-											<div class="form-group row">
-												<label for="recipient-name" class="col-sm-3 col-form-label">Id</label>
-												<div class="col-sm-9">
-													<input type="text" class="form-control" id="orderId" name="orderId" readonly>
+				<div class="tab-content">
+					<div class="tab-pane active" id="main-details-tab" role="tabpanel">
+						<div class="">
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="card">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-sm-5">
+													<form id="orderForm"
+														class="form-horizontal order-form-data">
+														<div class="form-group row">
+															<label for="recipient-name"
+																class="col-sm-3 col-form-label">Id</label>
+															<div class="col-sm-9">
+																<input type="text" class="form-control" id="orderId"
+																	name="orderId" readonly>
+															</div>
+														</div>
+														<div class="form-group row">
+															<label for="recipient-name"
+																class="col-sm-3 col-form-label">Date:</label>
+															<div class="col-sm-9">
+																<input type="date" class="form-control" id="orderDate"
+																	name="orderDate" id="date" required
+																	<sec:authorize access="!hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
+																		disabled
+																	</sec:authorize>>
+															</div>
+														</div>
+													</form>
+												</div>
+												<div class="col-sm-2"></div>
+												<div class="col-sm-5">
+													<div class="row">
+														<div class="col-sm-12">
+															<button id="printInvoiceButton"
+																class="btn btn-sm btn-primary float-right">Print
+																Invoice</button>
+														</div>
+													</div>
 												</div>
 											</div>
-											<div class="form-group row">
-												<label for="recipient-name" class="col-sm-3 col-form-label">Date:</label>
-												<div class="col-sm-9">
-													<input type="date" class="form-control" id="orderDate" name="orderDate" id="date" required
-													<sec:authorize access="!hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
-														disabled
+											<div class="row">
+												<div class="col-md-12">
+													<sec:authorize
+														access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
+														<div class='row'>
+															<div class="col-lg-12">
+																<button id="addNewOrderDetailModalButton"
+																	class="btn btn-sm btn-primary float-right"
+																	data-toggle="modal">
+																	<i class="ti-plus m-r-5"></i>Add new order detail
+																</button>
+															</div>
+														</div>
 													</sec:authorize>
-													>
-												</div>
-											</div>
-										</form>
-								 	</div>
-								 	<div class="col-sm-2">
-								 	</div>
-								 	<div class="col-sm-5">
-								 		<div class="row">
-								 			<div class="col-sm-12">
-								 				<button id="printInvoiceButton" class="btn btn-sm btn-primary float-right">Print Invoice</button>
-								 			</div>
-								 		</div>
-								 	</div>
-								</div>
-								 <div class="row">
-								 	<div class="col-md-12">
-								 		<sec:authorize access="hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
-								 			<div class='row'>
-												<div class="col-lg-12">
-													<button id="addNewOrderDetailModalButton" class="btn btn-sm btn-primary float-right" data-toggle="modal"><i class="ti-plus m-r-5"></i>Add new order detail</button>
-												</div>
-											</div>
-										</sec:authorize>
-										<div class='row'>
-											<div class="col-lg-12">
-												<div class="bootstrap-data-table-panel">
-													<table id="orderDetailTable" class="table hover" style="width:100%;"> <!--table-bordered table-striped table-bordered  -->
-														<thead>
-															<tr>
-																<th>#</th>
-																<th>Service</th>
-																<th>Description</th>
-																<th>Width</th>
-																<th>Height</th>
-																<th>Ft</th>
-																<th>Quantity</th>
-																<th>Unit Price</th>
-																<th>Total Price</th>
-																<th>Action</th>
-															</tr>
-														</thead>
-														<tbody>
-														</tbody>
-														 <tfoot>
-												            <tr>
-												                <th colspan="9" style="text-align:right"></th>
-												                <th></th>
-												            </tr>
-												        </tfoot>
-													</table>
+													<div class='row'>
+														<div class="col-lg-12">
+															<div class="bootstrap-data-table-panel">
+																<table id="orderDetailTable" class="table hover"
+																	style="width: 100%;">
+																	<!--table-bordered table-striped table-bordered  -->
+																	<thead>
+																		<tr>
+																			<th>#</th>
+																			<th>Service</th>
+																			<th>Description</th>
+																			<th>Width</th>
+																			<th>Height</th>
+																			<th>Ft</th>
+																			<th>Quantity</th>
+																			<th>Unit Price</th>
+																			<th>Total Price</th>
+																			<th>Action</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																	</tbody>
+																	<tfoot>
+																		<tr>
+																			<th colspan="9" style="text-align: right"></th>
+																			<th></th>
+																		</tr>
+																	</tfoot>
+																</table>
+															</div>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
-								 	</div>
-								 </div>
+									</div>
+									
+								</div>
 							</div>
+						</div>
+					</div>
+					<div class="tab-pane" id="other-details-tab" role="tabpanel">
+						<div>
+							<jsp:include
+								page="/main/order/order-detail-other-details.jsp" />
 						</div>
 					</div>
 				</div>

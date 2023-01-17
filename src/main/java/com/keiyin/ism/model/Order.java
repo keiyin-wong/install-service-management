@@ -7,6 +7,8 @@ public class Order {
 	String id;
 	Date date;
 	Integer total;
+	String remarks;
+	String comments;
 	List<OrderDetail> orderDetailList;
 	
 	public String getId() {
@@ -33,7 +35,18 @@ public class Order {
 	public void setOrderDetailList(List<OrderDetail> orderDetailList) {
 		this.orderDetailList = orderDetailList;
 	}
-	
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
 	@SuppressWarnings("deprecation")
 	@Override
 	public String toString() {

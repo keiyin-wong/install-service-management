@@ -5,11 +5,11 @@
 	<resultMap id="orderResultMap" class="com.keiyin.ism.model.Order">
 		<result property="id" column="id" javaType="String"/>
 		<result property="date" column="date" javaType="Date"/>
+		<result property="remarks" column="remarks" javaType="String"/>
+		<result property="comments" column="comments" javaType="String"/>
 	</resultMap>
 	
-	<resultMap id="orderAndTotalResultMap" class="com.keiyin.ism.model.Order">
-		<result property="id" column="id" javaType="String"/>
-		<result property="date" column="date" javaType="Date"/>
+	<resultMap id="orderAndTotalResultMap" class="com.keiyin.ism.model.Order" extends="orderResultMap">
 		<result property="total" column="total_price" javaType="Integer"/>
 	</resultMap>
 	
@@ -38,8 +38,7 @@
 		FROM
 		(
 		SELECT
-		o.id AS id,
-		o.date AS `date`,
+		o.*,
 		COALESCE(SUM(
 			CASE
 			WHEN s.calculation_type=1 THEN od.final_price * od.quantity
