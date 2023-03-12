@@ -111,6 +111,10 @@ $(document).ready(function(){
 				},
 			},
 			{
+				data: "comments", 
+				name:"comments"
+			},
+			{
 				data: "total", 
 				name:"total_price", 
 				render: function (data, type){
@@ -185,7 +189,8 @@ function showInvoiceModal (orderId){
 	$('#showInvoiceModal').modal();
 	fillInvoiceToModal(orderId); */
 	
-	window.open("invoice-merge-sketch?orderId=" + orderId, '_blank');
+	// window.open("invoice-merge-sketch?orderId=" + orderId, '_blank');
+	window.open("invoice-merge-sketch/" + orderId, '_blank');
 }
 
 function fillInvoiceToModal(orderId) {
@@ -321,6 +326,7 @@ function downloadMultipleInvoicesWithSketch() {
 													<th></th>
 													<th>Order Id</th>
 													<th>Order Date</th>
+													<th>Comments</th>
 													<th>Total</th>
 												</tr>
 											</thead>

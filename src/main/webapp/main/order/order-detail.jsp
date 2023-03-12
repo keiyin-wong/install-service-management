@@ -17,6 +17,7 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var loaderSpinner = $('#loader');
 var differentPriceList = null;
+var currentOrder = null;
 
 $(document).ready(function(){
 	document.title = urlParams.get('orderId');
@@ -171,7 +172,8 @@ $(document).ready(function(){
 	// $('#orderDetailTable').DataTable().ajax.reload();
 	
 	$("#printInvoiceButton").click(function(){
-		window.open("invoice-merge-sketch?orderId=" + urlParams.get("orderId"), '_blank');
+		//window.open("invoice-merge-sketch?orderId=" + urlParams.get("orderId"), '_blank');
+		window.open("invoice-merge-sketch/" + urlParams.get("orderId"), '_blank');
 	})
 
 	// Order date data on change and update order
@@ -332,6 +334,9 @@ $(document).ready(function(){
 });
 
 
+// =============================================================================
+// Order functions
+// =============================================================================
 
 function getOrder(){
 	loaderSpinner.show();
@@ -346,11 +351,15 @@ function getOrder(){
 		    const month = date.toLocaleString('default', { month: '2-digit' });
 		    const year = date.toLocaleString('default', { year: 'numeric' });
 			$('#orderId').val(data.id);
+			$('#orderId2').val(data.id);
 			$('#orderDate').val(year + '-' + month + '-' + day);
+			$('#orderDate2').val(year + '-' + month + '-' + day);
 			
 			// Populate the order other columns to the other details tab
 			$("#order-remarks").val(data.remarks);
 			$("#order-comments").val(data.comments);
+			
+			currentOrder = data;
 		},
 		error: function(data){
 			$('#orderId').val("");
@@ -638,13 +647,13 @@ function changeEditPriveValueBasedOnHeight(){
 											<div class="row">
 												<div class="col-sm-5">
 													<form id="orderForm"
-														class="form-horizontal order-form-data">
+														class="form-horizontal">
 														<div class="form-group row">
 															<label for="recipient-name"
 																class="col-sm-3 col-form-label">Id</label>
 															<div class="col-sm-9">
 																<input type="text" class="form-control" id="orderId"
-																	name="orderId" readonly>
+																	name="id" readonly>
 															</div>
 														</div>
 														<div class="form-group row">
@@ -652,10 +661,8 @@ function changeEditPriveValueBasedOnHeight(){
 																class="col-sm-3 col-form-label">Date:</label>
 															<div class="col-sm-9">
 																<input type="date" class="form-control" id="orderDate"
-																	name="orderDate" id="date" required
-																	<sec:authorize access="!hasAnyRole('ROLE_ADMIN', 'ROLE_USER_EDIT')">
-																		disabled
-																	</sec:authorize>>
+																	name="date" id="date" required
+																		disabled />
 															</div>
 														</div>
 													</form>

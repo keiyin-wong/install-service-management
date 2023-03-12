@@ -96,9 +96,11 @@
 		UPDATE 
 			`order` 
 		SET 
-			`date` = '$orderDate$'
+			`date` = #orderDate#,
+			`remarks` = #remarks#,
+			`comments` = #comments#
 		WHERE
-			`id` = '$orderId$'
+			`id` = #orderId#
 	</update>
 	
 	<delete id="deleteOrder" parameterClass="java.util.HashMap">

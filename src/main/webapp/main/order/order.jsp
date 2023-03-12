@@ -157,6 +157,14 @@ $(document).ready(function(){
 				},
 			},
 			{
+				data: "remarks", 
+				name:"remarks"
+			},
+			{
+				data: "comments", 
+				name:"comments"
+			},
+			{
 				data: "total", 
 				name:"total_price", 
 				render: function (data, type){
@@ -344,13 +352,15 @@ function deleteMultipleOrders(){
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
-										<table id="orderTable" class="table table-hover"> <!-- table-striped -->
+										<table id="orderTable" class="table table-hover" style="width:100%"> <!-- table-striped -->
 											<thead>
 												<tr>
 													<th>#</th>
 													<th></th>
 													<th>Order Id </th>
 													<th>Order Date</th>
+													<th>Customer notes</th>
+													<th>Comments</th>
 													<th>Total</th>
 													<!-- <th>Action</th> -->
 												</tr>

@@ -33,6 +33,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -171,10 +172,15 @@ public class OrderController {
 	}
 	
 	@RequestMapping(value = "updateOrder", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<WriteResponse> updateOrder(@RequestParam String orderId,@RequestParam String orderDate){
+	public @ResponseBody ResponseEntity<WriteResponse> updateOrder(
+			@RequestParam(value = "id") String orderId,
+			@RequestParam(value = "date") String orderDate,
+			@RequestParam String remarks,
+			@RequestParam String comments
+			){
 		WriteResponse result = new WriteResponse();
 		try {
-			if(orderDAO.updateOrder(orderId, orderDate)) {
+			if(orderDAO.updateOrderById(orderId, orderDate, remarks, comments)) {
 				result.setStatus(SUCCESS);
 				log.info("Successfully updated order {}", orderId);
 			}
@@ -186,7 +192,6 @@ public class OrderController {
 			log.info("Failed to update order {}", orderId, e);
 			result.setStatus(FAIL);
 		}
-		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -478,6 +483,32 @@ public class OrderController {
 		}
 	}
 	
+	// Invoice with the sketch
+	@RequestMapping(value="/invoice-merge-sketch/{id}", method = RequestMethod.GET)
+	public void generateOrderInvoiceMergeSketch2(
+			@PathVariable("id") String orderId, 
+			@RequestParam(required=false, defaultValue = "1")int inline, 
+			HttpServletRequest request, 
+			HttpServletResponse response) {
+		Map<String, Object> parameterMap = new HashMap<>();
+		String filename = "Invoice_" + orderId + ".pdf";
+		
+		parameterMap.put("orderId", orderId);
+		try {
+			response.setContentType("application/pdf");
+			 if(inline == 1) {
+				 response.addHeader("Content-disposition", "inline; filename=" +filename);
+			 }else {
+				 response.addHeader("Content-disposition", "attachment; filename=" +filename);
+			 }
+			 fillPdfInvoiceOutputStream(orderId, response.getOutputStream(), true);
+		} catch (JRException|SQLException e ) {
+			log.info("Jasper report part error",e );
+		} catch (Exception e) {
+			log.info("Unexpected error occur",e );
+		}
+	}
+	
 	/**
 	 * Get multiple invoices and zip it
 	 * 
@@ -599,6 +630,17 @@ public class OrderController {
 		parameterMap.put("companyPhone", companyPhone);
 		parameterMap.put("termAndCondition", systemParameterDAO.getSystemParameterValueByNameEmptyIfNull( SystemParameterConstants.TERMS_AND_CONDITIONS));
 		
+		Order order = null;
+
+		// Get order according to the order id and put the remarks
+		try {
+			order = orderDAO.getOrder(orderId);
+			parameterMap.put("remarks", order.getRemarks());
+			log.info("Successfully retrieved order {}", order);
+		} catch (SQLException e) {
+			log.error("Failed to retrieve order {}", order, e);
+		}
+
 		if(isMergeWithSketch) {
 			ByteArrayOutputStream jasperReportOs = new ByteArrayOutputStream();
 			fillPdfInvoiceOutputStream(parameterMap, jasperReportOs);

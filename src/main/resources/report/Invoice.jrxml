@@ -35,6 +35,7 @@
 	<parameter name="companyAddress" class="java.lang.String"/>
 	<parameter name="companyPhone" class="java.lang.String"/>
 	<parameter name="termAndCondition" class="java.lang.String"/>
+	<parameter name="remarks" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[SELECT 
 od.order_id AS order_id,
@@ -498,6 +499,9 @@ ORDER BY order_id, line_number ASC;]]>
 			<textField textAdjust="StretchHeight">
 				<reportElement x="0" y="14" width="428" height="66" uuid="fe1acfd0-0ef8-40de-bf5f-7c623f7817e4"/>
 				<box topPadding="1"/>
+				<textElement>
+					<font fontName="SansSerif"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{termAndCondition}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -604,10 +608,21 @@ ORDER BY order_id, line_number ASC;]]>
 				</textElement>
 				<text><![CDATA[Customer notes]]></text>
 			</staticText>
-			<textField textAdjust="StretchHeight">
-				<reportElement x="0" y="24" width="270" height="74" uuid="13416b84-2d62-483f-aed7-c2c825f23662"/>
-				<box topPadding="1" rightPadding="2"/>
-				<textFieldExpression><![CDATA["Thank you for your business"]]></textFieldExpression>
+			<textField>
+				<reportElement key="" stretchType="RelativeToTallestObject" x="0" y="24" width="270" height="74" uuid="f16291c2-7548-455a-8b2f-72cd57832a8c">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<box topPadding="1">
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Top" markup="styled">
+					<font fontName="FZHTJW" size="10" pdfFontName="FZHTJW" pdfEncoding="Identity-H"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{remarks}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

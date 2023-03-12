@@ -75,10 +75,12 @@ public class OrderDAO {
 		sqlMapClient.insert("Order.insertOrder", parameterMap);
 	}
 	
-	public boolean updateOrder(String orderId, String orderDate) throws SQLException {
+	public boolean updateOrderById(String orderId, String orderDate, String remarks, String comments) throws SQLException {
 		Map<String, Object> parameterMap = new HashMap<>();
 		parameterMap.put("orderId", orderId);
 		parameterMap.put("orderDate", orderDate);
+		parameterMap.put("remarks", remarks);
+		parameterMap.put("comments", comments);
 		
 		return (sqlMapClient.update("Order.updateOrder", parameterMap) > 0);
 	}
