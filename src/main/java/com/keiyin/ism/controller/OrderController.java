@@ -401,9 +401,9 @@ public class OrderController {
 
 
 	// Only invoice
-	@RequestMapping(value="/invoice", method = RequestMethod.GET)
+	@RequestMapping(value="/invoice/{id}", method = RequestMethod.GET)
 	public void generateOrderInvoiceReport(
-			@RequestParam String orderId, 
+			@PathVariable("id") String orderId,
 			@RequestParam(required=false, defaultValue = "1")int inline, 
 			HttpServletRequest request, 
 			HttpServletResponse response) {

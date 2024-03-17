@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.21.2.final using JasperReports Library version 6.21.2-8434a0bd7c3bbc37cbf916f2968d35e4b165821a  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
 	<property name="template.engine" value="tabular_template"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="install-service-management\install-service-managment.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="installation_service.jrdax"/>
 	<property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
@@ -139,16 +139,11 @@ ORDER BY order_id, line_number ASC;]]>
 				<textElement verticalAlignment="Top"/>
 				<textFieldExpression><![CDATA[$F{order_id}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="0" y="114" width="170" height="80" uuid="5e4d4893-839d-49ab-91a3-411d4d58608e"/>
 				<textElement>
 					<font fontName="SansSerif"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Kelly Cheah\r\n"
-+ "1C-00-13, Jalan Wawasan 5/4,\r\n"
-+ "Pusat Bandar Puchong, \r\n"
-+ "47160 Puchong, Selangor\r\n"
-+ "Tel: 03-5886 2985"]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="380" y="100" width="90" height="14" forecolor="#3300CC" uuid="999f42c4-5abc-434b-8aca-ba1b2a34a0d2">

@@ -171,9 +171,14 @@ $(document).ready(function(){
 	
 	// $('#orderDetailTable').DataTable().ajax.reload();
 	
-	$("#printInvoiceButton").click(function(){
+	$("#printInvoiceButtonWithSketch").click(function(){
 		//window.open("invoice-merge-sketch?orderId=" + urlParams.get("orderId"), '_blank');
 		window.open("invoice-merge-sketch/" + urlParams.get("orderId"), '_blank');
+	})
+
+	$("#printInvoiceButton").click(function(){
+		//window.open("invoice-merge-sketch?orderId=" + urlParams.get("orderId"), '_blank');
+		window.open("invoice/" + urlParams.get("orderId"), '_blank');
 	})
 
 	// Order date data on change and update order
@@ -645,7 +650,7 @@ function changeEditPriveValueBasedOnHeight(){
 									<div class="card">
 										<div class="card-body">
 											<div class="row">
-												<div class="col-sm-5">
+												<div class="col-sm-6">
 													<form id="orderForm"
 														class="form-horizontal">
 														<div class="form-group row">
@@ -667,13 +672,19 @@ function changeEditPriveValueBasedOnHeight(){
 														</div>
 													</form>
 												</div>
-												<div class="col-sm-2"></div>
-												<div class="col-sm-5">
+												<div class="col-sm-6">
 													<div class="row">
-														<div class="col-sm-12">
-															<button id="printInvoiceButton"
-																class="btn btn-sm btn-primary float-right">Print
-																Invoice</button>
+														<div class="col-md-12">
+															<div class="float-right">
+																<button
+																	id="printInvoiceButton"
+																	class="btn btn-sm btn-primary"
+																>Print Invoice</button>
+																<button
+																	id="printInvoiceButtonWithSketch"
+																	class="btn btn-sm btn-primary"
+																>Print Invoice With Sketch</button>
+															</div>
 														</div>
 													</div>
 												</div>
