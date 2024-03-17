@@ -47,8 +47,11 @@
 	    
         <!-- jquery vendor -->
 	    <%-- <script src="${contextUrl}/assets/js/lib/jquery.min.js"></script> --%>
-	    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-	    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+<%--	    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>--%>
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+				integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+				crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 	    <script src="${contextUrl}/assets/js/lib/jquery.nanoscroller.min.js"></script>
 	    <script src="${contextUrl}/assets/js/lib/jquery.nanoscroller.min.js"></script>
 	    <script src="${contextUrl}/assets/js/scripts.js"></script>
@@ -96,8 +99,8 @@
 	    <script src="${contextUrl}/assets/js/lib/calendar-2/pignose.init.js"></script>
 	
 	
-	    <script src="${contextUrl}/assets/js/lib/weather/jquery.simpleWeather.min.js"></script>
-	    <script src="${contextUrl}/assets/js/lib/weather/weather-init.js"></script>
+<%--	    <script src="${contextUrl}/assets/js/lib/weather/jquery.simpleWeather.min.js"></script>--%>
+<%--	    <script src="${contextUrl}/assets/js/lib/weather/weather-init.js"></script>--%>
 	    <script src="${contextUrl}/assets/js/lib/circle-progress/circle-progress.min.js"></script>
 	    <script src="${contextUrl}/assets/js/lib/circle-progress/circle-progress-init.js"></script>
 	    <script src="${contextUrl}/assets/js/lib/chartist/chartist.min.js"></script>
