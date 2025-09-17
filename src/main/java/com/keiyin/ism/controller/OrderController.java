@@ -64,8 +64,11 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.HtmlExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 
 @Controller
 @RequestMapping(value = "/order")
@@ -95,6 +98,7 @@ public class OrderController {
 	private static final String FAIL = "fail";
 	private static final String SUCCESS = "success";
 	private static final String INVOICE_JRXML_PATH = "/report/Invoice.jrxml";
+	private static final String SUMMARY_JRXML_PATH = "/report/summary.jrxml";
 	
 	
 	@RequestMapping(value = "/order.html", method = RequestMethod.GET)
@@ -577,6 +581,7 @@ public class OrderController {
 		List<OutputStream> withoutSketchOss = new ArrayList<>();
 		List<String> withSketchOrderIds = new ArrayList<>();
 		List<String> withoutSketchOrderIds = new ArrayList<>();
+		OutputStream summaryExcelOs = new ByteArrayOutputStream();
 
 		try {
 			for (String orderId : selectedOrderIds) {
@@ -596,13 +601,20 @@ public class OrderController {
 				withoutSketchOss.add(osWithoutSketch);
 				withoutSketchOrderIds.add(orderId);
 			}
+
+			// Generate summary Excel
+			generateSummaryExcel(selectedOrderIds, summaryExcelOs);
+
 		} catch (Exception e) {
 			log.error("Error generating organized invoices", e);
 		} finally {
 			try {
 				for (OutputStream os : withSketchOss) os.flush();
 				for (OutputStream os : withoutSketchOss) os.flush();
-			} catch (Exception e) {}
+				summaryExcelOs.flush();
+			} catch (Exception e) {
+				log.error("Error flushing output streams", e);
+			}
 		}
 
 		OutputStream os = null;
@@ -625,6 +637,9 @@ public class OrderController {
                 compressFile(withSketchOss.get(i), zipOut, "Invoice/单_有图/Invoice_" + withSketchOrderIds.get(i) + ".pdf");
             }
 
+            // Add summary Excel to root
+            compressFile(summaryExcelOs, zipOut, "Invoice/Summary.xls");
+
             zipOut.flush();
             zipOut.close();
             os.flush();
@@ -637,8 +652,33 @@ public class OrderController {
 	protected void fillPdfInvoiceOutputStream(Map<String, Object> parameterMap ,OutputStream os) throws JRException, SQLException {
 		InputStream inputStream = this.getClass().getResourceAsStream(INVOICE_JRXML_PATH);
 		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());	
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
 		JasperExportManager.exportReportToPdfStream(jasperPrint, os);
+	}
+
+	protected void generateSummaryExcel(String[] selectedOrderIds, OutputStream os) throws JRException, SQLException {
+		Map<String, Object> parameterMap = new HashMap<>();
+
+		// Convert array to comma-separated string for SQL IN clause
+		String orderIdsParam = String.join(",", selectedOrderIds);
+		parameterMap.put("orderIds", orderIdsParam);
+
+		InputStream inputStream = this.getClass().getResourceAsStream(SUMMARY_JRXML_PATH);
+		JasperReport jasperDesign = JasperCompileManager.compileReport(inputStream);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperDesign, parameterMap, springJdbcDataSources.getConnection());
+
+		JRXlsExporter exporter = new JRXlsExporter();
+		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(os));
+
+		SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+		configuration.setDetectCellType(true);
+		configuration.setCollapseRowSpan(false);
+		configuration.setWhitePageBackground(false);
+		exporter.setConfiguration(configuration);
+
+		exporter.exportReport();
+		log.info("Generated summary Excel for orders: {}", Arrays.toString(selectedOrderIds));
 	}
 	
 	
