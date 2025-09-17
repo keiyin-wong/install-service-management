@@ -511,18 +511,18 @@ public class OrderController {
 	
 	/**
 	 * Get multiple invoices and zip it
-	 * 
+	 *
 	 * @param request
 	 * @param response
 	 */
 	@RequestMapping(value="/multipleOrderReport.do", method = RequestMethod.GET)
-	public void generateMultipleOrderInvoiceReport(HttpServletRequest request, 
+	public void generateMultipleOrderInvoiceReport(HttpServletRequest request,
 			HttpServletResponse response,
 			@RequestParam String[] selectedOrderIds,
 			@RequestParam(required=false, defaultValue = "0") boolean isMergeWithSketch) {
 		log.info("Generating multiple order invoices, {}", Arrays.toString(selectedOrderIds));
 		List<OutputStream> oss = new ArrayList<>();
-		
+
 		try {
 			for (String i : selectedOrderIds) {
 				OutputStream os = new ByteArrayOutputStream();
@@ -539,7 +539,7 @@ public class OrderController {
 		OutputStream os = null;
         CheckedOutputStream cos = null;
         ZipOutputStream zipOut = null;
-        
+
         try {
         	os = response.getOutputStream();
         	response.setContentType("application/zip;charset=UTF-8");
@@ -554,11 +554,84 @@ public class OrderController {
             }
             zipOut.flush();zipOut.close();
             os.flush();
-        	
+
         }catch (Exception e) {
             log.error("Error occurred during zipping", e);
         }
-		
+
+	}
+
+	/**
+	 * Get multiple invoices organized in folder structure (with/without sketch)
+	 *
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value="/organizedMultipleOrderReport.do", method = RequestMethod.GET)
+	public void generateOrganizedMultipleOrderInvoiceReport(HttpServletRequest request,
+			HttpServletResponse response,
+			@RequestParam String[] selectedOrderIds) {
+		log.info("Generating organized multiple order invoices, {}", Arrays.toString(selectedOrderIds));
+
+		List<OutputStream> withSketchOss = new ArrayList<>();
+		List<OutputStream> withoutSketchOss = new ArrayList<>();
+		List<String> withSketchOrderIds = new ArrayList<>();
+		List<String> withoutSketchOrderIds = new ArrayList<>();
+
+		try {
+			for (String orderId : selectedOrderIds) {
+				String sketchFileName = orderId + ".pdf";
+				File sketchFile = new File(sketchBasePath + sketchFileName);
+
+				OutputStream osWithSketch = new ByteArrayOutputStream();
+				OutputStream osWithoutSketch = new ByteArrayOutputStream();
+
+				if(sketchFile.exists()) {
+					fillPdfInvoiceOutputStream(orderId, osWithSketch, true);
+					withSketchOss.add(osWithSketch);
+					withSketchOrderIds.add(orderId);
+				}
+
+				fillPdfInvoiceOutputStream(orderId, osWithoutSketch, false);
+				withoutSketchOss.add(osWithoutSketch);
+				withoutSketchOrderIds.add(orderId);
+			}
+		} catch (Exception e) {
+			log.error("Error generating organized invoices", e);
+		} finally {
+			try {
+				for (OutputStream os : withSketchOss) os.flush();
+				for (OutputStream os : withoutSketchOss) os.flush();
+			} catch (Exception e) {}
+		}
+
+		OutputStream os = null;
+        CheckedOutputStream cos = null;
+        ZipOutputStream zipOut = null;
+
+        try {
+        	os = response.getOutputStream();
+        	response.setContentType("application/zip;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=Invoice.zip");
+            cos = new CheckedOutputStream(os, new CRC32());
+            zipOut = new ZipOutputStream(cos);
+
+            // Create folder structure and add files
+            for (int i = 0; i < withoutSketchOss.size(); i++) {
+                compressFile(withoutSketchOss.get(i), zipOut, "Invoice/单_没有图/Invoice_" + withoutSketchOrderIds.get(i) + ".pdf");
+            }
+
+            for (int i = 0; i < withSketchOss.size(); i++) {
+                compressFile(withSketchOss.get(i), zipOut, "Invoice/单_有图/Invoice_" + withSketchOrderIds.get(i) + ".pdf");
+            }
+
+            zipOut.flush();
+            zipOut.close();
+            os.flush();
+
+        } catch (Exception e) {
+            log.error("Error occurred during organized zipping", e);
+        }
 	}
 	
 	protected void fillPdfInvoiceOutputStream(Map<String, Object> parameterMap ,OutputStream os) throws JRException, SQLException {

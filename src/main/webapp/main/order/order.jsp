@@ -182,7 +182,7 @@ $(document).ready(function(){
 				className: "datatable-skip-click"
 			} */
 		],
-		order: [[2, 'desc']],
+		order: [[3, 'desc']],
 		initComplete: function(settings, json){
 			$('#orderTable_filter input').unbind();
 			$('#orderTable_filter input').bind('change', function(e) {

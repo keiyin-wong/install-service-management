@@ -132,7 +132,7 @@ $(document).ready(function(){
 				className: "datatable-skip-click"
 			} */
 		],
-		order: [[2, 'desc']],
+		order: [[3, 'desc']],
 		initComplete: function(settings, json){
 			$('#orderTable_filter input').unbind();
 			$('#orderTable_filter input').bind('change', function(e) {
@@ -261,6 +261,28 @@ function downloadMultipleInvoicesWithSketch() {
 }
 
 
+// ============================================================
+// Download organized multiple invoices functions
+// ===========================================================
+
+function showDownloadOrganizedMultipleInvoicesModal() {
+	$('#downloadMultipleModal .modal-title').html('Download organized invoices');
+	$('#downloadMultipleModal').modal();
+	$('#downloadMultipleModalButton').html(
+			'<button type="button" class="btn btn-primary" onClick="downloadOrganizedMultipleInvoices()">Download</button>'
+	);
+}
+
+function downloadOrganizedMultipleInvoices() {
+	$('#downloadMultipleModal').modal('hide');
+	let data = $("input[type=checkbox][name=selectedOrderIds]:checked").serialize();
+	window.open("organizedMultipleOrderReport.do?"+ data );
+	$("input[type=checkbox][name=selectedOrderIds]:checked").prop("checked", false);
+	$(".checkbox-options").hide();
+	orderTable.DataTable().ajax.reload();
+}
+
+
 </script>
 
 <!-- <div id="loader"></div>
@@ -314,8 +336,10 @@ function downloadMultipleInvoicesWithSketch() {
 								<div class="col-lg-12 checkbox-options hidden">
 									<button id="show-download-multiple-invoice-modal-button" class="btn btn-sm btn-primary m-l-5"
 										onclick="javascript:showDownloadMultipleModal()">Download</button>
-									<button id="show-download-multiple-invoice-sketch-modal-button" class="btn btn-sm btn-primary m-l-5" 
+									<button id="show-download-multiple-invoice-sketch-modal-button" class="btn btn-sm btn-primary m-l-5"
 										onclick="javascript:showDownloadMultipleInvoicesWithSketchModal()">Download with sketch</button>
+									<button id="show-download-organized-multiple-invoice-modal-button" class="btn btn-sm btn-primary m-l-5"
+										onclick="javascript:showDownloadOrganizedMultipleInvoicesModal()">Download organized</button>
 								</div>
 								<div class="col-lg-12">
 									<div class="bootstrap-data-table-panel">
